@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 import {
   Heart,
   Loader2,
   MessageCircle,
   Phone,
   ShoppingCart,
-} from 'lucide-react';
-import { createWishlist } from '@/services/wishlist.service';
-import { useCartStore } from '@/store/cart.store';
-import { IProduct } from '@/types/products.type';
-import { getUser } from '@/utils/auth';
-import { usePathname, useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { useOrderStore } from '@/store/order.store';
-import { useProductStore } from '@/store/product.store';
+} from "lucide-react";
+import { createWishlist } from "@/services/wishlist.service";
+import { useCartStore } from "@/store/cart.store";
+import { IProduct } from "@/types/products.type";
+import { getUser } from "@/utils/auth";
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useOrderStore } from "@/store/order.store";
+import { useProductStore } from "@/store/product.store";
 
 type Props = {
   productId: string;
@@ -34,13 +34,13 @@ const ProductActions = ({ productId, product }: Props) => {
   const pathname = usePathname();
 
   // Zustand Cart Store
-  const addToCart = useCartStore(state => state.addToCart);
-  const selectedColor = useProductStore(state => state.selectedColor);
-  const selectedSize = useOrderStore(state => state.selectedSize);
+  const addToCart = useCartStore((state) => state.addToCart);
+  const selectedColor = useProductStore((state) => state.selectedColor);
+  const selectedSize = useOrderStore((state) => state.selectedSize);
   console.log(selectedColor, selectedSize);
 
   // Zustand Order Store
-  const setSelectedProduct = useOrderStore(state => state.setSelectedProduct);
+  const setSelectedProduct = useOrderStore((state) => state.setSelectedProduct);
 
   // LOGIN CHECK
   const handleRequireLogin = () => {
@@ -59,12 +59,12 @@ const ProductActions = ({ productId, product }: Props) => {
     //   return;
     // }
     if (product.colorVariants?.length > 0 && !selectedSize) {
-      toast.error('দয়া করে একটি সাইজ নির্বাচন করুন।');
+      toast.error("দয়া করে একটি সাইজ নির্বাচন করুন।");
       return;
     }
     setSelectedProduct(product);
 
-    router.push('/order-now');
+    router.push("/order-now");
   };
 
   // ADD TO CART
@@ -75,17 +75,17 @@ const ProductActions = ({ productId, product }: Props) => {
       //   return;
       // }
       if (product.colorVariants?.length > 0 && !selectedSize) {
-        toast.error('দয়া করে একটি সাইজ নির্বাচন করুন।');
+        toast.error("দয়া করে একটি সাইজ নির্বাচন করুন।");
         return;
       }
       setLoading(true);
 
       addToCart(product, quantity, selectedSize || null, selectedColor || null);
 
-      toast.success('Added to cart!');
+      toast.success("Added to cart!");
     } catch (error) {
-      console.error('Add to cart error:', error);
-      toast.error('Products Add Failed!');
+      console.error("Add to cart error:", error);
+      toast.error("Products Add Failed!");
     } finally {
       setLoading(false);
     }
@@ -102,9 +102,9 @@ const ProductActions = ({ productId, product }: Props) => {
         productId,
       });
 
-      toast.success('Added to wishlist!');
+      toast.success("Added to wishlist!");
     } catch (error: any) {
-      const message = error?.response?.data?.error || 'Failed to add wishlist';
+      const message = error?.response?.data?.error || "Failed to add wishlist";
 
       toast.error(message);
     } finally {
@@ -113,7 +113,7 @@ const ProductActions = ({ productId, product }: Props) => {
   };
 
   const handleWhatsAppOrder = () => {
-    const phone = '8801903354883';
+    const phone = "8801748456508";
 
     const message = `আসসালামু আলাইকুম, আমি এই প্রোডাক্টটি অর্ডার করতে চাই।
 
@@ -122,12 +122,12 @@ Price: ৳${product.specialPrice || product.price}`;
 
     window.open(
       `https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
-      '_blank',
+      "_blank",
     );
   };
 
   const handleCallOrder = () => {
-    window.location.href = 'tel:+8801310520842';
+    window.location.href = "tel:+8801748456508";
   };
 
   return (
@@ -168,7 +168,7 @@ Price: ৳${product.specialPrice || product.price}`;
             <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           )}
 
-          {loading ? 'Adding...' : 'Add to Cart'}
+          {loading ? "Adding..." : "Add to Cart"}
         </button>
 
         {/* Buy Now */}
