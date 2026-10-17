@@ -1,0 +1,407 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* =========================================================
+   DARK MODE VARIANT
+========================================================= */
+
+@custom-variant dark (&:is(.dark *));
+
+/* =========================================================
+   THEME CONFIGURATION
+========================================================= */
+
+@theme inline {
+  --font-heading: var(--font-sans);
+
+  /* Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-light: var(--primary-light);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Sidebar */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Charts */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Typography */
+  --color-title: var(--title);
+  --color-subtitle: var(--subtitle);
+  --color-body: var(--body);
+  --color-hover-text: var(--hover-text);
+
+  /* Buttons */
+  --color-button: var(--button);
+  --color-button-hover: var(--button-hover);
+  --color-button-text: var(--button-text);
+
+  --color-button-hover-1: var(--button-hover-1);
+  --color-button-hover-1-foreground: var(--button-hover-1-foreground);
+
+  /* Links */
+  --color-link: var(--link);
+  --color-link-hover: var(--link-hover);
+
+  /* Radius */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* =========================================================
+   LIGHT THEME — DEEP TEAL
+========================================================= */
+
+:root {
+  color-scheme: light;
+
+  /* Brand */
+  --primary: #02333a;
+  --primary-hover: #07545b;
+  --primary-active: #0a6268;
+  --primary-light: #e8f3f2;
+  --primary-foreground: #ffffff;
+
+  /* Background */
+  --background: #ffffff;
+  --foreground: #172729;
+
+  --card: #ffffff;
+  --card-foreground: #172729;
+
+  --popover: #ffffff;
+  --popover-foreground: #172729;
+
+  /* Secondary */
+  --secondary: #f0f7f6;
+  --secondary-foreground: #02333a;
+
+  --muted: #f2f6f6;
+  --muted-foreground: #647779;
+
+  /* Accent */
+  --accent: #e8f3f2;
+  --accent-foreground: #02333a;
+
+  /* Borders & Inputs */
+  --border: #dce7e7;
+  --input: #dce7e7;
+
+  /* Focus Ring */
+  --ring: #07545b;
+
+  /* Status */
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --destructive: #ef4444;
+  --info: #3b82f6;
+
+  /* Radius */
+  --radius: 0.75rem;
+
+  /* Charts */
+  --chart-1: #02333a;
+  --chart-2: #07545b;
+  --chart-3: #16818a;
+  --chart-4: #55a6a9;
+  --chart-5: #9bcac8;
+
+  /* Sidebar */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #172729;
+
+  --sidebar-primary: #02333a;
+  --sidebar-primary-foreground: #ffffff;
+
+  --sidebar-border: #dce7e7;
+  --sidebar-ring: #07545b;
+
+  /* Button Hover Variant */
+  --button-hover-1: #e8f3f2;
+  --button-hover-1-foreground: #02333a;
+
+  --hover: #e8f3f2;
+
+  /* Typography */
+  --title: #02333a;
+  --subtitle: #07545b;
+  --hover-text: #07545b;
+  --body: #647779;
+
+  /* Buttons */
+  --button: #02333a;
+  --button-hover: #07545b;
+  --button-text: #ffffff;
+
+  /* Links */
+  --link: #02333a;
+  --link-hover: #07545b;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #02333a 0%, #07545b 100%);
+
+  --gradient-secondary: linear-gradient(135deg, #07545b 0%, #16818a 100%);
+
+  --gradient-dark: linear-gradient(135deg, #012328 0%, #02333a 100%);
+}
+
+/* =========================================================
+   DARK THEME — DEEP TEAL
+========================================================= */
+
+.dark {
+  color-scheme: dark;
+
+  /* Background */
+  --background: #071719;
+  --foreground: #edf7f6;
+
+  --card: #0d2225;
+  --card-foreground: #edf7f6;
+
+  --popover: #0d2225;
+  --popover-foreground: #edf7f6;
+
+  /* Brand */
+  --primary: #3c999d;
+  --primary-hover: #55b1b3;
+  --primary-active: #72c5c5;
+  --primary-light: #153638;
+  --primary-foreground: #ffffff;
+
+  /* Secondary */
+  --secondary: #142d30;
+  --secondary-foreground: #edf7f6;
+
+  --muted: #142d30;
+  --muted-foreground: #a3babb;
+
+  /* Accent */
+  --accent: #18383a;
+  --accent-foreground: #8ed0d0;
+
+  /* Borders & Inputs */
+  --border: #244144;
+  --input: #244144;
+
+  /* Focus Ring */
+  --ring: #55b1b3;
+
+  /* Status */
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --destructive: #f87171;
+  --info: #60a5fa;
+
+  /* Charts */
+  --chart-1: #55b1b3;
+  --chart-2: #3c999d;
+  --chart-3: #72c5c5;
+  --chart-4: #8ed0d0;
+  --chart-5: #b1e2df;
+
+  /* Sidebar */
+  --sidebar: #0d2225;
+  --sidebar-foreground: #edf7f6;
+
+  --sidebar-primary: #3c999d;
+  --sidebar-primary-foreground: #ffffff;
+
+  --sidebar-border: #244144;
+  --sidebar-ring: #55b1b3;
+
+  /* Button Hover Variant */
+  --button-hover-1: #18383a;
+  --button-hover-1-foreground: #8ed0d0;
+
+  --hover: #18383a;
+
+  /* Typography */
+  --title: #8ed0d0;
+  --subtitle: #55b1b3;
+  --hover-text: #8ed0d0;
+  --body: #a3babb;
+
+  /* Buttons */
+  --button: #3c999d;
+  --button-hover: #55b1b3;
+  --button-text: #ffffff;
+
+  /* Links */
+  --link: #8ed0d0;
+  --link-hover: #b1e2df;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #02333a 0%, #07545b 100%);
+
+  --gradient-secondary: linear-gradient(135deg, #07545b 0%, #16818a 100%);
+
+  --gradient-dark: linear-gradient(135deg, #071719 0%, #0d2225 100%);
+}
+
+/* =========================================================
+   GRADIENT UTILITIES
+========================================================= */
+
+@layer utilities {
+  .bg-gradient-primary {
+    background-image: var(--gradient-primary);
+  }
+
+  .bg-gradient-secondary {
+    background-image: var(--gradient-secondary);
+  }
+
+  .bg-gradient-dark {
+    background-image: var(--gradient-dark);
+  }
+}
+
+/* =========================================================
+   BASE STYLES
+========================================================= */
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply font-sans;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    min-height: 100vh;
+  }
+}
+
+/* =========================================================
+   SWIPER PAGINATION
+========================================================= */
+
+.swiper-pagination-bullet {
+  background: #b1d7d5;
+  opacity: 1;
+  width: 8px;
+  height: 8px;
+  transition: all 0.3s ease;
+}
+
+.swiper-pagination-bullet-active {
+  background: var(--primary) !important;
+  width: 20px;
+  border-radius: 10px;
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--button-hover);
+}
+
+/* Firefox Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--secondary);
+}
+
+/* =========================================================
+   ORDER RING ANIMATION
+========================================================= */
+
+@layer utilities {
+  @keyframes orderRing {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+
+    8% {
+      transform: translateX(-7px);
+    }
+
+    16% {
+      transform: translateX(7px);
+    }
+
+    24% {
+      transform: translateX(-7px);
+    }
+
+    32% {
+      transform: translateX(7px);
+    }
+
+    40% {
+      transform: translateX(-5px);
+    }
+
+    48% {
+      transform: translateX(5px);
+    }
+
+    56% {
+      transform: translateX(0);
+    }
+  }
+
+  .order-ring {
+    animation: orderRing 2s ease-in-out infinite;
+  }
+}
