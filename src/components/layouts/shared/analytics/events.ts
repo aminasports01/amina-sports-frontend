@@ -1,4 +1,4 @@
-import { getUser } from '@/utils/auth';
+import { getUser } from "@/utils/auth";
 
 /* =========================================================
  * TYPES
@@ -55,7 +55,7 @@ const DEDUP_WINDOW_MS = 100;
 /**
  * Storage key for guest users.
  */
-const ANALYTICS_EXTERNAL_ID_KEY = 'analytics_external_id';
+const ANALYTICS_EXTERNAL_ID_KEY = "analytics_external_id";
 
 /**
  * Get external_id for logged-in and guest users.
@@ -67,8 +67,8 @@ const ANALYTICS_EXTERNAL_ID_KEY = 'analytics_external_id';
  *   external_id = persistent UUID
  */
 const getAnalyticsExternalId = (): string => {
-  if (typeof window === 'undefined') {
-    return '';
+  if (typeof window === "undefined") {
+    return "";
   }
 
   const user = getUser();
@@ -102,7 +102,7 @@ const getAnalyticsExternalId = (): string => {
  * Get current logged-in customer information.
  */
 const getAnalyticsCustomer = (): AnalyticsCustomer | undefined => {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return undefined;
   }
 
@@ -113,11 +113,11 @@ const getAnalyticsCustomer = (): AnalyticsCustomer | undefined => {
   }
 
   return {
-    external_id: user.id || '',
-    first_name: user.name || '',
-    phone: user.phone || '',
-    email: user.email || '',
-    address: user.address || '',
+    external_id: user.id || "",
+    first_name: user.name || "",
+    phone: user.phone || "",
+    email: user.email || "",
+    address: user.address || "",
   };
 };
 
@@ -171,7 +171,7 @@ export const pushEvent = (
   /**
    * Client-side only
    */
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return;
   }
 
@@ -209,7 +209,7 @@ export const pushEvent = (
    * This prevents previous ecommerce data
    * from being retained by GTM.
    */
-  if ('ecommerce' in data) {
+  if ("ecommerce" in data) {
     window.dataLayer.push({
       ecommerce: null,
     });
@@ -242,7 +242,7 @@ export const pushEvent = (
    */
   window.dataLayer.push(currentEvent);
 
-  console.debug('[Analytics] Event pushed:', currentEvent);
+  console.debug("[Analytics] Event pushed:", currentEvent);
 };
 
 /* =========================================================
@@ -254,7 +254,7 @@ export const trackPageView = ({
 }: {
   pagePath?: string;
 } = {}) => {
-  pushEvent('page_view', {
+  pushEvent("page_view", {
     page_path:
       pagePath || `${window.location.pathname}${window.location.search}`,
 
@@ -275,7 +275,7 @@ export const trackViewItem = ({
   productName: string;
   price: number;
 }) => {
-  if (!productId) {
+  if (!productId || typeof window === "undefined") {
     return;
   }
 
@@ -286,27 +286,26 @@ export const trackViewItem = ({
    * This helps prevent duplicate view_item
    * events caused by React re-renders / StrictMode.
    */
-  const eventId = `view_item_${productId}`;
+  window.dataLayer = window.dataLayer || [];
 
-  pushEvent(
-    'view_item',
-    {
-      ecommerce: {
-        currency: 'BDT',
-        value: Number(price),
+  // 1. IMPORTANT: Clear ecommerce object first
+  window.dataLayer.push({ ecommerce: null });
 
-        items: [
-          {
-            item_id: productId,
-            item_name: productName,
-            price: Number(price),
-            quantity: 1,
-          },
-        ],
-      },
+  window.dataLayer.push({
+    event: "view_item",
+    ecommerce: {
+      currency: "BDT",
+      value: Number(price),
+      items: [
+        {
+          item_id: productId,
+          item_name: productName, // Ensure this matches GTM variable configuration
+          price: Number(price),
+          quantity: 1,
+        },
+      ],
     },
-    eventId,
-  );
+  });
 };
 
 /* =========================================================
@@ -318,11 +317,11 @@ export const trackAddToCart = ({
   productName,
   price,
   quantity = 1,
-  category = '',
-  brand = '',
-  variant = '',
-  size = '',
-  color = '',
+  category = "",
+  brand = "",
+  variant = "",
+  size = "",
+  color = "",
 }: {
   productId: string;
   productName: string;
@@ -338,7 +337,7 @@ export const trackAddToCart = ({
     return;
   }
 
-  const eventId = generateEventId('add_to_cart');
+  const eventId = generateEventId("add_to_cart");
 
   const value = Number(price) * Number(quantity);
 
@@ -362,10 +361,10 @@ export const trackAddToCart = ({
   };
 
   pushEvent(
-    'add_to_cart',
+    "add_to_cart",
     {
       ecommerce: {
-        currency: 'BDT',
+        currency: "BDT",
         value,
         items: [item],
       },
@@ -377,15 +376,15 @@ export const trackAddToCart = ({
         : {}),
 
       meta_pixel: {
-        event_name: 'AddToCart',
+        event_name: "AddToCart",
         event_id: eventId,
         external_id: externalId,
 
         content_ids: [productId],
         content_name: productName,
-        content_type: 'product',
+        content_type: "product",
 
-        currency: 'BDT',
+        currency: "BDT",
         value,
 
         contents: [
@@ -412,15 +411,15 @@ export const trackViewCart = ({
   value: number;
   items: AnalyticsItem[];
 }) => {
-  const eventId = generateEventId('view_cart');
+  const eventId = generateEventId("view_cart");
 
   const customer = getAnalyticsCustomer();
 
   pushEvent(
-    'view_cart',
+    "view_cart",
     {
       ecommerce: {
-        currency: 'BDT',
+        currency: "BDT",
         value: Number(value),
         items,
       },
@@ -448,17 +447,17 @@ export const trackBeginCheckout = ({
 }) => {
   if (!items?.length) return;
 
-  const productIds = items.map(item => item.item_id).join('_');
+  const productIds = items.map((item) => item.item_id).join("_");
 
   const eventId = `begin_checkout_${productIds}`;
 
   const customer = getAnalyticsCustomer();
 
   pushEvent(
-    'begin_checkout',
+    "begin_checkout",
     {
       ecommerce: {
-        currency: 'BDT',
+        currency: "BDT",
         value: Number(value),
         items,
       },
@@ -505,14 +504,14 @@ export const trackPurchase = ({
   const externalId = getAnalyticsExternalId();
 
   pushEvent(
-    'purchase',
+    "purchase",
     {
       ecommerce: {
         transaction_id: transactionId,
         value: Number(value),
         tax: Number(tax),
         shipping: Number(shipping),
-        currency: 'BDT',
+        currency: "BDT",
         items,
       },
 
@@ -524,13 +523,13 @@ export const trackPurchase = ({
             customer: {
               external_id: customer.external_id || externalId,
 
-              first_name: customer.first_name || '',
+              first_name: customer.first_name || "",
 
-              phone: customer.phone || '',
+              phone: customer.phone || "",
 
-              email: customer.email || '',
+              email: customer.email || "",
 
-              address: customer.address || '',
+              address: customer.address || "",
             },
           }
         : {
@@ -543,19 +542,19 @@ export const trackPurchase = ({
        * Meta Pixel
        */
       meta_pixel: {
-        event_name: 'Purchase',
+        event_name: "Purchase",
         event_id: eventId,
 
         external_id: externalId,
 
-        content_type: 'product',
+        content_type: "product",
 
-        currency: 'BDT',
+        currency: "BDT",
         value: Number(value),
 
-        content_ids: items.map(item => item.item_id),
+        content_ids: items.map((item) => item.item_id),
 
-        contents: items.map(item => ({
+        contents: items.map((item) => ({
           id: item.item_id,
           quantity: item.quantity || 1,
           item_price: item.price || 0,
