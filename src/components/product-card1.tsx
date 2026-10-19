@@ -10,14 +10,15 @@ interface ProductCard1Props {
 
 const ProductCard1 = ({ product }: ProductCard1Props) => {
   const salePrice = product.specialPrice ?? product.price;
+  console.log(product);
 
-  const hasDiscount =
-    product.specialPrice != null && product.specialPrice < product.price;
+  // const hasDiscount =
+  //   product.specialPrice != null && product.specialPrice < product.price;
 
-  const discountPercent =
-    hasDiscount && product.price > 0
-      ? Math.round(((product.price - salePrice) / product.price) * 100)
-      : 0;
+  // const discountPercent =
+  //   hasDiscount && product.price > 0
+  //     ? Math.round(((product.price - salePrice) / product.price) * 100)
+  //     : 0;
 
   return (
     <Link
@@ -46,35 +47,20 @@ const ProductCard1 = ({ product }: ProductCard1Props) => {
 
         {/* PRODUCT INFORMATION */}
         <div className="flex flex-1 flex-col gap-1 px-2 py-2 sm:px-2.5 sm:py-2.5">
+          {/* PRODUCT BRAND */}
+          <h3 className="line-clamp-2 text-sm leading-snug font-semibold text-gray-900 dark:text-gray-100">
+            {product.brand}
+          </h3>
           {/* PRODUCT NAME */}
           <h3 className="line-clamp-2 text-sm leading-snug font-semibold text-gray-900 dark:text-gray-100">
             {product.name}
           </h3>
-
-          {/* SHORT DESCRIPTION */}
-          {/* {product.description && (
-            <p className="line-clamp-2 text-sm leading-snug font-normal text-gray-600 dark:text-gray-400">
-              {product.description}
-            </p>
-          )} */}
 
           {/* PRICE */}
           <div className="mt-0.5 flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
             <span className="text-base leading-snug font-semibold text-gray-900 dark:text-white">
               ৳{salePrice.toLocaleString("en-BD")}
             </span>
-
-            {/* {hasDiscount && (
-              <>
-                <span className="text-sm text-gray-500 line-through">
-                  ৳{product.price.toLocaleString("en-BD")}
-                </span>
-
-                <span className="text-sm font-medium text-emerald-600">
-                  {discountPercent}% off
-                </span>
-              </>
-            )} */}
           </div>
         </div>
       </article>
