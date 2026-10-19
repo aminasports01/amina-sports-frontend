@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 import {
   Eye,
   EyeOff,
@@ -11,11 +11,11 @@ import {
   Sparkles,
   ArrowRight,
   CheckCircle,
-} from 'lucide-react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { registerUser } from '@/services/auth.service';
-import { toast } from 'sonner';
+} from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { registerUser } from "@/services/auth.service";
+import { toast } from "sonner";
 
 interface FormData {
   name: string;
@@ -40,10 +40,10 @@ export default function SignUpPage() {
   const [passwordStrength, setPasswordStrength] = useState(0);
 
   const [formData, setFormData] = useState<FormData>({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -51,68 +51,72 @@ export default function SignUpPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Clear error when user starts typing
     if (errors[name as keyof FormErrors]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
 
-    // Check password strength
-    if (name === 'password') {
+    if (name === "password") {
       calculatePasswordStrength(value);
     }
   };
 
   const calculatePasswordStrength = (password: string) => {
     let strength = 0;
+
     if (password.length >= 6) strength++;
     if (password.length >= 10) strength++;
     if (/[A-Z]/.test(password)) strength++;
     if (/[0-9]/.test(password)) strength++;
     if (/[^A-Za-z0-9]/.test(password)) strength++;
+
     setPasswordStrength(Math.min(strength, 4));
   };
 
   const getPasswordStrengthText = () => {
-    const texts = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
+    const texts = ["Very Weak", "Weak", "Fair", "Good", "Strong"];
     return texts[passwordStrength];
   };
 
   const getPasswordStrengthColor = () => {
+    // Keep semantic colors for password-strength feedback.
     const colors = [
-      'bg-red-500',
-      'bg-orange-500',
-      'bg-yellow-500',
-      'bg-blue-500',
-      'bg-green-500',
+      "bg-red-500",
+      "bg-orange-500",
+      "bg-yellow-500",
+      "bg-blue-500",
+      "bg-green-500",
     ];
+
     return colors[passwordStrength];
   };
 
   const validateForm = () => {
     const newErrors: FormErrors = {};
 
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    else if (formData.name.length < 2)
-      newErrors.name = 'Name must be at least 2 characters';
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required";
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = "Name must be at least 2 characters";
+    }
 
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = "Please enter a valid email address";
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = "Password must be at least 6 characters";
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
     }
 
     setErrors(newErrors);
@@ -133,42 +137,47 @@ export default function SignUpPage() {
         password: formData.password,
       };
 
-      const res = await registerUser(payload);
-      toast.success('Account created successfully! Please login.', {
+      await registerUser(payload);
+
+      toast.success("Account created successfully! Please login.", {
         duration: 3000,
-        icon: <CheckCircle className="w-4 h-4" />,
+        icon: <CheckCircle className="h-4 w-4" />,
       });
 
-      router.push('/login');
+      router.push("/login");
     } catch (error: any) {
       console.error(error.message);
-      toast.error(error.message || 'Registration failed. Please try again.');
+      toast.error(error.message || "Registration failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 p-4">
-      {/* Animated Background Decorations */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-200 dark:bg-orange-900/20 rounded-full blur-3xl opacity-30 animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-200 dark:bg-pink-900/20 rounded-full blur-3xl opacity-30 animate-pulse delay-1000"></div>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-[#f7fafa] via-[#eef5f5] to-[#e4eeee] p-4 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900">
+      {/* Brand-colored Background Decorations */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 h-80 w-80 animate-pulse rounded-full bg-[#a7d0d2] opacity-30 blur-3xl dark:bg-[#02333a] dark:opacity-40" />
+
+        <div className="absolute -bottom-40 -left-40 h-80 w-80 animate-pulse rounded-full bg-[#b5d9da] opacity-30 blur-3xl dark:bg-[#03434b] dark:opacity-30" />
       </div>
 
       <div className="relative w-full max-w-md">
         {/* Main Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300">
-          {/* Header with Gradient */}
-          <div className="bg-gradient-to-r from-orange-500 to-pink-500 dark:from-orange-600 dark:to-pink-600 px-8 py-6">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Sparkles className="w-6 h-6 text-white" />
-              <h2 className="text-2xl font-bold text-white text-center">
+        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl transition-all duration-300 dark:border-gray-700 dark:bg-gray-800">
+          {/* Brand Header */}
+          <div className="bg-gradient-to-r from-[#02333a] to-[#07525b] px-8 py-6 dark:from-[#02333a] dark:to-[#06434b]">
+            <div className="mb-2 flex items-center justify-center gap-2">
+              <Sparkles className="h-6 w-6 text-white" />
+
+              <h2 className="text-center text-2xl font-bold text-white">
                 Create Account
               </h2>
-              <Sparkles className="w-6 h-6 text-white" />
+
+              <Sparkles className="h-6 w-6 text-white" />
             </div>
-            <p className="text-white/90 text-sm text-center">
+
+            <p className="text-center text-sm text-white/90">
               Join us and start your journey
             </p>
           </div>
@@ -178,23 +187,30 @@ export default function SignUpPage() {
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Name Field */}
               <div className="group">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="name"
+                  className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Full Name
                 </label>
+
                 <div className="relative">
                   <User
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors"
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-[#02333a] dark:group-focus-within:text-teal-400"
                     size={18}
                   />
+
                   <input
+                    id="name"
                     name="name"
                     type="text"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white placeholder:text-gray-400"
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pr-4 pl-10 text-gray-900 transition-all duration-200 placeholder:text-gray-400 focus:border-[#02333a] focus:ring-2 focus:ring-[#02333a]/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-teal-500 dark:focus:ring-teal-500/20"
                     placeholder="John Doe"
                   />
                 </div>
+
                 {errors.name && (
                   <p className="mt-1 text-xs text-red-500 dark:text-red-400">
                     {errors.name}
@@ -204,23 +220,30 @@ export default function SignUpPage() {
 
               {/* Email Field */}
               <div className="group">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="email"
+                  className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Email Address
                 </label>
+
                 <div className="relative">
                   <Mail
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors"
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-[#02333a] dark:group-focus-within:text-teal-400"
                     size={18}
                   />
+
                   <input
+                    id="email"
                     name="email"
                     type="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white placeholder:text-gray-400"
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pr-4 pl-10 text-gray-900 transition-all duration-200 placeholder:text-gray-400 focus:border-[#02333a] focus:ring-2 focus:ring-[#02333a]/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-teal-500 dark:focus:ring-teal-500/20"
                     placeholder="hello@example.com"
                   />
                 </div>
+
                 {errors.email && (
                   <p className="mt-1 text-xs text-red-500 dark:text-red-400">
                     {errors.email}
@@ -228,28 +251,38 @@ export default function SignUpPage() {
                 )}
               </div>
 
-              {/* Password Field with Strength Indicator */}
+              {/* Password Field */}
               <div className="group">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="password"
+                  className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Password
                 </label>
+
                 <div className="relative">
                   <Lock
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors"
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-[#02333a] dark:group-focus-within:text-teal-400"
                     size={18}
                   />
+
                   <input
-                    type={showPassword ? 'text' : 'password'}
+                    id="password"
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-12 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white placeholder:text-gray-400"
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pr-12 pl-10 text-gray-900 transition-all duration-200 placeholder:text-gray-400 focus:border-[#02333a] focus:ring-2 focus:ring-[#02333a]/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-teal-500 dark:focus:ring-teal-500/20"
                     placeholder="Create a strong password"
                   />
+
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
+                    className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 transition-colors hover:text-[#02333a] dark:hover:text-teal-400"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -259,30 +292,33 @@ export default function SignUpPage() {
                 {formData.password && (
                   <div className="mt-2 space-y-1">
                     <div className="flex gap-1">
-                      {[0, 1, 2, 3].map(index => (
+                      {[0, 1, 2, 3].map((index) => (
                         <div
                           key={index}
                           className={`h-1 flex-1 rounded-full transition-all duration-300 ${
                             index < passwordStrength
                               ? getPasswordStrengthColor()
-                              : 'bg-gray-200 dark:bg-gray-700'
+                              : "bg-gray-200 dark:bg-gray-700"
                           }`}
                         />
                       ))}
                     </div>
+
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Password strength:{' '}
+                      Password strength:{" "}
                       <span className="font-medium">
                         {getPasswordStrengthText()}
                       </span>
                     </p>
+
                     {passwordStrength < 3 && formData.password.length > 0 && (
                       <p className="text-xs text-gray-400 dark:text-gray-500">
-                        Tip: Use mix of letters, numbers & symbols
+                        Tip: Use a mix of letters, numbers & symbols
                       </p>
                     )}
                   </div>
                 )}
+
                 {errors.password && (
                   <p className="mt-1 text-xs text-red-500 dark:text-red-400">
                     {errors.password}
@@ -292,26 +328,38 @@ export default function SignUpPage() {
 
               {/* Confirm Password Field */}
               <div className="group">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="confirmPassword"
+                  className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Confirm Password
                 </label>
+
                 <div className="relative">
                   <Lock
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors"
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-[#02333a] dark:group-focus-within:text-teal-400"
                     size={18}
                   />
+
                   <input
-                    type={showConfirmPassword ? 'text' : 'password'}
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-12 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white placeholder:text-gray-400"
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pr-12 pl-10 text-gray-900 transition-all duration-200 placeholder:text-gray-400 focus:border-[#02333a] focus:ring-2 focus:ring-[#02333a]/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-teal-500 dark:focus:ring-teal-500/20"
                     placeholder="Confirm your password"
                   />
+
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                    aria-label={
+                      showConfirmPassword
+                        ? "Hide confirm password"
+                        : "Show confirm password"
+                    }
+                    className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 transition-colors hover:text-[#02333a] dark:hover:text-teal-400"
                   >
                     {showConfirmPassword ? (
                       <EyeOff size={18} />
@@ -320,6 +368,7 @@ export default function SignUpPage() {
                     )}
                   </button>
                 </div>
+
                 {errors.confirmPassword && (
                   <p className="mt-1 text-xs text-red-500 dark:text-red-400">
                     {errors.confirmPassword}
@@ -331,11 +380,11 @@ export default function SignUpPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg flex items-center justify-center gap-2 mt-6"
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#02333a] to-[#07525b] py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:scale-[1.02] hover:from-[#011f23] hover:to-[#034149] focus-visible:ring-2 focus-visible:ring-[#02333a] focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
               >
                 {isLoading ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
                     Creating Account...
                   </>
                 ) : (
@@ -348,11 +397,11 @@ export default function SignUpPage() {
             </form>
 
             {/* Login Link */}
-            <p className="text-center mt-6 text-sm text-gray-600 dark:text-gray-400">
-              Already have an account?{' '}
+            <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+              Already have an account?{" "}
               <Link
                 href="/login"
-                className="text-orange-500 hover:text-orange-600 dark:text-orange-400 font-semibold hover:underline transition-colors"
+                className="font-semibold text-[#02333a] transition-colors hover:text-[#011f23] hover:underline dark:text-teal-400 dark:hover:text-teal-300"
               >
                 Sign in
               </Link>
@@ -361,7 +410,7 @@ export default function SignUpPage() {
         </div>
 
         {/* Footer Note */}
-        <p className="text-center mt-6 text-xs text-gray-500 dark:text-gray-400">
+        <p className="mt-6 text-center text-xs text-gray-500 dark:text-gray-400">
           By signing up, you agree to our Terms of Service and Privacy Policy
         </p>
       </div>

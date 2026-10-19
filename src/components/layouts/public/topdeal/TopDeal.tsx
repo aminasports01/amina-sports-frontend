@@ -19,7 +19,7 @@ const TopDeal = async () => {
         {/* Header Section */}
         <div className="my-5 flex items-center justify-between gap-3 sm:mb-6 md:mb-8">
           <h2 className="text-lg font-bold text-gray-800 sm:text-xl md:text-2xl lg:text-3xl">
-            Top Deals
+            Latest Sneaker Drops
           </h2>
 
           <Link

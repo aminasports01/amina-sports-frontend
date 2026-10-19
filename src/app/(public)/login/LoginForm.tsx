@@ -1,21 +1,12 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import {
-  Eye,
-  EyeOff,
-  Mail,
-  Lock,
-  Shield,
-  User,
-  LogIn,
-  Sparkles,
-} from 'lucide-react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { Eye, EyeOff, Mail, Lock, LogIn, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-import { loginUser } from '@/services/auth.service';
-import { setAuthData } from '@/utils/auth';
+import { loginUser } from "@/services/auth.service";
+import { setAuthData } from "@/utils/auth";
 
 interface FormData {
   email: string;
@@ -28,30 +19,32 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleLogin = async (data: FormData) => {
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
       const res = await loginUser(data);
       setAuthData(res.data.accessToken, res.data.user);
 
       const role = res.data.user.role;
-      if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
-        router.push('/admin');
-      } else if (role === 'SELLER') {
-        router.push('/seller');
+
+      if (role === "ADMIN" || role === "SUPER_ADMIN") {
+        router.push("/admin");
+      } else if (role === "SELLER") {
+        router.push("/seller");
       } else {
-        router.push('/dashboard');
+        router.push("/dashboard");
       }
     } catch (err: unknown) {
       const message =
-        err instanceof Error ? err.message : 'Something went wrong';
+        err instanceof Error ? err.message : "Something went wrong";
+
       setError(message);
     } finally {
       setIsLoading(false);
@@ -63,45 +56,44 @@ export default function LoginForm() {
     await handleLogin(formData);
   };
 
-  const loginAsAdmin = async () => {
-    const data = {
-      email: 'admin@gmail.com',
-      password: '12345678',
-    };
-    setFormData(data);
-    await handleLogin(data);
-  };
+  // const loginAsAdmin = async () => {
+  //   const data = {
+  //     email: "admin@gmail.com",
+  //     password: "12345678",
+  //   };
 
-  const loginAsCustomer = async () => {
-    const data = {
-      email: 'customer@gmail.com',
-      password: '12345678',
-    };
-    setFormData(data);
-    await handleLogin(data);
-  };
+  //   setFormData(data);
+  //   await handleLogin(data);
+  // };
+
+  // const loginAsCustomer = async () => {
+  //   const data = {
+  //     email: "customer@gmail.com",
+  //     password: "12345678",
+  //   };
+
+  //   setFormData(data);
+  //   await handleLogin(data);
+  // };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 p-4">
-      {/* Animated Background Decorations */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-200 dark:bg-orange-900/20 rounded-full blur-3xl opacity-30"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-200 dark:bg-pink-900/20 rounded-full blur-3xl opacity-30"></div>
-      </div>
-
+    <div className="flex md:min-h-screen items-center justify-center bg-gradient-to-br from-[#f7fafa] via-[#eef5f5] to-[#e4eeee] p-4 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900">
       <div className="relative w-full max-w-md">
         {/* Main Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-md shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300">
-          {/* Header with Gradient */}
-          <div className="bg-gradient-primary hover:bg-gradient-primary-hover px-8 py-6">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Sparkles className="w-6 h-6 text-white" />
-              <h2 className="text-2xl font-bold text-white text-center">
+        <div className="overflow-hidden rounded-md border border-gray-200 bg-white shadow-2xl transition-all duration-300 dark:border-gray-700 dark:bg-gray-800">
+          {/* Brand Header */}
+          <div className="bg-gradient-to-r from-[#02333a] to-[#07525b] px-8 py-6">
+            <div className="mb-2 flex items-center justify-center gap-2">
+              <Sparkles className="h-6 w-6 text-white" />
+
+              <h2 className="text-center text-2xl font-bold text-white">
                 Welcome Back
               </h2>
-              <Sparkles className="w-6 h-6 text-white" />
+
+              <Sparkles className="h-6 w-6 text-white" />
             </div>
-            <p className="text-white/90 text-sm text-center">
+
+            <p className="text-center text-sm text-white/90">
               Sign in to your account
             </p>
           </div>
@@ -109,8 +101,8 @@ export default function LoginForm() {
           <div className="p-6 sm:p-8">
             {/* Error Alert */}
             {error && (
-              <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
-                <p className="text-red-600 dark:text-red-400 text-sm text-center">
+              <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-900/20">
+                <p className="text-center text-sm text-red-600 dark:text-red-400">
                   {error}
                 </p>
               </div>
@@ -120,51 +112,73 @@ export default function LoginForm() {
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Email Field */}
               <div className="group">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="login-email"
+                  className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Email Address
                 </label>
+
                 <div className="relative">
                   <Mail
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors"
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-[#02333a] dark:group-focus-within:text-teal-400"
                     size={18}
                   />
+
                   <input
+                    id="login-email"
                     type="email"
                     placeholder="Enter your email"
                     required
                     value={formData.email}
-                    onChange={e =>
-                      setFormData({ ...formData, email: e.target.value })
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        email: e.target.value,
+                      })
                     }
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white placeholder:text-gray-400"
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pr-4 pl-10 text-gray-900 transition-all duration-200 placeholder:text-gray-400 focus:border-[#02333a] focus:ring-2 focus:ring-[#02333a]/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-teal-500 dark:focus:ring-teal-500/20"
                   />
                 </div>
               </div>
 
               {/* Password Field */}
               <div className="group">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="login-password"
+                  className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Password
                 </label>
+
                 <div className="relative">
                   <Lock
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors"
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-[#02333a] dark:group-focus-within:text-teal-400"
                     size={18}
                   />
+
                   <input
-                    type={showPassword ? 'text' : 'password'}
+                    id="login-password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     required
                     value={formData.password}
-                    onChange={e =>
-                      setFormData({ ...formData, password: e.target.value })
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        password: e.target.value,
+                      })
                     }
-                    className="w-full pl-10 pr-12 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white placeholder:text-gray-400"
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pr-12 pl-10 text-gray-900 transition-all duration-200 placeholder:text-gray-400 focus:border-[#02333a] focus:ring-2 focus:ring-[#02333a]/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-teal-500 dark:focus:ring-teal-500/20"
                   />
+
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
+                    className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 transition-colors hover:text-[#02333a] dark:hover:text-teal-400"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -175,11 +189,11 @@ export default function LoginForm() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-gradient-primary hover:bg-gradient-primary-hover text-white py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg flex items-center justify-center gap-2"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#02333a] to-[#07525b] py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:scale-[1.02] hover:from-[#011f23] hover:to-[#034149] focus-visible:ring-2 focus-visible:ring-[#02333a] focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
               >
                 {isLoading ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
                     Logging in...
                   </>
                 ) : (
@@ -191,49 +205,25 @@ export default function LoginForm() {
               </button>
             </form>
 
-            {/* Demo Buttons */}
-            {/* <div className="space-y-3 mb-6 mt-4">
-              <p className="text-xs text-gray-500 dark:text-gray-400 text-center uppercase tracking-wider">
-                Quick Demo Access
-              </p>
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={loginAsAdmin}
-                  className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-700 dark:to-gray-800 hover:from-gray-900 hover:to-gray-950 text-white py-2.5 rounded-xl transition-all duration-200 transform hover:scale-[1.02] font-medium text-sm shadow-md"
-                >
-                  <Shield size={16} />
-                  Admin Demo
-                </button>
-
-                <button
-                  type="button"
-                  onClick={loginAsCustomer}
-                  className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white py-2.5 rounded-xl transition-all duration-200 transform hover:scale-[1.02] font-medium text-sm shadow-md"
-                >
-                  <User size={16} />
-                  Customer Demo
-                </button>
-              </div>
-            </div> */}
             {/* Divider */}
-            <div className="relative mb-6">
+            <div className="relative mb-6 mt-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
+                <div className="w-full border-t border-gray-200 dark:border-gray-700" />
               </div>
+
               <div className="relative flex justify-center text-xs">
-                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                <span className="bg-white px-2 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
                   Or login with credentials
                 </span>
               </div>
             </div>
 
             {/* Register Link */}
-            <p className="text-center mt-6 text-sm text-gray-600 dark:text-gray-400">
-              Don&apos;t have an account?{' '}
+            <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+              Don&apos;t have an account?{" "}
               <Link
                 href="/register"
-                className="text-orange-500 hover:text-orange-600 dark:text-orange-400 font-semibold hover:underline transition-colors"
+                className="font-semibold text-[#02333a] transition-colors hover:text-[#011f23] hover:underline dark:text-teal-400 dark:hover:text-teal-300"
               >
                 Create an account
               </Link>
@@ -242,7 +232,7 @@ export default function LoginForm() {
         </div>
 
         {/* Footer Note */}
-        <p className="text-center mt-6 text-xs text-gray-500 dark:text-gray-400">
+        <p className="mt-6 text-center text-xs text-gray-500 dark:text-gray-400">
           Secure login with 256-bit encryption
         </p>
       </div>

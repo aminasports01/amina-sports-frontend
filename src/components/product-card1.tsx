@@ -52,11 +52,11 @@ const ProductCard1 = ({ product }: ProductCard1Props) => {
           </h3>
 
           {/* SHORT DESCRIPTION */}
-          {product.description && (
+          {/* {product.description && (
             <p className="line-clamp-2 text-sm leading-snug font-normal text-gray-600 dark:text-gray-400">
               {product.description}
             </p>
-          )}
+          )} */}
 
           {/* PRICE */}
           <div className="mt-0.5 flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
@@ -64,7 +64,7 @@ const ProductCard1 = ({ product }: ProductCard1Props) => {
               ৳{salePrice.toLocaleString("en-BD")}
             </span>
 
-            {hasDiscount && (
+            {/* {hasDiscount && (
               <>
                 <span className="text-sm text-gray-500 line-through">
                   ৳{product.price.toLocaleString("en-BD")}
@@ -74,7 +74,7 @@ const ProductCard1 = ({ product }: ProductCard1Props) => {
                   {discountPercent}% off
                 </span>
               </>
-            )}
+            )} */}
           </div>
         </div>
       </article>
