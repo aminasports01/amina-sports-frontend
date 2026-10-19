@@ -1,238 +1,145 @@
-import React from "react";
-import { Mail, Phone, MapPin, Clock, ChevronRight } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
-  const categories = [
+  const shopLinks = [
     { name: "Men's Shoes", link: "/products?category=Men" },
     { name: "Women's Shoes", link: "/products?category=Women" },
     { name: "Kids' Footwear", link: "/products?category=Kids" },
-    { name: "Sneakers & Casual", link: "/products?sub=Sneakers" },
-    { name: "Sports & Gym", link: "/products?sub=Gym-Sports" },
-    { name: "Top Brands", link: "/products?sort=top-brands" },
-  ];
-
-  const quickLinks = [
-    { name: "Home", link: "/" },
     { name: "All Shoes", link: "/products" },
     { name: "Featured Deals", link: "/products?sort=deals" },
+  ];
+
+  const helpLinks = [
     { name: "About Us", link: "/about" },
     { name: "Contact Us", link: "/contact" },
-  ];
-
-  const customerService = [
-    { name: "Privacy Policy", link: "/privacy-policy" },
-    { name: "Warranty Policy", link: "/warranty-policy" },
-    { name: "Terms & Conditions", link: "/terms-conditions" },
-    { name: "Return & Refund Policy", link: "/return-refund" },
     { name: "Size Guide", link: "/size-guide" },
+    { name: "Return & Refund", link: "/return-refund" },
   ];
 
-  const SOCIAL_ICONS = [
+  const legalLinks = [
+    { name: "Privacy Policy", link: "/privacy-policy" },
+    { name: "Terms & Conditions", link: "/terms-conditions" },
+    { name: "Warranty Policy", link: "/warranty-policy" },
+  ];
+
+  const socialLinks = [
     {
-      title: "Facebook",
-      src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/facebook-icon.svg",
-      link: "https://facebook.com",
+      name: "Facebook",
+      href: "https://www.facebook.com/profile.php?id=61595058702349",
+      Icon: FaFacebook,
     },
     {
-      title: "X",
-      src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/x.svg",
-      className: "dark:invert",
-      link: "https://x.com",
+      name: "Instagram",
+      href: "https://www.instagram.com/aminasports01/?hl=en",
+      Icon: FaInstagram,
     },
-    {
-      title: "Instagram",
-      src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/instagram-icon.svg",
-      link: "https://instagram.com",
-    },
+    // {
+    //   name: "X",
+    //   href: "https://x.com",
+    //   Icon: FaTwitter,
+    // },
+    // {
+    //   name: "YouTube",
+    //   href: "https://youtube.com",
+    //   Icon: FaYoutube,
+    // },
+  ];
+
+  const linkSections = [
+    { title: "SHOP", links: shopLinks },
+    { title: "HELP", links: helpLinks },
+    { title: "LEGAL", links: legalLinks },
   ];
 
   return (
-    <footer className="bg-card text-[var(--color-body)] border-t border-border transition-colors">
-      {/* Main Footer */}
-      <div className="container mx-auto px-4 pt-12 pb-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          {/* Company Info Section */}
-          <div className="space-y-4">
-            {/* Minimalist Text Logo matching Theme Title Color */}
-            <Link href="/" className="inline-block">
-              <span className="text-xl md:text-2xl font-light tracking-[0.18em] uppercase text-[var(--color-title)] select-none">
-                AMINA
-                <span className="font-bold tracking-[0.22em] ml-1.5 text-primary">
+    <footer className="border-t border-gray-200 bg-[#f5f5f5] text-sm text-gray-600 transition-colors dark:border-slate-800 dark:bg-slate-950 dark:text-gray-400">
+      <div className="mx-auto max-w-[1800px] px-5 pt-10 pb-6 sm:px-8 sm:pt-12 lg:px-10 lg:pt-14">
+        {/* MAIN FOOTER */}
+        <div className="grid grid-cols-1 gap-10 sm:gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(440px,0.72fr)] lg:gap-16">
+          {/* BRAND SECTION */}
+          <div className="flex flex-col items-start gap-4">
+            <Link
+              href="/"
+              aria-label="Amina Sports homepage"
+              className="inline-block"
+            >
+              <span className="text-2xl font-light tracking-[0.1em] text-gray-900 sm:text-3xl dark:text-white">
+                AMINA{" "}
+                <span className="font-bold tracking-[0.12em] text-[#02333a] dark:text-teal-400">
                   SPORTS
                 </span>
               </span>
             </Link>
 
-            <p className="text-xs sm:text-sm text-[var(--color-body)] leading-relaxed font-light">
-              Premium quality footwear, sports shoes, and sneakers. Step into
-              your style with authentic brands and everyday comfort.
+            <p className="max-w-sm text-sm leading-7 text-gray-600 dark:text-gray-400">
+              Premium imported footwear for everyday style.
+              <br className="hidden sm:block" />
+              Quality, comfort, and confidence in every step.
             </p>
 
-            {/* Contact Info */}
-            <div className="space-y-2.5 pt-1">
-              <div className="flex items-center gap-3 text-xs sm:text-sm">
-                <MapPin className="h-4 w-4 text-primary shrink-0" />
-                <span className="text-[var(--color-body)]">
-                  Sunamganj, Sylet (Online Store)
-                </span>
-              </div>
-              <div className="flex items-center gap-3 text-xs sm:text-sm">
-                <Phone className="h-4 w-4 text-primary shrink-0" />
+            {/* SOCIAL LINKS */}
+            <div className="mt-1 flex items-center gap-5">
+              {socialLinks.map(({ name, href, Icon }) => (
                 <a
-                  href="tel:+8801748456508"
-                  className="text-[var(--color-body)] hover:text-primary transition-colors"
+                  key={name}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={name}
+                  className="text-gray-500 transition-colors duration-200 hover:text-[#02333a] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#02333a] dark:text-gray-400 dark:hover:text-teal-400"
                 >
-                  +8801791-815131
+                  <Icon className="h-5 w-5" strokeWidth={1.8} />
                 </a>
-              </div>
-              <div className="flex items-center gap-3 text-xs sm:text-sm">
-                <Mail className="h-4 w-4 text-primary shrink-0" />
-                <a
-                  href="mailto:aminasports@gmail.com"
-                  className="text-[var(--color-body)] hover:text-primary transition-colors"
-                >
-                  aminasports01@gmail.com
-                </a>
-              </div>
-              <div className="flex items-center gap-3 text-xs sm:text-sm">
-                <Clock className="h-4 w-4 text-primary shrink-0" />
-                <span className="text-[var(--color-body)]">
-                  24/7 Support: 9AM - 10PM
-                </span>
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* Categories Section */}
-          <div>
-            <h3 className="text-[var(--color-title)] font-semibold text-base sm:text-lg mb-4">
-              Shoe Categories
-            </h3>
-            <ul className="space-y-2">
-              {categories.map((category, idx) => (
-                <li key={idx}>
-                  <Link
-                    href={category.link}
-                    className="text-[var(--color-body)] hover:text-primary transition-colors duration-300 flex items-center gap-1.5 text-xs sm:text-sm group"
-                  >
-                    <ChevronRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-all duration-300 text-primary" />
-                    <span>{category.name}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* FOOTER LINK SECTIONS */}
+          <div className="grid grid-cols-2 gap-x-6 gap-y-9 sm:grid-cols-3 sm:gap-x-8">
+            {linkSections.map((section) => (
+              <div key={section.title}>
+                <h3 className="mb-5 text-sm font-semibold tracking-[0.1em] text-gray-900 dark:text-white">
+                  {section.title}
+                </h3>
 
-          {/* Quick Links Section */}
-          <div>
-            <h3 className="text-[var(--color-title)] font-semibold text-base sm:text-lg mb-4">
-              Quick Links
-            </h3>
-            <ul className="space-y-2">
-              {quickLinks.map((link, idx) => (
-                <li key={idx}>
-                  <Link
-                    href={link.link}
-                    className="text-[var(--color-body)] hover:text-primary transition-colors duration-300 flex items-center gap-1.5 text-xs sm:text-sm group"
-                  >
-                    <ChevronRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-all duration-300 text-primary" />
-                    <span>{link.name}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Customer Service Section */}
-          <div>
-            <h3 className="text-[var(--color-title)] font-semibold text-base sm:text-lg mb-4">
-              Customer Service
-            </h3>
-            <ul className="space-y-2">
-              {customerService.map((service, idx) => (
-                <li key={idx}>
-                  <Link
-                    href={service.link}
-                    className="text-[var(--color-body)] hover:text-primary transition-colors duration-300 flex items-center gap-1.5 text-xs sm:text-sm group"
-                  >
-                    <ChevronRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-all duration-300 text-primary" />
-                    <span>{service.name}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+                <ul className="space-y-3">
+                  {section.links.map((item) => (
+                    <li key={item.name}>
+                      <Link
+                        href={item.link}
+                        className="inline-block text-sm leading-5 text-gray-600 transition-colors duration-200 hover:text-[#02333a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#02333a] dark:text-gray-400 dark:hover:text-teal-400"
+                      >
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-border pt-6 mt-8">
-          <div className="flex flex-col lg:flex-row justify-between items-center gap-4 sm:gap-6">
-            {/* Copyright */}
-            <div className="text-[var(--color-body)] text-xs sm:text-sm text-center">
+        {/* BOTTOM FOOTER */}
+        <div className="mt-10 border-t border-gray-200 pt-5 dark:border-slate-800 sm:mt-12 sm:pt-6 lg:mt-14">
+          <div className="flex flex-col items-center justify-between gap-3 text-center sm:flex-row sm:items-center sm:text-left sm:gap-5">
+            {/* COPYRIGHT */}
+            <p className="text-sm leading-6">
               © {currentYear}{" "}
-              <span className="font-semibold text-[var(--color-title)]">
+              <span className="font-medium text-gray-900 dark:text-gray-200">
                 Amina Sports
               </span>
               . All rights reserved.
-            </div>
+            </p>
 
-            {/* Social Icons */}
-            <div className="flex gap-4">
-              {SOCIAL_ICONS.map((social, idx) => (
-                <a
-                  key={idx}
-                  href={social.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:opacity-80 transition-opacity"
-                  aria-label={social.title}
-                >
-                  <Image
-                    src={social.src}
-                    alt={social.title}
-                    width={20}
-                    height={20}
-                    className={`h-5 w-5 ${social.className || ""}`}
-                  />
-                </a>
-              ))}
-            </div>
-
-            {/* Payment Methods */}
-            <div className="flex items-center gap-2 opacity-80">
-              <Image
-                src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/ecommerce/payment-methods/visa.svg"
-                alt="Visa"
-                height={20}
-                width={32}
-                className="h-5 w-auto"
-              />
-              <Image
-                src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/ecommerce/payment-methods/mastercard.svg"
-                alt="Mastercard"
-                height={20}
-                width={32}
-                className="h-5 w-auto"
-              />
-              <Image
-                src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/ecommerce/payment-methods/amex.svg"
-                alt="American Express"
-                height={20}
-                width={32}
-                className="h-5 w-auto"
-              />
-              <Image
-                src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/ecommerce/payment-methods/paypal.svg"
-                alt="PayPal"
-                height={20}
-                width={32}
-                className="h-5 w-auto"
-              />
-            </div>
+            {/* BRAND TAGLINE */}
+            <p className="text-sm leading-6 sm:text-right">
+              Premium Imported Footwear
+              <span className="mx-2 text-gray-400">·</span>
+              Step Into Style
+            </p>
           </div>
         </div>
       </div>

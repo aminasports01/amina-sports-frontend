@@ -9,19 +9,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-const popularSearches = [
-  "Shoes",
-  "Apple",
-  "Nike",
-  "Samsung",
-  "Headphones",
-  "Laptop",
-  "Smart Watch",
-  "Gaming Mouse",
-  "Keyboard",
-  "Monitor",
-  "Speaker",
-];
+const popularSearches = ["Nike Air Force 1 Low", "Air Jordan 1 Low"];
 
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -191,7 +179,7 @@ const SearchBar = () => {
                             {product.name}
                           </p>
                           <span className="font-semibold text-sm text-gray-900">
-                            ${product.price?.toFixed(2)}
+                            ৳{product.price}
                           </span>
                         </div>
                         <div className="flex items-center gap-3 mt-1">

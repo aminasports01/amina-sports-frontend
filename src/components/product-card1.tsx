@@ -64,7 +64,7 @@ const ProductCard1 = ({ product }: ProductCard1Props) => {
               ৳{salePrice.toLocaleString("en-BD")}
             </span>
 
-            {/* {hasDiscount && (
+            {hasDiscount && (
               <>
                 <span className="text-sm text-gray-500 line-through">
                   ৳{product.price.toLocaleString("en-BD")}
@@ -74,7 +74,7 @@ const ProductCard1 = ({ product }: ProductCard1Props) => {
                   {discountPercent}% off
                 </span>
               </>
-            )} */}
+            )}
           </div>
         </div>
       </article>

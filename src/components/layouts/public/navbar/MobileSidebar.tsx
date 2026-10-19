@@ -11,6 +11,8 @@ import {
   Tag,
   ShoppingBag,
   Award,
+  Lock,
+  RotateCcw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -134,19 +136,14 @@ const MobileNavbar = ({ user }: UserDropdownProps) => {
                     icon: Footprints,
                   },
                   {
-                    name: "Kids' Footwear",
-                    href: "/products?category=Kids",
-                    icon: Sparkles,
-                  },
-                  {
                     name: "Sneakers & Casual",
                     href: "/products?sub=Sneakers",
                     icon: ShoppingBag,
                   },
                   {
-                    name: "Gym & Sports",
-                    href: "/products?sub=Gym-Sports",
-                    icon: Dumbbell,
+                    name: "Kids' Footwear",
+                    href: "/products?category=Kids",
+                    icon: Sparkles,
                   },
                 ].map((cat) => {
                   const Icon = cat.icon;
@@ -165,54 +162,33 @@ const MobileNavbar = ({ user }: UserDropdownProps) => {
               </div>
             </div>
 
-            {/* BRAND SECTION */}
-            <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--color-subtitle)] mb-2 px-1">
-                Popular Brands
-              </h3>
-              <div className="grid grid-cols-2 gap-1">
-                {["Nike", "Adidas", "Puma", "New Balance", "Bata", "Apex"].map(
-                  (brand) => (
-                    <Link
-                      key={brand}
-                      href={`/products?brand=${brand}`}
-                      onClick={closeMobileMenu}
-                      className="block px-3 py-2 rounded-lg text-[var(--color-body)] hover:bg-[var(--color-primary-light)] hover:text-primary transition-colors text-sm"
-                    >
-                      {brand}
-                    </Link>
-                  ),
-                )}
-              </div>
-            </div>
-
             {/* EXTRA LINKS */}
             <div className="pt-4 border-t border-border space-y-2">
               <Link
-                href="/products?sort=sneakers-deal"
+                href="/privacy-policy"
                 onClick={closeMobileMenu}
                 className="flex items-center gap-3 px-1 py-1.5 text-xs text-[var(--color-body)] hover:text-primary transition-colors"
               >
-                <Tag className="h-4 w-4 text-warning" />
-                <span>Special Shoe Deals</span>
+                <Lock className="h-4 w-4 text-warning" />
+                <span>Privacy Policy</span>
               </Link>
 
               <Link
-                href="/products?verified=true"
+                href="/terms-conditions"
                 onClick={closeMobileMenu}
                 className="flex items-center gap-3 px-1 py-1.5 text-xs text-[var(--color-body)] hover:text-primary transition-colors"
               >
                 <ShieldCheck className="h-4 w-4 text-success" />
-                <span>100% Original Products</span>
+                <span>Terms & Conditions</span>
               </Link>
 
               <Link
-                href="/products?sort=top-brands"
+                href="/return-refund"
                 onClick={closeMobileMenu}
                 className="flex items-center gap-3 px-1 py-1.5 text-xs text-[var(--color-body)] hover:text-primary transition-colors"
               >
-                <Award className="h-4 w-4 text-info" />
-                <span>Top Brand Guarantee</span>
+                <RotateCcw className="h-4 w-4 text-info" />
+                <span>Return & Refund</span>
               </Link>
             </div>
           </div>
