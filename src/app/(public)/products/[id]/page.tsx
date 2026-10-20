@@ -1,11 +1,11 @@
-import ProductGallery from '@/components/layouts/public/product-details/ProductGallery';
-import ProductPurchaseOptions from '@/components/layouts/public/product-details/ProductPurchaseOptions';
-import ProductReviews from '@/components/layouts/public/product-details/ProductReviews';
-import RelatedProduct from '@/components/layouts/public/product-details/RelatedProduct';
-import ProductViewTracker from '@/components/layouts/shared/analytics/ProductViewTracker';
-import { getSingleProduct } from '@/services/product.service';
-import { Star, Truck, MapPin, CheckCircle, ChevronRight } from 'lucide-react';
-import Link from 'next/link';
+import ProductGallery from "@/components/layouts/public/product-details/ProductGallery";
+import ProductPurchaseOptions from "@/components/layouts/public/product-details/ProductPurchaseOptions";
+import ProductReviews from "@/components/layouts/public/product-details/ProductReviews";
+import RelatedProduct from "@/components/layouts/public/product-details/RelatedProduct";
+import ProductViewTracker from "@/components/layouts/shared/analytics/ProductViewTracker";
+import { getSingleProduct } from "@/services/product.service";
+import { Star, Truck, MapPin, CheckCircle, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 interface ProductDetailsPageProps {
   params: Promise<{
@@ -85,8 +85,8 @@ export default async function ProductDetailsPage({
           MAIN PRODUCT
       ====================================================== */}
 
-      <div className="bg-white rounded-sm shadow-sm border border-gray-100 overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-3 md:p-7">
+      <div className="bg-white rounded-sm overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8  ">
           {/* =================================================
               LEFT SIDE - IMAGE GALLERY
           ================================================== */}
@@ -131,20 +131,20 @@ export default async function ProductDetailsPage({
 
             {/* Rating */}
 
-            <div className="flex items-center gap-3 mt-4">
+            {/* <div className="flex items-center gap-3 mt-4">
               <div className="flex items-center gap-1">
                 <Star
                   className={`h-4 w-4 ${
                     product.rating > 0
-                      ? 'fill-yellow-400 text-yellow-400'
-                      : 'text-gray-300'
+                      ? "fill-yellow-400 text-yellow-400"
+                      : "text-gray-300"
                   }`}
                 />
 
                 <span className="text-sm text-gray-600">
                   {product.rating > 0
                     ? product.rating.toFixed(1)
-                    : 'No Ratings'}
+                    : "No Ratings"}
                 </span>
               </div>
 
@@ -159,7 +159,7 @@ export default async function ProductDetailsPage({
               <span className="text-sm text-gray-500">
                 {product.viewCount || 0} Views
               </span>
-            </div>
+            </div> */}
 
             {/* =================================================
                 PRICE

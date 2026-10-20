@@ -196,7 +196,7 @@ Price: ৳${product.specialPrice || product.price}`;
     cursor-pointer
   "
         >
-          <span className="order-ring inline-block">অর্ডার করুন</span>
+          <span className="order-ring inline-block">Order Now</span>
         </button>
 
         {/* Wishlist */}

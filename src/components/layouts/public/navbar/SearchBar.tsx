@@ -9,7 +9,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-const popularSearches = ["Nike Air Force 1 Low", "Air Jordan 1 Low"];
+const popularSearches = ["Air Force 1 Low", "Air Jordan 1 Low"];
 
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");

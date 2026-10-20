@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import ProductActions from '@/components/layouts/public/cart/ProductActions';
-import { IProduct } from '@/types/products.type';
-import { useProductStore } from '@/store/product.store';
-import { Check, ShieldCheck, Truck } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useOrderStore } from '@/store/order.store';
+import ProductActions from "@/components/layouts/public/cart/ProductActions";
+import { IProduct } from "@/types/products.type";
+import { useProductStore } from "@/store/product.store";
+import { Check, ShieldCheck, Truck } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useOrderStore } from "@/store/order.store";
 
 interface Props {
   product: IProduct;
@@ -16,7 +16,7 @@ const ProductPurchaseOptions = ({ product }: Props) => {
 
   const { setSelectedImage, setSelectedColor, selectedColor } =
     useProductStore();
-  const setOrderSelectedSize = useOrderStore(state => state.setSelectedSize);
+  const setOrderSelectedSize = useOrderStore((state) => state.setSelectedSize);
   useEffect(() => {
     const firstColor = product.colorVariants?.[0];
 
@@ -75,7 +75,7 @@ const ProductPurchaseOptions = ({ product }: Props) => {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {product.colorVariants.map(variant => {
+            {product.colorVariants.map((variant) => {
               const isSelected = selectedColor === variant.color;
 
               return (
@@ -85,8 +85,8 @@ const ProductPurchaseOptions = ({ product }: Props) => {
                   onClick={() => handleColorClick(variant.image, variant.color)}
                   className={`group rounded-md border px-4 py-2.5 text-sm font-medium capitalize transition-all ${
                     isSelected
-                      ? 'border-primary bg-primary/5 text-primary shadow-sm ring-1 ring-primary'
-                      : 'border-gray-200 bg-white text-gray-700 hover:border-primary/50 hover:bg-gray-50'
+                      ? "border-primary bg-primary/5 text-primary shadow-sm ring-1 ring-primary"
+                      : "border-gray-200 bg-white text-gray-700 hover:border-primary/50 hover:bg-gray-50"
                   }`}
                 >
                   <span className="flex items-center gap-2">
@@ -116,10 +116,10 @@ const ProductPurchaseOptions = ({ product }: Props) => {
             {Array.from(
               new Map(
                 product.colorVariants
-                  .flatMap(variant => variant.sizes ?? [])
-                  .map(size => [size.size, size]),
+                  .flatMap((variant) => variant.sizes ?? [])
+                  .map((size) => [size.size, size]),
               ).values(),
-            ).map(size => {
+            ).map((size) => {
               const isSelected = selectedSize === size.size;
 
               return (
@@ -131,12 +131,12 @@ const ProductPurchaseOptions = ({ product }: Props) => {
                     setSelectedSize(size.size);
                     setOrderSelectedSize(size.size);
                   }}
-                  className={`min-w-0 rounded-sm border px-1.5 py-2.5 transition-all sm:min-w-[64px] sm:px-3 ${
+                  className={`min-w-0  border px-1.5 py-2.5 transition-all sm:min-w-[64px] sm:px-3 ${
                     size.stock <= 0
-                      ? 'cursor-not-allowed border-gray-100 bg-gray-100 text-gray-400'
+                      ? "cursor-not-allowed border-gray-100 bg-gray-100 text-gray-400"
                       : isSelected
-                        ? 'border-primary bg-primary/5 text-primary ring-1 ring-primary'
-                        : 'border-gray-200 bg-white hover:border-primary hover:bg-primary/5'
+                        ? "border-primary bg-primary/5 text-primary ring-1 ring-primary"
+                        : "border-gray-200 bg-white hover:border-primary hover:bg-primary/5"
                   }`}
                 >
                   <div className="text-sm font-semibold">{size.size}</div>
@@ -152,13 +152,13 @@ const ProductPurchaseOptions = ({ product }: Props) => {
         <div>
           <p className="text-xs text-gray-500">Available Stock</p>
           <p className="mt-0.5 text-sm font-semibold text-gray-800">
-            {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
+            {product.stock > 0 ? "In Stock" : "Out of Stock"}
           </p>
         </div>
 
         <div
           className={`text-lg font-bold ${
-            product.stock > 0 ? 'text-green-600' : 'text-red-500'
+            product.stock > 0 ? "text-green-600" : "text-red-500"
           }`}
         >
           {product.stock}

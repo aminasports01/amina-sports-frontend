@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -80,7 +79,6 @@ export default function SignUpPage() {
   };
 
   const getPasswordStrengthColor = () => {
-    // Keep semantic colors for password-strength feedback.
     const colors = [
       "bg-red-500",
       "bg-orange-500",
@@ -145,39 +143,38 @@ export default function SignUpPage() {
       });
 
       router.push("/login");
-    } catch (error: any) {
-      console.error(error.message);
-      toast.error(error.message || "Registration failed. Please try again.");
+    } catch (error: unknown) {
+      console.error(
+        error instanceof Error ? error.message : "Registration failed",
+      );
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Registration failed. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-[#f7fafa] via-[#eef5f5] to-[#e4eeee] p-4 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900">
-      {/* Brand-colored Background Decorations */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 h-80 w-80 animate-pulse rounded-full bg-[#a7d0d2] opacity-30 blur-3xl dark:bg-[#02333a] dark:opacity-40" />
-
-        <div className="absolute -bottom-40 -left-40 h-80 w-80 animate-pulse rounded-full bg-[#b5d9da] opacity-30 blur-3xl dark:bg-[#03434b] dark:opacity-30" />
-      </div>
-
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background p-4">
       <div className="relative w-full max-w-md">
         {/* Main Card */}
-        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl transition-all duration-300 dark:border-gray-700 dark:bg-gray-800">
+        <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-2xl transition-all duration-300">
           {/* Brand Header */}
-          <div className="bg-gradient-to-r from-[#02333a] to-[#07525b] px-8 py-6 dark:from-[#02333a] dark:to-[#06434b]">
+          <div className="bg-button px-8 py-6">
             <div className="mb-2 flex items-center justify-center gap-2">
-              <Sparkles className="h-6 w-6 text-white" />
+              <Sparkles className="h-6 w-6 text-button-text" />
 
-              <h2 className="text-center text-2xl font-bold text-white">
+              <h2 className="text-center text-2xl font-bold text-button-text">
                 Create Account
               </h2>
 
-              <Sparkles className="h-6 w-6 text-white" />
+              <Sparkles className="h-6 w-6 text-button-text" />
             </div>
 
-            <p className="text-center text-sm text-white/90">
+            <p className="text-center text-sm text-button-text/90">
               Join us and start your journey
             </p>
           </div>
@@ -189,14 +186,14 @@ export default function SignUpPage() {
               <div className="group">
                 <label
                   htmlFor="name"
-                  className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="mb-2 block text-sm font-medium text-title"
                 >
                   Full Name
                 </label>
 
                 <div className="relative">
                   <User
-                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-[#02333a] dark:group-focus-within:text-teal-400"
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary"
                     size={18}
                   />
 
@@ -206,15 +203,13 @@ export default function SignUpPage() {
                     type="text"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pr-4 pl-10 text-gray-900 transition-all duration-200 placeholder:text-gray-400 focus:border-[#02333a] focus:ring-2 focus:ring-[#02333a]/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-teal-500 dark:focus:ring-teal-500/20"
+                    className="w-full rounded-xl border border-input bg-secondary py-3 pr-4 pl-10 text-foreground transition-all duration-200 placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                     placeholder="John Doe"
                   />
                 </div>
 
                 {errors.name && (
-                  <p className="mt-1 text-xs text-red-500 dark:text-red-400">
-                    {errors.name}
-                  </p>
+                  <p className="mt-1 text-xs text-red-500">{errors.name}</p>
                 )}
               </div>
 
@@ -222,14 +217,14 @@ export default function SignUpPage() {
               <div className="group">
                 <label
                   htmlFor="email"
-                  className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="mb-2 block text-sm font-medium text-title"
                 >
                   Email Address
                 </label>
 
                 <div className="relative">
                   <Mail
-                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-[#02333a] dark:group-focus-within:text-teal-400"
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary"
                     size={18}
                   />
 
@@ -239,15 +234,13 @@ export default function SignUpPage() {
                     type="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pr-4 pl-10 text-gray-900 transition-all duration-200 placeholder:text-gray-400 focus:border-[#02333a] focus:ring-2 focus:ring-[#02333a]/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-teal-500 dark:focus:ring-teal-500/20"
+                    className="w-full rounded-xl border border-input bg-secondary py-3 pr-4 pl-10 text-foreground transition-all duration-200 placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                     placeholder="hello@example.com"
                   />
                 </div>
 
                 {errors.email && (
-                  <p className="mt-1 text-xs text-red-500 dark:text-red-400">
-                    {errors.email}
-                  </p>
+                  <p className="mt-1 text-xs text-red-500">{errors.email}</p>
                 )}
               </div>
 
@@ -255,14 +248,14 @@ export default function SignUpPage() {
               <div className="group">
                 <label
                   htmlFor="password"
-                  className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="mb-2 block text-sm font-medium text-title"
                 >
                   Password
                 </label>
 
                 <div className="relative">
                   <Lock
-                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-[#02333a] dark:group-focus-within:text-teal-400"
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary"
                     size={18}
                   />
 
@@ -272,7 +265,7 @@ export default function SignUpPage() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pr-12 pl-10 text-gray-900 transition-all duration-200 placeholder:text-gray-400 focus:border-[#02333a] focus:ring-2 focus:ring-[#02333a]/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-teal-500 dark:focus:ring-teal-500/20"
+                    className="w-full rounded-xl border border-input bg-secondary py-3 pr-12 pl-10 text-foreground transition-all duration-200 placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                     placeholder="Create a strong password"
                   />
 
@@ -282,7 +275,7 @@ export default function SignUpPage() {
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
-                    className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 transition-colors hover:text-[#02333a] dark:hover:text-teal-400"
+                    className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground transition-colors hover:text-primary"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -298,31 +291,23 @@ export default function SignUpPage() {
                           className={`h-1 flex-1 rounded-full transition-all duration-300 ${
                             index < passwordStrength
                               ? getPasswordStrengthColor()
-                              : "bg-gray-200 dark:bg-gray-700"
+                              : "bg-secondary"
                           }`}
                         />
                       ))}
                     </div>
 
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-muted-foreground">
                       Password strength:{" "}
-                      <span className="font-medium">
+                      <span className="font-medium text-foreground">
                         {getPasswordStrengthText()}
                       </span>
                     </p>
-
-                    {passwordStrength < 3 && formData.password.length > 0 && (
-                      <p className="text-xs text-gray-400 dark:text-gray-500">
-                        Tip: Use a mix of letters, numbers & symbols
-                      </p>
-                    )}
                   </div>
                 )}
 
                 {errors.password && (
-                  <p className="mt-1 text-xs text-red-500 dark:text-red-400">
-                    {errors.password}
-                  </p>
+                  <p className="mt-1 text-xs text-red-500">{errors.password}</p>
                 )}
               </div>
 
@@ -330,14 +315,14 @@ export default function SignUpPage() {
               <div className="group">
                 <label
                   htmlFor="confirmPassword"
-                  className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="mb-2 block text-sm font-medium text-title"
                 >
                   Confirm Password
                 </label>
 
                 <div className="relative">
                   <Lock
-                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-[#02333a] dark:group-focus-within:text-teal-400"
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary"
                     size={18}
                   />
 
@@ -347,7 +332,7 @@ export default function SignUpPage() {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pr-12 pl-10 text-gray-900 transition-all duration-200 placeholder:text-gray-400 focus:border-[#02333a] focus:ring-2 focus:ring-[#02333a]/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-teal-500 dark:focus:ring-teal-500/20"
+                    className="w-full rounded-xl border border-input bg-secondary py-3 pr-12 pl-10 text-foreground transition-all duration-200 placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                     placeholder="Confirm your password"
                   />
 
@@ -359,7 +344,7 @@ export default function SignUpPage() {
                         ? "Hide confirm password"
                         : "Show confirm password"
                     }
-                    className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 transition-colors hover:text-[#02333a] dark:hover:text-teal-400"
+                    className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground transition-colors hover:text-primary"
                   >
                     {showConfirmPassword ? (
                       <EyeOff size={18} />
@@ -370,7 +355,7 @@ export default function SignUpPage() {
                 </div>
 
                 {errors.confirmPassword && (
-                  <p className="mt-1 text-xs text-red-500 dark:text-red-400">
+                  <p className="mt-1 text-xs text-red-500">
                     {errors.confirmPassword}
                   </p>
                 )}
@@ -380,11 +365,11 @@ export default function SignUpPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#02333a] to-[#07525b] py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:scale-[1.02] hover:from-[#011f23] hover:to-[#034149] focus-visible:ring-2 focus-visible:ring-[#02333a] focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-button py-3 font-semibold text-button-text shadow-lg transition-all duration-200 hover:scale-[1.02] hover:bg-button-hover focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
               >
                 {isLoading ? (
                   <>
-                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-button-text border-t-transparent" />
                     Creating Account...
                   </>
                 ) : (
@@ -397,11 +382,11 @@ export default function SignUpPage() {
             </form>
 
             {/* Login Link */}
-            <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+            <p className="mt-6 text-center text-sm text-body">
               Already have an account?{" "}
               <Link
                 href="/login"
-                className="font-semibold text-[#02333a] transition-colors hover:text-[#011f23] hover:underline dark:text-teal-400 dark:hover:text-teal-300"
+                className="font-semibold text-link transition-colors hover:text-link-hover hover:underline"
               >
                 Sign in
               </Link>
@@ -410,7 +395,7 @@ export default function SignUpPage() {
         </div>
 
         {/* Footer Note */}
-        <p className="mt-6 text-center text-xs text-gray-500 dark:text-gray-400">
+        <p className="mt-6 text-center text-xs text-muted-foreground">
           By signing up, you agree to our Terms of Service and Privacy Policy
         </p>
       </div>

@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { IProduct } from "@/types/products.type";
 
 interface ProductCard1Props {
@@ -9,58 +8,75 @@ interface ProductCard1Props {
 }
 
 const ProductCard1 = ({ product }: ProductCard1Props) => {
-  const salePrice = product.specialPrice ?? product.price;
-  console.log(product);
+  const hasDiscount =
+    product.specialPrice != null &&
+    product.specialPrice > 0 &&
+    product.specialPrice < product.price;
 
-  // const hasDiscount =
-  //   product.specialPrice != null && product.specialPrice < product.price;
-
-  // const discountPercent =
-  //   hasDiscount && product.price > 0
-  //     ? Math.round(((product.price - salePrice) / product.price) * 100)
-  //     : 0;
+  // const discountPercent = hasDiscount
+  //   ? Math.round(
+  //       ((product.price - product.specialPrice!) / product.price) * 100,
+  //     )
+  //   : 0;
 
   return (
-    <Link
-      href={`/products/${product.slug}`}
-      className="group block h-full min-w-0"
-    >
-      <article className="flex h-full flex-col bg-white dark:bg-slate-900">
+    <Link href={`/products/${product.slug}`} className="group block">
+      <article>
         {/* PRODUCT IMAGE */}
-        <div className="w-full overflow-hidden bg-[#f1f1f1] dark:bg-slate-800">
-          <AspectRatio ratio={1} className="w-full">
-            {product.thumbnail ? (
-              <Image
-                src={product.thumbnail}
-                alt={product.name}
-                fill
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                className="object-cover object-center transition-transform duration-300 group-hover:scale-[1.03]"
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center text-sm text-gray-400">
-                No Image
-              </div>
-            )}
-          </AspectRatio>
+        <div className="relative aspect-3/4 w-full max-h-100 overflow-hidden bg-white md:max-h-105 2xl:max-h-150">
+          {product.thumbnail ? (
+            <Image
+              src={product.thumbnail}
+              alt={product.name}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className="object-contain object-center transition-transform duration-500 sm:group-hover:scale-105"
+              quality={90}
+              priority
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-sm text-gray-400">
+              No Image
+            </div>
+          )}
         </div>
 
         {/* PRODUCT INFORMATION */}
-        <div className="flex flex-1 flex-col gap-1 px-2 py-2 sm:px-2.5 sm:py-2.5">
+        <div className="sm:px-0 px-3.5 pb-1">
           {/* PRODUCT BRAND */}
-          <h3 className="line-clamp-2 text-sm leading-snug font-semibold text-gray-900 dark:text-gray-100">
+          <p className="font-body text-base 2xl:text-xl font-semibold text-foreground leading-snug mt-2">
             {product.brand}
-          </h3>
+          </p>
           {/* PRODUCT NAME */}
-          <h3 className="line-clamp-2 text-sm leading-snug font-semibold text-gray-900 dark:text-gray-100">
+          <p className="font-medium text-base text-gray-600 mt-0.5 leading-snug">
             {product.name}
-          </h3>
+          </p>
 
           {/* PRICE */}
-          <div className="mt-0.5 flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
-            <span className="text-base leading-snug font-semibold text-gray-900 dark:text-white">
-              ৳{salePrice.toLocaleString("en-BD")}
-            </span>
+          <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            {hasDiscount ? (
+              <>
+                {/* Discount Price */}
+                <span className="font-body text-base font-bold leading-snug text-red-600">
+                  ৳{product.specialPrice!.toLocaleString("en-BD")}
+                </span>
+
+                {/* Original Price */}
+                <span className="font-body text-sm leading-snug text-gray-500 line-through dark:text-gray-400">
+                  ৳{product.price.toLocaleString("en-BD")}
+                </span>
+
+                {/* Discount Percentage */}
+                {/* <span className="text-xs font-semibold text-green-700 dark:text-green-400">
+                  -{discountPercent}%
+                </span> */}
+              </>
+            ) : (
+              /* Regular Price */
+              <span className="font-body text-base font-bold leading-snug text-gray-900 dark:text-white">
+                ৳{product.price.toLocaleString("en-BD")}
+              </span>
+            )}
           </div>
         </div>
       </article>

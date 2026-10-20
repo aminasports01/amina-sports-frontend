@@ -1,8 +1,13 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { useMemo, useState } from 'react';
-import { useProductStore } from '@/store/product.store';
+import Image from "next/image";
+import { useMemo, useState, useRef, useEffect } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperType } from "swiper";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useProductStore } from "@/store/product.store";
+
+import "swiper/css";
 
 interface ProductGalleryProps {
   thumbnail: string;
@@ -15,97 +20,114 @@ const ProductGallery = ({
   images,
   productName,
 }: ProductGalleryProps) => {
-  const selectedImage = useProductStore(state => state.selectedImage);
-  const setSelectedImage = useProductStore(state => state.setSelectedImage);
+  const selectedImage = useProductStore((state) => state.selectedImage);
+  const setSelectedImage = useProductStore((state) => state.setSelectedImage);
 
-  const galleryImages = useMemo(() => {
-    return Array.from(new Set([thumbnail, ...(images || [])].filter(Boolean)));
-  }, [thumbnail, images]);
+  const galleryImages = useMemo(
+    () => Array.from(new Set([thumbnail, ...(images || [])].filter(Boolean))),
+    [thumbnail, images],
+  );
 
-  const [activeImage, setActiveImage] = useState(thumbnail);
-  const [zoomStyle, setZoomStyle] = useState<React.CSSProperties>({});
+  const [activeIndex, setActiveIndex] = useState(0);
+  const swiperRef = useRef<SwiperType | null>(null);
 
-  const currentImage = selectedImage || activeImage;
+  const selectedIndex = selectedImage
+    ? galleryImages.indexOf(selectedImage)
+    : -1;
 
-  const handleGalleryClick = (image: string) => {
-    setActiveImage(image);
-    setSelectedImage(null);
-    setZoomStyle({});
+  const currentIndex = selectedIndex >= 0 ? selectedIndex : activeIndex;
+  const totalImages = galleryImages.length;
+
+  useEffect(() => {
+    if (selectedIndex >= 0 && swiperRef.current) {
+      if (swiperRef.current.activeIndex !== selectedIndex) {
+        swiperRef.current.slideTo(selectedIndex);
+      }
+    }
+  }, [selectedIndex]);
+
+  const handleSlideChange = (swiper: SwiperType) => {
+    const index = swiper.realIndex;
+    setActiveIndex(index);
+
+    const image = galleryImages[index];
+
+    if (image && image !== selectedImage) {
+      setSelectedImage(null);
+    }
   };
 
-  // Cursor position  zoom
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const container = e.currentTarget;
-
-    const rect = container.getBoundingClientRect();
-
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-
-    setZoomStyle({
-      transformOrigin: `${x}% ${y}%`,
-      transform: 'scale(2)',
-    });
-  };
-
-  const handleMouseLeave = () => {
-    setZoomStyle({});
-  };
+  if (totalImages === 0) {
+    return (
+      <div className="flex aspect-[3/4] w-full items-center justify-center bg-white text-gray-400">
+        No Image
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-4">
-      {/* MAIN IMAGE */}
-      <div
-        className="group relative h-[360px] overflow-hidden rounded-md border border-gray-200 bg-gray-50 md:h-[500px]"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-      >
-        {currentImage ? (
-          <Image
-            src={currentImage}
-            alt={productName}
-            fill
-            priority
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover transition-transform duration-150 ease-out"
-            style={zoomStyle}
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center text-gray-400">
-            No Image
-          </div>
-        )}
-      </div>
+    <div className="w-full">
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-white">
+        <Swiper
+          onSwiper={(swiper) => {
+            swiperRef.current = swiper;
 
-      {/* GALLERY */}
-      {galleryImages.length > 0 && (
-        <div className="flex gap-3 overflow-x-auto pb-2">
-          {galleryImages.map((image, index) => {
-            const isActive = currentImage === image;
-
-            return (
-              <button
-                key={`${image}-${index}`}
-                type="button"
-                onClick={() => handleGalleryClick(image)}
-                className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-md border-2 bg-gray-50 transition-all md:h-24 md:w-24 ${
-                  isActive
-                    ? 'border-primary ring-2 ring-primary/10'
-                    : 'border-gray-200 hover:border-primary/50'
-                }`}
-              >
+            const index = swiper.realIndex;
+            setActiveIndex(index);
+          }}
+          onSlideChange={handleSlideChange}
+          initialSlide={selectedIndex >= 0 ? selectedIndex : 0}
+          slidesPerView={1}
+          spaceBetween={0}
+          speed={400}
+          loop={totalImages > 1}
+          className="h-full w-full"
+        >
+          {galleryImages.map((image, index) => (
+            <SwiperSlide key={image}>
+              <div className="relative h-full w-full">
                 <Image
                   src={image}
-                  alt={`${productName} ${index + 1}`}
+                  alt={`${productName} - Image ${index + 1}`}
                   fill
-                  sizes="96px"
-                  className="object-contain"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover object-top"
+                  quality={95}
+                  priority={index === 0}
                 />
-              </button>
-            );
-          })}
-        </div>
-      )}
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+
+        {totalImages > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={() => swiperRef.current?.slidePrev()}
+              aria-label="Previous image"
+              className="absolute left-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/70 backdrop-blur-sm transition-colors hover:bg-white"
+            >
+              <ChevronLeft size={20} strokeWidth={2} />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => swiperRef.current?.slideNext()}
+              aria-label="Next image"
+              className="absolute right-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/70 backdrop-blur-sm transition-colors hover:bg-white"
+            >
+              <ChevronRight size={20} strokeWidth={2} />
+            </button>
+
+            <div className="absolute bottom-3 right-3 z-10">
+              <span className="bg-white/75 px-2 py-1 text-sm text-foreground backdrop-blur-sm">
+                {currentIndex + 1} / {totalImages}
+              </span>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };

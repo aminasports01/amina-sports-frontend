@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
+import { FaFacebook, FaInstagram } from "react-icons/fa";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -36,16 +36,6 @@ const Footer = () => {
       href: "https://www.instagram.com/aminasports01/?hl=en",
       Icon: FaInstagram,
     },
-    // {
-    //   name: "X",
-    //   href: "https://x.com",
-    //   Icon: FaTwitter,
-    // },
-    // {
-    //   name: "YouTube",
-    //   href: "https://youtube.com",
-    //   Icon: FaYoutube,
-    // },
   ];
 
   const linkSections = [
@@ -55,7 +45,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="border-t border-gray-200 bg-[#f5f5f5] text-sm text-gray-600 transition-colors dark:border-slate-800 dark:bg-slate-950 dark:text-gray-400">
+    <footer className="border-t border-border bg-secondary text-sm text-body transition-colors">
       <div className="mx-auto max-w-[1800px] px-5 pt-10 pb-6 sm:px-8 sm:pt-12 lg:px-10 lg:pt-14">
         {/* MAIN FOOTER */}
         <div className="grid grid-cols-1 gap-10 sm:gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(440px,0.72fr)] lg:gap-16">
@@ -66,15 +56,15 @@ const Footer = () => {
               aria-label="Amina Sports homepage"
               className="inline-block"
             >
-              <span className="text-2xl font-light tracking-[0.1em] text-gray-900 sm:text-3xl dark:text-white">
+              <span className="text-2xl font-light tracking-[0.1em] text-title sm:text-3xl">
                 AMINA{" "}
-                <span className="font-bold tracking-[0.12em] text-[#02333a] dark:text-teal-400">
+                <span className="font-bold tracking-[0.12em] text-primary">
                   SPORTS
                 </span>
               </span>
             </Link>
 
-            <p className="max-w-sm text-sm leading-7 text-gray-600 dark:text-gray-400">
+            <p className="max-w-sm text-sm leading-7 text-body">
               Premium imported footwear for everyday style.
               <br className="hidden sm:block" />
               Quality, comfort, and confidence in every step.
@@ -89,7 +79,7 @@ const Footer = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={name}
-                  className="text-gray-500 transition-colors duration-200 hover:text-[#02333a] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#02333a] dark:text-gray-400 dark:hover:text-teal-400"
+                  className="text-muted-foreground transition-colors duration-200 hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
                 >
                   <Icon className="h-5 w-5" strokeWidth={1.8} />
                 </a>
@@ -101,7 +91,7 @@ const Footer = () => {
           <div className="grid grid-cols-2 gap-x-6 gap-y-9 sm:grid-cols-3 sm:gap-x-8">
             {linkSections.map((section) => (
               <div key={section.title}>
-                <h3 className="mb-5 text-sm font-semibold tracking-[0.1em] text-gray-900 dark:text-white">
+                <h3 className="mb-5 text-sm font-semibold tracking-[0.1em] text-title">
                   {section.title}
                 </h3>
 
@@ -110,7 +100,7 @@ const Footer = () => {
                     <li key={item.name}>
                       <Link
                         href={item.link}
-                        className="inline-block text-sm leading-5 text-gray-600 transition-colors duration-200 hover:text-[#02333a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#02333a] dark:text-gray-400 dark:hover:text-teal-400"
+                        className="inline-block text-sm leading-5 text-body transition-colors duration-200 hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                       >
                         {item.name}
                       </Link>
@@ -123,21 +113,19 @@ const Footer = () => {
         </div>
 
         {/* BOTTOM FOOTER */}
-        <div className="mt-10 border-t border-gray-200 pt-5 dark:border-slate-800 sm:mt-12 sm:pt-6 lg:mt-14">
+        <div className="mt-10 border-t border-border pt-5 sm:mt-12 sm:pt-6 lg:mt-14">
           <div className="flex flex-col items-center justify-between gap-3 text-center sm:flex-row sm:items-center sm:text-left sm:gap-5">
             {/* COPYRIGHT */}
-            <p className="text-sm leading-6">
+            <p className="text-sm leading-6 text-body">
               © {currentYear}{" "}
-              <span className="font-medium text-gray-900 dark:text-gray-200">
-                Amina Sports
-              </span>
-              . All rights reserved.
+              <span className="font-medium text-title">Amina Sports</span>. All
+              rights reserved.
             </p>
 
             {/* BRAND TAGLINE */}
-            <p className="text-sm leading-6 sm:text-right">
+            <p className="text-sm leading-6 sm:text-right text-body">
               Premium Imported Footwear
-              <span className="mx-2 text-gray-400">·</span>
+              <span className="mx-2 text-muted-foreground">·</span>
               Step Into Style
             </p>
           </div>
