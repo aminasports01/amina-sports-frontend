@@ -1,5 +1,3 @@
-import React from "react";
-import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { getProducts } from "@/services/product.service";
 import { IProduct } from "@/types/products.type";
@@ -17,18 +15,16 @@ const TopDeal = async () => {
     <div className="w-full  ">
       <div className="container mx-auto sm:px-4 md:px-5 lg:px-0">
         {/* Header Section */}
-        <div className="my-5 flex items-center justify-between gap-3 sm:mb-6 md:mb-8">
+        <div className="my-5 px-3 flex items-center justify-between gap-3 sm:mb-6 md:mb-8">
           <h2 className="text-lg font-bold text-gray-800 sm:text-xl md:text-2xl lg:text-3xl">
-            Latest Sneaker Drops
+            New Arrivals
           </h2>
 
           <Link
             href="/products"
-            className="group inline-flex shrink-0 items-center gap-0.5 text-xs font-semibold text-title transition-colors hover:text-hover-text sm:gap-1 sm:text-sm md:text-base"
+            className="text-base text-foreground hover:opacity-60 transition-opacity underline underline-offset-4"
           >
-            <span>View more</span>
-
-            <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1 sm:h-5 sm:w-5" />
+            <span>View All</span>
           </Link>
         </div>
 

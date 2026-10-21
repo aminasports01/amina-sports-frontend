@@ -1,20 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SlidersHorizontal, Filter, ChevronRight } from 'lucide-react';
+import { SlidersHorizontal, Filter, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
-import { ProductCard1 } from '@/components/product-card1';
-import { getProducts } from '@/services/product.service';
-import Link from 'next/link';
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
-import { IProduct } from '@/types/products.type';
-import { CategoryService } from '@/services/category.service';
-import { Category } from '@/types/category.types';
+import { ProductCard1 } from "@/components/product-card1";
+
+import { SheetClose } from "@/components/ui/sheet";
+import { getProducts } from "@/services/product.service";
+import { IProduct } from "@/types/products.type";
+import { MobileFilter } from "@/components/layouts/public/product/MobileFilter";
 
 type SearchParams = Promise<{
   page?: string;
@@ -28,6 +21,197 @@ type SearchParams = Promise<{
   rating?: string;
 }>;
 
+type Sp = Record<string, string | undefined>;
+
+/* ================= FILTER CONFIG ================= */
+
+const PARAM_KEYS = [
+  "search",
+  "categoryId",
+  "brand",
+  "rating",
+  "minPrice",
+  "maxPrice",
+  "sortBy",
+  "sortOrder",
+] as const;
+
+type FilterOption = { label: string; params: Record<string, string> };
+type FilterGroup = { title: string; keys: string[]; options: FilterOption[] };
+
+function getFilterGroups(): FilterGroup[] {
+  return [
+    {
+      title: "Price",
+      keys: ["minPrice", "maxPrice"],
+      options: [
+        { label: "Under $50", params: { maxPrice: "50" } },
+        { label: "$50 - $100", params: { minPrice: "50", maxPrice: "100" } },
+        { label: "$100 - $200", params: { minPrice: "100", maxPrice: "200" } },
+        { label: "$200+", params: { minPrice: "200" } },
+      ],
+    },
+    {
+      title: "Sort By",
+      keys: ["sortBy", "sortOrder"],
+      options: [
+        {
+          label: "Latest",
+          params: { sortBy: "createdAt", sortOrder: "desc" },
+        },
+        {
+          label: "Price Low to High",
+          params: { sortBy: "price", sortOrder: "asc" },
+        },
+        {
+          label: "Price High to Low",
+          params: { sortBy: "price", sortOrder: "desc" },
+        },
+        { label: "Top Rated", params: { sortBy: "rating", sortOrder: "desc" } },
+      ],
+    },
+  ];
+}
+
+function buildHref(sp: Sp, group: FilterGroup, option: FilterOption) {
+  const q = new URLSearchParams();
+  for (const key of PARAM_KEYS) {
+    const value = sp[key];
+    if (value && !group.keys.includes(key)) q.set(key, value);
+  }
+  for (const [k, v] of Object.entries(option.params)) q.set(k, v);
+  return `?${q.toString()}`;
+}
+
+function isActive(sp: Sp, group: FilterGroup, option: FilterOption) {
+  return group.keys.every(
+    (k) => (sp[k] || undefined) === (option.params[k] || undefined),
+  );
+}
+
+function pageHref(sp: Sp, page: number) {
+  const q = new URLSearchParams();
+  for (const [k, v] of Object.entries(sp)) {
+    if (v !== undefined && v !== "" && k !== "page") q.set(k, v);
+  }
+  q.set("page", String(page));
+  return `?${q.toString()}`;
+}
+
+/* ================= SHARED UI PIECES ================= */
+
+function SearchForm({
+  sp,
+  variant,
+}: {
+  sp: Sp;
+  variant: "desktop" | "mobile";
+}) {
+  return (
+    <form method="get" className={variant === "desktop" ? "mb-5" : "mb-6"}>
+      {PARAM_KEYS.filter((k) => k !== "search" && sp[k]).map((k) => (
+        <input key={k} type="hidden" name={k} value={sp[k] || ""} />
+      ))}
+
+      {variant === "mobile" && (
+        <h3 className="font-semibold mb-3 text-sm uppercase tracking-wide text-muted-foreground">
+          Search
+        </h3>
+      )}
+
+      <input
+        type="search"
+        name="search"
+        placeholder="Search product..."
+        defaultValue={sp?.search || ""}
+        className={
+          variant === "desktop"
+            ? "w-full border border-input bg-background text-foreground p-2 rounded-xs text-sm outline-none focus:ring-1 focus:ring-ring"
+            : "w-full border border-input bg-background text-foreground outline-none p-3 rounded-xs text-sm focus:ring-1 focus:ring-ring"
+        }
+      />
+    </form>
+  );
+}
+
+function FilterGroups({
+  groups,
+  sp,
+  variant,
+}: {
+  groups: FilterGroup[];
+  sp: Sp;
+  variant: "desktop" | "mobile";
+}) {
+  return (
+    <>
+      {groups.map((group) => (
+        <div
+          key={group.title}
+          className={
+            variant === "desktop"
+              ? "mb-5 border-b pb-4 last:mb-0 last:border-b-0 last:pb-0"
+              : "mb-6 border-b pb-6 last:mb-0 last:border-b-0 last:pb-0"
+          }
+        >
+          <h3
+            className={
+              variant === "desktop"
+                ? "font-semibold mb-2 text-title"
+                : "font-semibold mb-4 text-sm uppercase tracking-wide text-muted-foreground"
+            }
+          >
+            {group.title}
+          </h3>
+
+          <div className="space-y-2 text-sm">
+            {group.options.map((option) => {
+              const href = buildHref(sp, group, option);
+              const active = isActive(sp, group, option);
+
+              if (variant === "desktop") {
+                return (
+                  <Link
+                    key={option.label}
+                    href={href}
+                    className="flex items-center gap-2 text-body hover:text-hover-text"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={active}
+                      readOnly
+                      className="accent-primary"
+                    />
+                    {option.label}
+                  </Link>
+                );
+              }
+
+              return (
+                <SheetClose asChild key={option.label}>
+                  <Link
+                    href={href}
+                    className={`flex items-center justify-between rounded-xs border px-4 py-3 text-sm text-body transition hover:border-primary hover:bg-primary-light ${
+                      active
+                        ? "border-primary bg-primary-light font-medium text-title"
+                        : ""
+                    }`}
+                  >
+                    <span>{option.label}</span>
+                    <span>→</span>
+                  </Link>
+                </SheetClose>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </>
+  );
+}
+
+/* ================= PAGE ================= */
+
 export default async function ProductListing({
   searchParams,
 }: {
@@ -37,593 +221,81 @@ export default async function ProductListing({
   const sp = await searchParams;
 
   // API CALL WITH FILTERS
-  const [res, categoryResponse] = await Promise.all([
-    getProducts({
-      page: Number(sp?.page || 1),
-      limit: 12,
-      search: sp?.search,
-      categoryId: sp?.categoryId,
-      sortBy: sp?.sortBy,
-      sortOrder: sp?.sortOrder as any,
-      minPrice: sp?.minPrice ? Number(sp.minPrice) : undefined,
-      maxPrice: sp?.maxPrice ? Number(sp.maxPrice) : undefined,
-      brand: sp?.brand,
-      rating: sp?.rating ? Number(sp.rating) : undefined,
-    }),
-
-    CategoryService.getAllCategories(),
-  ]);
+  const res = await getProducts({
+    page: Number(sp?.page || 1),
+    limit: 12,
+    search: sp?.search,
+    categoryId: sp?.categoryId,
+    sortBy: sp?.sortBy,
+    sortOrder: sp?.sortOrder as any,
+    minPrice: sp?.minPrice ? Number(sp.minPrice) : undefined,
+    maxPrice: sp?.maxPrice ? Number(sp.maxPrice) : undefined,
+    brand: sp?.brand,
+    rating: sp?.rating ? Number(sp.rating) : undefined,
+  });
 
   const products = res?.data?.data || [];
-  const categories = categoryResponse?.data || [];
+  const groups = getFilterGroups();
 
   const meta = res?.data?.meta;
-
   const currentPage = Number(sp?.page || 1);
   const totalPages = meta?.totalPages || 1;
 
+  const pageBtn =
+    "px-4 py-2 border rounded-xs text-sm text-body hover:bg-accent hover:text-accent-foreground transition-colors";
+
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="container mx-auto px-4 py-6">
+    <div className="bg-muted min-h-screen">
+      <div className="container mx-auto md:px-4 md:py-6">
         {/* BREADCRUMB */}
-        <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
-          <a href="#">Home</a>
+        <div className="hidden md:flex items-center gap-2 text-sm text-muted-foreground mb-6">
+          <Link href="/" className="hover:text-hover-text">
+            Home
+          </Link>
           <ChevronRight className="h-3 w-3" />
-          <span className="text-gray-800 font-medium">Products</span>
+          <span className="text-foreground font-medium">Products</span>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-3">
           {/* ================= LEFT FILTER ================= */}
           <div className="hidden lg:block lg:w-1/4 xl:w-1/5">
-            <div className="bg-white rounded-xs shadow-sm p-5 sticky top-4">
-              {/* TITLE */}
+            <div className="">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-bold flex items-center gap-2">
+                <h2 className="text-lg font-bold flex items-center gap-2 text-title">
                   <Filter className="h-4 w-4" />
                   Filters
                 </h2>
-                {/* <a
-                  href="/products"
-                  className="text-sm text-title hover:underline"
-                >
-                  Reset
-                </a> */}
                 <Link
-                  className="text-sm text-title hover:underline"
-                  href={'/products'}
+                  className="text-sm text-link hover:text-link-hover hover:underline"
+                  href="/products"
                 >
                   Reset
                 </Link>
               </div>
 
-              {/* ================= SEARCH ================= */}
-              <form method="get" className="mb-5">
-                <input
-                  type="hidden"
-                  name="category"
-                  value={sp?.categoryId || ''}
-                />
-                <input type="hidden" name="brand" value={sp?.brand || ''} />
-                <input type="hidden" name="rating" value={sp?.rating || ''} />
-                <input
-                  type="hidden"
-                  name="minPrice"
-                  value={sp?.minPrice || ''}
-                />
-                <input
-                  type="hidden"
-                  name="maxPrice"
-                  value={sp?.maxPrice || ''}
-                />
-                <input type="hidden" name="sortBy" value={sp?.sortBy || ''} />
-                <input
-                  type="hidden"
-                  name="sortOrder"
-                  value={sp?.sortOrder || ''}
-                />
-                <input
-                  type="search"
-                  name="search"
-                  placeholder="Search product..."
-                  defaultValue={sp?.search || ''}
-                  className="w-full border p-2 rounded-xs text-sm"
-                />
-              </form>
-
-              {/* ================= PRICE FILTER ================= */}
-              <div className="mb-5 border-b pb-4">
-                <h3 className="font-semibold mb-2">Price</h3>
-
-                <div className="space-y-2 text-sm">
-                  <Link
-                    href={`?maxPrice=50${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                    className="block hover:text-title flex items-center gap-2"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={sp?.maxPrice === '50'}
-                      readOnly
-                    />
-                    Under $50
-                  </Link>
-                  <Link
-                    href={`?minPrice=50&maxPrice=100${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                    className="block hover:text-title flex items-center gap-2"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={sp?.minPrice === '50'}
-                      readOnly
-                    />
-                    $50 - $100
-                  </Link>
-                  <Link
-                    href={`?minPrice=100&maxPrice=200${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                    className="block hover:text-title flex items-center gap-2"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={sp?.minPrice === '100'}
-                      readOnly
-                    />
-                    $100 - $200
-                  </Link>
-                  <Link
-                    href={`?minPrice=200${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                    className="block hover:text-title flex items-center gap-2"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={sp?.minPrice === '200'}
-                      readOnly
-                    />
-                    $200+
-                  </Link>
-                </div>
-              </div>
-
-              {/* ================= RATING ================= */}
-              <div className="mb-5 border-b pb-4">
-                <h3 className="font-semibold mb-2">Rating</h3>
-
-                <div className="space-y-2 text-sm">
-                  <Link
-                    href={`?rating=4${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                    className="block hover:text-title flex items-center gap-2"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={sp?.rating === '4'}
-                      readOnly
-                    />
-                    ⭐ 4 & above
-                  </Link>
-                  <Link
-                    href={`?rating=3${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                    className="block hover:text-title flex items-center gap-2"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={sp?.rating === '3'}
-                      readOnly
-                    />
-                    ⭐ 3 & above
-                  </Link>
-                </div>
-              </div>
-
-              {/* ================= Category ================= */}
-              <div className="mb-5 border-b pb-4">
-                <h3 className="font-semibold mb-2">Category</h3>
-
-                <div className="space-y-2 text-sm">
-                  {categories.map((category: Category) => (
-                    <Link
-                      key={category.id}
-                      href={`?categoryId=${category.id}`}
-                      className="block hover:text-title flex items-center gap-2"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={sp?.categoryId === category.id}
-                        readOnly
-                      />
-
-                      {category.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-              {/* ================= BRAND ================= */}
-              <div className="mb-5 border-b pb-4">
-                <h3 className="font-semibold mb-2">Brand</h3>
-
-                <div className="space-y-2 text-sm">
-                  <Link
-                    href={`?brand=Apple${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                    className="block hover:text-title  flex items-center gap-2"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={sp?.brand === 'Apple'}
-                      readOnly
-                    />
-                    Apple
-                  </Link>
-                  <Link
-                    href={`?brand=Samsung${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                    className="block hover:text-title  flex items-center gap-2"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={sp?.brand === 'Samsung'}
-                      readOnly
-                    />
-                    Samsung
-                  </Link>
-                  <Link
-                    href={`?brand=Sony${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                    className="block hover:text-title  flex items-center gap-2"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={sp?.brand === 'Sony'}
-                      readOnly
-                    />
-                    Sony
-                  </Link>
-                </div>
-              </div>
-
-              {/* ================= LATEST ================= */}
-              <div className="mb-5">
-                <h3 className="font-semibold mb-2">Sort By</h3>
-
-                <div className="space-y-2 text-sm">
-                  <Link
-                    href={`?sortBy=createdAt&sortOrder=desc${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}`}
-                    className="block hover:text-title  flex items-center gap-2"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={sp?.sortBy === 'createdAt'}
-                      readOnly
-                    />
-                    Latest
-                  </Link>
-                  <Link
-                    href={`?sortBy=price&sortOrder=asc${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}`}
-                    className="block hover:text-title  flex items-center gap-2"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={
-                        sp?.sortBy === 'price' && sp?.sortOrder === 'asc'
-                      }
-                      readOnly
-                    />
-                    Price Low to High
-                  </Link>
-                  <Link
-                    href={`?sortBy=price&sortOrder=desc${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}`}
-                    className="block hover:text-title  flex items-center gap-2"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={
-                        sp?.sortBy === 'price' && sp?.sortOrder === 'desc'
-                      }
-                      readOnly
-                    />
-                    Price High to Low
-                  </Link>
-                  <Link
-                    href={`?sortBy=rating&sortOrder=desc${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}`}
-                    className="block hover:text-title  flex items-center gap-2"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={sp?.sortBy === 'rating'}
-                      readOnly
-                    />
-                    Top Rated
-                  </Link>
-                </div>
-              </div>
+              <SearchForm sp={sp} variant="desktop" />
+              <FilterGroups groups={groups} sp={sp} variant="desktop" />
             </div>
           </div>
 
           {/* ================= RIGHT PRODUCTS ================= */}
           <div className="flex-1">
             {/* TOP BAR */}
-            <div className="bg-white rounded-xs shadow-sm p-4 mb-3 flex justify-between items-center">
+            <div className="px-2 bg-card flex justify-between items-center">
               <div className="flex items-center gap-2 text-sm">
                 <SlidersHorizontal className="h-4 w-4" />
                 <span>{products.length} Products</span>
               </div>
-              {/* MOBILE FILTER BUTTON */}
+
+              {/* MOBILE FILTER BUTTON (client component) */}
               <div className="lg:hidden">
-                <Sheet>
-                  <SheetTrigger asChild>
-                    <button className="flex items-center gap-2 border bg-white px-4 py-2 rounded-xs text-sm font-medium shadow-sm">
-                      <Filter className="h-4 w-4" />
-                      Filters
-                    </button>
-                  </SheetTrigger>
-
-                  <SheetContent
-                    side="left"
-                    className="w-[320px] overflow-y-auto p-0"
-                  >
-                    {/* HEADER */}
-                    <div className="sticky top-0 z-10 bg-white border-b px-5 py-4 flex items-center justify-between">
-                      <SheetHeader className="space-y-0">
-                        <SheetTitle className="text-lg">Filters</SheetTitle>
-                      </SheetHeader>
-
-                      <SheetClose asChild>
-                        <Link
-                          href="/products"
-                          className="text-sm text-title font-medium hover:underline"
-                        >
-                          Reset
-                        </Link>
-                      </SheetClose>
-                    </div>
-
-                    <div className="p-5">
-                      {/* ================= SEARCH ================= */}
-                      <form method="get" className="mb-6">
-                        <input
-                          type="hidden"
-                          name="category"
-                          value={sp?.categoryId || ''}
-                        />
-                        <input
-                          type="hidden"
-                          name="brand"
-                          value={sp?.brand || ''}
-                        />
-                        <input
-                          type="hidden"
-                          name="rating"
-                          value={sp?.rating || ''}
-                        />
-                        <input
-                          type="hidden"
-                          name="minPrice"
-                          value={sp?.minPrice || ''}
-                        />
-                        <input
-                          type="hidden"
-                          name="maxPrice"
-                          value={sp?.maxPrice || ''}
-                        />
-                        <input
-                          type="hidden"
-                          name="sortBy"
-                          value={sp?.sortBy || ''}
-                        />
-                        <input
-                          type="hidden"
-                          name="sortOrder"
-                          value={sp?.sortOrder || ''}
-                        />
-
-                        <div>
-                          <h3 className="font-semibold mb-3 text-sm uppercase tracking-wide text-gray-500">
-                            Search
-                          </h3>
-
-                          <input
-                            type="search"
-                            name="search"
-                            placeholder="Search product..."
-                            defaultValue={sp?.search || ''}
-                            className="w-full border border-gray-200  outline-none p-3 rounded-xs text-sm"
-                          />
-                        </div>
-                      </form>
-
-                      {/* ================= PRICE FILTER ================= */}
-                      <div className="mb-6 border-b pb-6">
-                        <h3 className="font-semibold mb-4 text-sm uppercase tracking-wide text-gray-500">
-                          Price
-                        </h3>
-
-                        <div className="space-y-2">
-                          <SheetClose asChild>
-                            <Link
-                              href={`?maxPrice=50${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                              className="flex items-center justify-between rounded-xs border px-4 py-3 text-sm hover:border-orange-400 hover:bg-orange-50 transition"
-                            >
-                              <span>Under $50</span>
-                              <span>→</span>
-                            </Link>
-                          </SheetClose>
-                          <SheetClose asChild>
-                            <Link
-                              href={`?minPrice=50&maxPrice=100${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                              className="flex items-center justify-between rounded-xs border px-4 py-3 text-sm hover:border-orange-400 hover:bg-orange-50 transition"
-                            >
-                              <span>$50 - $100</span>
-                              <span>→</span>
-                            </Link>
-                          </SheetClose>
-                          <SheetClose asChild>
-                            <Link
-                              href={`?minPrice=100&maxPrice=200${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                              className="flex items-center justify-between rounded-xs border px-4 py-3 text-sm hover:border-orange-400 hover:bg-orange-50 transition"
-                            >
-                              <span>$100 - $200</span>
-                              <span>→</span>
-                            </Link>
-                          </SheetClose>
-                          <SheetClose asChild>
-                            <Link
-                              href={`?minPrice=200${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                              className="flex items-center justify-between rounded-xs border px-4 py-3 text-sm hover:border-orange-400 hover:bg-orange-50 transition"
-                            >
-                              <span>$200+</span>
-                              <span>→</span>
-                            </Link>
-                          </SheetClose>
-                        </div>
-                      </div>
-
-                      {/* ================= RATING ================= */}
-                      <div className="mb-6 border-b pb-6">
-                        <h3 className="font-semibold mb-4 text-sm uppercase tracking-wide text-gray-500">
-                          Rating
-                        </h3>
-
-                        <div className="space-y-2">
-                          <SheetClose asChild>
-                            <Link
-                              href={`?rating=4${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                              className="flex items-center justify-between rounded-xs border px-4 py-3 text-sm hover:border-orange-400 hover:bg-orange-50 transition"
-                            >
-                              <span>⭐ 4 & above</span>
-                              <span>→</span>
-                            </Link>
-                          </SheetClose>
-                          <SheetClose asChild>
-                            <Link
-                              href={`?rating=3${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                              className="flex items-center justify-between rounded-xs border px-4 py-3 text-sm hover:border-orange-400 hover:bg-orange-50 transition"
-                            >
-                              <span>⭐ 3 & above</span>
-                              <span>→</span>
-                            </Link>
-                          </SheetClose>
-                        </div>
-                      </div>
-
-                      {/* ================= CATEGORY ================= */}
-                      <div className="mb-6 border-b pb-6">
-                        <h3 className="font-semibold mb-4 text-sm uppercase tracking-wide text-gray-500">
-                          Category
-                        </h3>
-
-                        <div className="space-y-2">
-                          <SheetClose asChild>
-                            <Link
-                              href={`?category=Smartphones${sp?.search ? '&search=' + sp.search : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                              className="flex items-center justify-between rounded-xs border px-4 py-3 text-sm hover:border-orange-400 hover:bg-orange-50 transition"
-                            >
-                              <span>Smartphones</span>
-                              <span>→</span>
-                            </Link>
-                          </SheetClose>
-                          <SheetClose asChild>
-                            <Link
-                              href={`?category=Laptop${sp?.search ? '&search=' + sp.search : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                              className="flex items-center justify-between rounded-xs border px-4 py-3 text-sm hover:border-orange-400 hover:bg-orange-50 transition"
-                            >
-                              <span>Laptop</span>
-                              <span>→</span>
-                            </Link>
-                          </SheetClose>
-                          <SheetClose asChild>
-                            <Link
-                              href={`?category=Fashion${sp?.search ? '&search=' + sp.search : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                              className="flex items-center justify-between rounded-xs border px-4 py-3 text-sm hover:border-orange-400 hover:bg-orange-50 transition"
-                            >
-                              <span>Fashion</span>
-                              <span>→</span>
-                            </Link>
-                          </SheetClose>
-                        </div>
-                      </div>
-
-                      {/* ================= BRAND ================= */}
-                      <div className="mb-6 border-b pb-6">
-                        <h3 className="font-semibold mb-4 text-sm uppercase tracking-wide text-gray-500">
-                          Brand
-                        </h3>
-
-                        <div className="space-y-2">
-                          <SheetClose asChild>
-                            <Link
-                              href={`?brand=Apple${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                              className="flex items-center justify-between rounded-xs border px-4 py-3 text-sm hover:border-orange-400 hover:bg-orange-50 transition"
-                            >
-                              <span>Apple</span>
-                              <span>→</span>
-                            </Link>
-                          </SheetClose>
-                          <SheetClose asChild>
-                            <Link
-                              href={`?brand=Samsung${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                              className="flex items-center justify-between rounded-xs border px-4 py-3 text-sm hover:border-orange-400 hover:bg-orange-50 transition"
-                            >
-                              <span>Samsung</span>
-                              <span>→</span>
-                            </Link>
-                          </SheetClose>
-                          <SheetClose asChild>
-                            <Link
-                              href={`?brand=Sony${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}${sp?.sortBy ? '&sortBy=' + sp.sortBy : ''}${sp?.sortOrder ? '&sortOrder=' + sp.sortOrder : ''}`}
-                              className="flex items-center justify-between rounded-xs border px-4 py-3 text-sm hover:border-orange-400 hover:bg-orange-50 transition"
-                            >
-                              <span>Sony</span>
-                              <span>→</span>
-                            </Link>
-                          </SheetClose>
-                        </div>
-                      </div>
-
-                      {/* ================= SORT ================= */}
-                      <div className="mb-4">
-                        <h3 className="font-semibold mb-4 text-sm uppercase tracking-wide text-gray-500">
-                          Sort By
-                        </h3>
-
-                        <div className="space-y-2">
-                          <SheetClose asChild>
-                            <Link
-                              href={`?sortBy=createdAt&sortOrder=desc${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}`}
-                              className="flex items-center justify-between rounded-xs border px-4 py-3 text-sm hover:border-orange-400 hover:bg-orange-50 transition"
-                            >
-                              <span>Latest</span>
-                              <span>→</span>
-                            </Link>
-                          </SheetClose>
-                          <SheetClose asChild>
-                            <Link
-                              href={`?sortBy=price&sortOrder=asc${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}`}
-                              className="flex items-center justify-between rounded-xs border px-4 py-3 text-sm hover:border-orange-400 hover:bg-orange-50 transition"
-                            >
-                              <span>Price Low to High</span>
-                              <span>→</span>
-                            </Link>
-                          </SheetClose>
-                          <SheetClose asChild>
-                            <Link
-                              href={`?sortBy=price&sortOrder=desc${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}`}
-                              className="flex items-center justify-between rounded-xs border px-4 py-3 text-sm hover:border-orange-400 hover:bg-orange-50 transition"
-                            >
-                              <span>Price High to Low</span>
-                              <span>→</span>
-                            </Link>
-                          </SheetClose>
-                          <SheetClose asChild>
-                            <Link
-                              href={`?sortBy=rating&sortOrder=desc${sp?.search ? '&search=' + sp.search : ''}${sp?.categoryId ? '&category=' + sp.categoryId : ''}${sp?.brand ? '&brand=' + sp.brand : ''}${sp?.rating ? '&rating=' + sp.rating : ''}${sp?.minPrice ? '&minPrice=' + sp.minPrice : ''}${sp?.maxPrice ? '&maxPrice=' + sp.maxPrice : ''}`}
-                              className="flex items-center justify-between rounded-xs border px-4 py-3 text-sm hover:border-orange-400 hover:bg-orange-50 transition"
-                            >
-                              <span>Top Rated</span>
-                              <span>→</span>
-                            </Link>
-                          </SheetClose>
-                        </div>
-                      </div>
-                    </div>
-                  </SheetContent>
-                </Sheet>
+                <MobileFilter>
+                  <SearchForm sp={sp} variant="mobile" />
+                  <FilterGroups groups={groups} sp={sp} variant="mobile" />
+                </MobileFilter>
               </div>
 
-              <div className="text-sm text-gray-500 hidden lg:block">
+              <div className="text-sm text-muted-foreground hidden lg:block">
                 Use filters to refine
               </div>
             </div>
@@ -636,61 +308,43 @@ export default async function ProductListing({
                 ))}
               </div>
             ) : (
-              <div className="bg-white p-10 text-center">No products found</div>
+              <div className="bg-card text-muted-foreground p-10 text-center">
+                No products found
+              </div>
             )}
+
+            {/* PAGINATION */}
             {totalPages > 1 && (
               <div className="flex items-center justify-center gap-2 mt-8">
                 {currentPage > 1 && (
                   <Link
-                    href={`?${new URLSearchParams({
-                      ...Object.fromEntries(
-                        Object.entries(sp).filter(
-                          ([, value]) => value !== undefined && value !== '',
-                        ),
-                      ),
-                      page: String(currentPage - 1),
-                    })}`}
-                    className="px-4 py-2 border rounded-xs text-sm hover:bg-gray-100"
+                    href={pageHref(sp, currentPage - 1)}
+                    className={pageBtn}
                   >
                     Previous
                   </Link>
                 )}
 
-                {Array.from(
-                  { length: totalPages },
-                  (_, index) => index + 1,
-                ).map(page => (
-                  <Link
-                    key={page}
-                    href={`?${new URLSearchParams({
-                      ...Object.fromEntries(
-                        Object.entries(sp).filter(
-                          ([, value]) => value !== undefined && value !== '',
-                        ),
-                      ),
-                      page: String(page),
-                    })}`}
-                    className={`px-4 py-2 border rounded-xs text-sm ${
-                      currentPage === page
-                        ? 'bg-primary text-white'
-                        : 'hover:bg-gray-100'
-                    }`}
-                  >
-                    {page}
-                  </Link>
-                ))}
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <Link
+                      key={page}
+                      href={pageHref(sp, page)}
+                      className={`px-4 py-2 border rounded-xs text-sm transition-colors ${
+                        currentPage === page
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "text-body hover:bg-accent hover:text-accent-foreground"
+                      }`}
+                    >
+                      {page}
+                    </Link>
+                  ),
+                )}
 
                 {currentPage < totalPages && (
                   <Link
-                    href={`?${new URLSearchParams({
-                      ...Object.fromEntries(
-                        Object.entries(sp).filter(
-                          ([, value]) => value !== undefined && value !== '',
-                        ),
-                      ),
-                      page: String(currentPage + 1),
-                    })}`}
-                    className="px-4 py-2 border rounded-xs text-sm hover:bg-gray-100"
+                    href={pageHref(sp, currentPage + 1)}
+                    className={pageBtn}
                   >
                     Next
                   </Link>

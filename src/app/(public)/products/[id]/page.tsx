@@ -49,7 +49,7 @@ export default async function ProductDetailsPage({
         : null;
 
   return (
-    <div className="container mx-auto px-3 md:px-4 py-8 md:py-10">
+    <div className="container mx-auto px-0 md:px-4  md:py-10">
       {/* send data to gtm */}
       <ProductViewTracker
         productId={product.id}
@@ -60,7 +60,7 @@ export default async function ProductDetailsPage({
           BREADCRUMB
       ====================================================== */}
 
-      <div className="flex items-center gap-2 text-sm text-gray-500 mb-6 flex-wrap">
+      <div className="hidden md:flex items-center gap-2 text-sm text-gray-500 mb-6 flex-wrap">
         <Link href="/" className="hover:text-primary">
           Home
         </Link>
@@ -103,7 +103,7 @@ export default async function ProductDetailsPage({
               RIGHT SIDE - PRODUCT INFORMATION
           ================================================== */}
 
-          <div className="flex flex-col">
+          <div className="flex px-3 flex-col">
             {/* Brand */}
 
             {product.brand && (

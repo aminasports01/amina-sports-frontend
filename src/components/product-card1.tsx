@@ -48,7 +48,7 @@ const ProductCard1 = ({ product }: ProductCard1Props) => {
             {product.brand}
           </p>
           {/* PRODUCT NAME */}
-          <p className="font-medium text-base text-gray-600 mt-0.5 leading-snug">
+          <p className="font-body text-base font-medium text-foreground leading-snug truncate">
             {product.name}
           </p>
 
