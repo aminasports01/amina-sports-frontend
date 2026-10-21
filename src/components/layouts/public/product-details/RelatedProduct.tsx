@@ -16,9 +16,9 @@ const RelatedProduct = async ({ categoryId }: RelatedProductProps) => {
   const products = response?.data?.data || [];
 
   return (
-    <div className="w-full pb-10 bg-white mt-3 md:mt-5">
+    <div className="w-full pb-10 bg-white mt-6 md:mt-5">
       <div className="container mx-auto md:px-0">
-        <h2 className="font-body font-bold text-2xl text-foreground mb-8 px-3 sm:px-0">
+        <h2 className="font-body font-bold text-2xl text-foreground mb-8  sm:px-0">
           You May Also Like
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">

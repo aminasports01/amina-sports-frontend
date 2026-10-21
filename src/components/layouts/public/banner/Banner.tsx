@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-
 // Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -12,124 +10,142 @@ import "swiper/css/effect-fade";
 import { Pagination, Navigation, Autoplay, EffectFade } from "swiper/modules";
 
 // Components & Icons
-import { ChevronLeft, ChevronRight, Zap } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-/* ---------------- MAIN BANNER (Desktop Full Height & Mobile Optimized) ---------------- */
-const Banner = () => {
-  const slides = [
-    {
-      id: 1,
-      badge: "Limited Time",
-      tag: "Special Offer",
-      title: "FLASH SALE",
-      discount: "17% OFF",
-      subtitle: "limited time offer",
-      image: "/images/banner1.jpg",
-      ctaText: "Grab Deal",
-      ctaLink: "/products?sort=deals",
-    },
-    {
-      id: 2,
-      badge: "Limited Time",
-      tag: "Special Offer",
-      title: "FLASH SALE",
-      discount: "25% OFF",
-      subtitle: "limited time offer",
-      image: "/images/banner2.jpg",
-      ctaText: "Grab Deal",
-      ctaLink: "/products?sort=deals",
-    },
-  ];
+// desktop banner image size: 1920px × 800px
+//mobile banner image size : 1080×1920
+const slides = [
+  {
+    id: 1,
+    eyebrow: "Amina Sports 2026",
+    title: "BEYOND",
+    titleAccent: "THE LIMITS.",
+    description:
+      "Elevate your game. Premium sportswear for those who refuse to blend in.",
+    imageMobile: "/images/banner-mobile-1.png",
+    imageDesktop: "/images/banner-desktop-1.png",
+    ctas: [
+      { text: "Shop Now", link: "/products" },
+      { text: "View Deals", link: "/products?sort=deals" },
+    ],
+  },
+  // {
+  //   id: 2,
+  //   eyebrow: "New Season",
+  //   title: "BUILT FOR",
+  //   titleAccent: "PERFORMANCE.",
+  //   description:
+  //     "Engineered comfort and timeless design, crafted for every move you make.",
+  //   imageMobile: "/images/banner-mobile-2.jpg",
+  //   imageDesktop: "/images/banner-desktop-2.jpg",
+  //   ctas: [
+  //     { text: "Shop Now", link: "/products" },
+  //     { text: "View Deals", link: "/products?sort=deals" },
+  //   ],
+  // },
+];
 
+const Banner = () => {
   return (
-    <div className="w-full relative group overflow-hidden bg-background">
-      {/* CUSTOM NAVIGATION ARROWS (Desktop Only) */}
+    <section className="w-full relative group overflow-hidden bg-background">
+      {/* DESKTOP NAVIGATION ARROWS */}
       <button
         id="banner-prev"
-        className="hidden md:flex absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-30 w-10 h-10 items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm transition-all duration-300"
+        className="hidden md:flex absolute left-6 lg:left-10 top-1/2 -translate-y-1/2 z-30 w-12 h-12 items-center justify-center rounded-full border border-primary-foreground/40 text-primary-foreground backdrop-blur-sm opacity-0 group-hover:opacity-100 hover:bg-primary-foreground hover:text-primary transition-all duration-300"
         aria-label="Previous Slide"
       >
-        <ChevronLeft className="w-6 h-6 stroke-[1.5]" />
+        <ChevronLeft className="w-5 h-5 stroke-[1.5]" />
       </button>
 
       <button
         id="banner-next"
-        className="hidden md:flex absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-30 w-10 h-10 items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm transition-all duration-300"
+        className="hidden md:flex absolute right-6 lg:right-10 top-1/2 -translate-y-1/2 z-30 w-12 h-12 items-center justify-center rounded-full border border-primary-foreground/40 text-primary-foreground backdrop-blur-sm opacity-0 group-hover:opacity-100 hover:bg-primary-foreground hover:text-primary transition-all duration-300"
         aria-label="Next Slide"
       >
-        <ChevronRight className="w-6 h-6 stroke-[1.5]" />
+        <ChevronRight className="w-5 h-5 stroke-[1.5]" />
       </button>
 
       <Swiper
         modules={[Pagination, Navigation, Autoplay, EffectFade]}
-        pagination={{
-          clickable: true,
-          el: ".custom-swiper-pagination",
-        }}
-        navigation={{
-          prevEl: "#banner-prev",
-          nextEl: "#banner-next",
-        }}
-        autoplay={{ delay: 5000, disableOnInteraction: false }}
+        pagination={{ clickable: true, el: ".custom-swiper-pagination" }}
+        navigation={{ prevEl: "#banner-prev", nextEl: "#banner-next" }}
+        autoplay={{ delay: 6000, disableOnInteraction: false }}
         effect="fade"
         fadeEffect={{ crossFade: true }}
+        speed={1200}
         loop
-        className="w-full aspect-[4/3] sm:aspect-[16/9] md:aspect-auto md:h-[calc(100vh-120px)] md:min-h-[500px] md:max-h-[800px]"
+        className="w-full h-[calc(100svh-106px)] min-h-[560px] md:h-[calc(100vh-120px)] md:min-h-[580px] md:max-h-[860px]"
       >
-        {slides.map((slide) => (
+        {slides.map((slide, index) => (
           <SwiperSlide key={slide.id}>
-            <div className="relative w-full h-full flex items-center">
-              {/* BACKGROUND IMAGE WITH RESPONSIVE OBJECT POSITION */}
-              <div className="absolute inset-0 w-full h-full z-0">
+            <div className="relative w-full h-full">
+              {/* ---------- BACKGROUND IMAGES ---------- */}
+              <div className="absolute inset-0 z-0">
+                {/* Mobile image */}
                 <Image
-                  src={slide.image}
-                  alt={slide.title}
+                  src={slide.imageMobile}
+                  alt={`${slide.title} ${slide.titleAccent}`}
                   fill
-                  priority
-                  className="object-cover object-[85%_center] md:object-center"
+                  priority={index === 0}
+                  sizes="100vw"
+                  className="object-cover object-center md:hidden"
                 />
-                {/* Soft gradient overlay focusing on the left content side */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/30 to-transparent md:from-black/60 md:via-black/20 z-10" />
+                {/* Desktop image */}
+                <Image
+                  src={slide.imageDesktop}
+                  alt={`${slide.title} ${slide.titleAccent}`}
+                  fill
+                  priority={index === 0}
+                  sizes="100vw"
+                  className="hidden md:block object-cover object-center"
+                />
+
+                {/* Mobile overlay*/}
+                <div className="absolute inset-0 md:hidden bg-gradient-to-t from-primary/90 via-primary/35 to-transparent" />
+                {/* Desktop overlay*/}
+                <div className="absolute inset-0 hidden md:block bg-gradient-to-r from-primary/75 via-primary/30 to-transparent" />
               </div>
 
-              {/* OVERLAY CONTENT (Fitted strictly to the left side) */}
-              <div className="relative z-20 container mx-auto px-4 sm:px-8 md:px-16 lg:px-24 flex items-center h-full">
-                <div className="w-full max-w-[170px] sm:max-w-[220px] md:max-w-md lg:max-w-xl space-y-1.5 sm:space-y-2.5 md:space-y-3">
-                  {/* TOP BADGES */}
-                  <div className="flex flex-wrap items-center gap-1 sm:gap-2">
-                    <span className="inline-flex items-center gap-0.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[8px] sm:text-[10px] md:text-xs font-semibold px-1.5 py-0.5 sm:px-2 rounded shadow-xs">
-                      <Zap className="w-2 h-2 sm:w-2.5 sm:h-2.5 fill-current" />
-                      {slide.badge}
-                    </span>
-                    <span className="text-white text-[9px] sm:text-xs md:text-sm font-semibold tracking-wider drop-shadow-sm">
-                      {slide.tag}
+              {/* ---------- CONTENT ---------- */}
+              <div className="relative z-20 h-full container mx-auto px-6 md:px-16 lg:px-24 flex flex-col justify-end md:justify-center pb-16 md:pb-0">
+                <div className="w-full max-w-xl text-primary-foreground">
+                  {/* Eyebrow */}
+                  <div className="flex items-center gap-3 mb-4 md:mb-6">
+                    <span className="h-px w-8 md:w-12 bg-primary-foreground/60" />
+                    <span className="text-[10px] md:text-xs font-medium uppercase tracking-[0.4em] text-primary-foreground/80">
+                      {slide.eyebrow}
                     </span>
                   </div>
 
-                  {/* MAIN TITLE */}
-                  <h1 className="text-base sm:text-2xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-none uppercase drop-shadow-md">
-                    {slide.title}
+                  {/* Title */}
+                  <h1 className="font-heading font-extrabold uppercase leading-[0.9] tracking-tight text-[3.5rem] sm:text-7xl md:text-7xl lg:text-8xl">
+                    <span className="block">{slide.title}</span>
+                    <span className="block italic text-primary-foreground/85">
+                      {slide.titleAccent}
+                    </span>
                   </h1>
 
-                  {/* OFFER CARD BOX */}
-                  <div className="bg-card/90 backdrop-blur-md rounded-md sm:rounded-xl p-2 sm:p-3 md:p-4 shadow-lg border border-border mt-1 sm:mt-2">
-                    <p className="text-xs sm:text-lg md:text-2xl font-extrabold text-[var(--color-title)] tracking-tight">
-                      {slide.discount}
-                    </p>
-                    <p className="text-muted-foreground text-[8px] sm:text-[10px] md:text-xs mt-0.5">
-                      {slide.subtitle}
-                    </p>
+                  {/* Description */}
+                  <p className="mt-5 md:mt-7 max-w-sm md:max-w-md text-sm md:text-base leading-relaxed text-primary-foreground/75">
+                    {slide.description}
+                  </p>
 
-                    <div className="mt-1.5 sm:mt-2">
-                      <Link
-                        href={slide.ctaLink}
-                        className="block w-full text-center bg-primary hover:bg-primary/90 text-primary-foreground py-1 sm:py-2 text-[9px] sm:text-xs font-semibold uppercase tracking-wider rounded transition-all shadow-xs"
-                      >
-                        {slide.ctaText}
-                      </Link>
-                    </div>
+                  {/* Buttons */}
+                  <div className="mt-7 md:mt-10 flex flex-col md:flex-row gap-3 md:gap-4">
+                    <Link
+                      href={slide.ctas[0].link}
+                      className="inline-flex items-center justify-center md:min-w-[200px] px-8 py-4 rounded-sm bg-background text-foreground text-xs md:text-sm font-bold uppercase tracking-[0.3em] hover:bg-secondary transition-colors duration-300"
+                    >
+                      {slide.ctas[0].text}
+                    </Link>
+                    <Link
+                      href={slide.ctas[1].link}
+                      className="inline-flex items-center justify-center md:min-w-[200px] px-8 py-4 rounded-sm border border-primary-foreground/60 text-primary-foreground text-xs md:text-sm font-bold uppercase tracking-[0.3em] hover:bg-primary-foreground hover:text-primary transition-colors duration-300"
+                    >
+                      {slide.ctas[1].text}
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -137,36 +153,28 @@ const Banner = () => {
           </SwiperSlide>
         ))}
 
-        {/* CUSTOM MINIMALIST PAGINATION BULLETS */}
-        <div className="custom-swiper-pagination absolute bottom-2 sm:bottom-4 left-0 right-0 z-30 flex items-center justify-center gap-1 sm:gap-1.5" />
+        {/* MINIMAL PAGINATION (line style) */}
+        <div className="custom-swiper-pagination absolute bottom-5 md:bottom-8 left-0 right-0 z-30 flex items-center justify-center gap-2" />
       </Swiper>
 
-      {/* CUSTOM SWIPER PAGINATION STYLES */}
+      {/* PAGINATION STYLES (global CSS variable ব্যবহার করা হয়েছে) */}
       <style jsx global>{`
         .custom-swiper-pagination .swiper-pagination-bullet {
-          width: 5px;
-          height: 5px;
-          background-color: transparent;
-          border: 1px solid #ffffff;
-          opacity: 0.6;
-          margin: 0 2px !important;
-          transition: all 0.3s ease;
-          border-radius: 50%;
-        }
-        @media (min-width: 640px) {
-          .custom-swiper-pagination .swiper-pagination-bullet {
-            width: 7px;
-            height: 7px;
-            margin: 0 3px !important;
-          }
+          width: 18px;
+          height: 2px;
+          border-radius: 0;
+          background-color: var(--primary-foreground);
+          opacity: 0.4;
+          margin: 0 !important;
+          transition: all 0.4s ease;
         }
         .custom-swiper-pagination .swiper-pagination-bullet-active {
-          background-color: #ffffff !important;
+          width: 36px;
           opacity: 1;
-          transform: scale(1.2);
+          background-color: var(--primary-foreground) !important;
         }
       `}</style>
-    </div>
+    </section>
   );
 };
 

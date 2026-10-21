@@ -376,11 +376,11 @@ export default async function ProductDetailsPage({
       ====================================================== */}
 
       {/* Reviews */}
-      <ProductReviews
+      {/* <ProductReviews
         reviews={product.reviews || []}
         rating={product.rating}
         reviewCount={product.reviewCount}
-      />
+      /> */}
 
       {/* related product */}
       <RelatedProduct categoryId={product.categoryId}></RelatedProduct>
