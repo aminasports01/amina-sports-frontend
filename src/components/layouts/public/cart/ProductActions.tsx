@@ -55,11 +55,11 @@ const ProductActions = ({ productId, product }: Props) => {
   // BUY NOW
   const handleBuyNow = () => {
     // if (product.colorVariants?.length > 0 && !selectedColor) {
-    //   toast.error('দয়া করে একটি কালার নির্বাচন করুন।');
+    //   toast.error('Please select a size.');
     //   return;
     // }
     if (product.colorVariants?.length > 0 && !selectedSize) {
-      toast.error("দয়া করে একটি সাইজ নির্বাচন করুন।");
+      toast.error("Please select a size!");
       return;
     }
     setSelectedProduct(product);
@@ -75,7 +75,7 @@ const ProductActions = ({ productId, product }: Props) => {
       //   return;
       // }
       if (product.colorVariants?.length > 0 && !selectedSize) {
-        toast.error("দয়া করে একটি সাইজ নির্বাচন করুন।");
+        toast.error("Please select a size!");
         return;
       }
       setLoading(true);
@@ -260,7 +260,7 @@ Price: ৳${product.specialPrice || product.price}`;
       "
         >
           <MessageCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
-          <span>WhatsApp-এ অর্ডার</span>
+          <span>Order on WhatsApp</span>
         </button>
 
         {/* Call Order */}
@@ -292,7 +292,7 @@ Price: ৳${product.specialPrice || product.price}`;
       "
         >
           <Phone className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
-          <span>কল করে অর্ডার</span>
+          <span>Order by Phone</span>
         </button>
       </div>
     </div>

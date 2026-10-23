@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { Menu, Moon, Sun, ChevronDown, LogOut, User } from 'lucide-react';
-import Link from 'next/link';
-import { getUser, logout } from '@/utils/auth';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from "react";
+import { Menu, Moon, Sun, ChevronDown, LogOut, User } from "lucide-react";
+import Link from "next/link";
+import { getUser, logout } from "@/utils/auth";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const AdminHeader = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -19,17 +19,17 @@ const AdminHeader = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
   // Toggle dark mode
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark');
+    document.documentElement.classList.toggle("dark");
   };
 
   const handelLogout = () => {
     logout();
-    router.push('/login');
+    router.push("/login");
   };
 
   const getInitial = () => {
-    if (!user) return 'U';
-    return (user?.name || user?.email || 'U').charAt(0).toUpperCase();
+    if (!user) return "U";
+    return (user?.name || user?.email || "U").charAt(0).toUpperCase();
   };
 
   return (
@@ -110,10 +110,10 @@ const AdminHeader = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                   <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-20 overflow-hidden">
                     <div className="p-3 border-b">
                       <p className="text-sm font-medium">
-                        {user?.name || 'User'}
+                        {user?.name || "User"}
                       </p>
                       <p className="text-xs text-gray-500">
-                        {user?.email || ''}
+                        {user?.email || ""}
                       </p>
                     </div>
 
