@@ -76,7 +76,7 @@ const Banner = () => {
         fadeEffect={{ crossFade: true }}
         speed={1200}
         loop
-        className="w-full h-[calc(100svh-106px)] min-h-[560px] md:h-[calc(100vh-120px)] md:min-h-[580px] md:max-h-[860px]"
+        className="w-full h-[calc(100svh-50px)] min-h-[560px] md:h-[calc(100vh-120px)] md:min-h-[580px] md:max-h-[860px]"
       >
         {slides.map((slide, index) => (
           <SwiperSlide key={slide.id}>
@@ -120,7 +120,7 @@ const Banner = () => {
                   </div>
 
                   {/* Title */}
-                  <h1 className="font-heading font-extrabold uppercase leading-[0.9] tracking-tight text-[3.5rem] sm:text-7xl md:text-7xl lg:text-8xl">
+                  <h1 className="font-heading  uppercase leading-[0.9] tracking-tight text-[3.5rem] sm:text-7xl md:text-7xl lg:text-8xl">
                     <span className="block">{slide.title}</span>
                     <span className="block italic text-primary-foreground/85">
                       {slide.titleAccent}
