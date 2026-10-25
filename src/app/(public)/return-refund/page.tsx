@@ -1,127 +1,215 @@
-import React from "react";
+import Link from "next/link";
+import { Mail, MapPin, Phone } from "lucide-react";
 
-const ReturnAndRefundPolicyPage = () => {
-  return <div>ReturnAndRefundPolicyPage</div>;
+const SITE_NAME = "Amina Sports";
+const LAST_UPDATED = "October 25, 2026";
+
+const INSIDE_DHAKA_FEE = 90;
+const OUTSIDE_DHAKA_FEE = 130;
+
+const DELIVERY_TIME_INSIDE = "1-2 working days";
+const DELIVERY_TIME_OUTSIDE = "3-5 working days";
+
+const REPORT_DAYS = "3 days";
+const REFUND_TIME = "3-7 working days";
+
+const TERMS_HREF = "/terms-conditions";
+const WARRANTY_HREF = "/warranty-policy";
+
+const CONTACT = {
+  email: "aminasports01@gmail.com",
+  phone: "+8801791815131",
+  address: "",
 };
 
-export default ReturnAndRefundPolicyPage;
+type Section = {
+  title: string;
+  text?: string;
+  points?: string[];
+};
 
-// 'use client';
+const sections: Section[] = [
+  {
+    title: "Delivery",
+    points: [
+      "We deliver all over Bangladesh.",
+      `Delivery charge: ৳${INSIDE_DHAKA_FEE} inside Dhaka and ৳${OUTSIDE_DHAKA_FEE} outside Dhaka.`,
+      `Delivery time: ${DELIVERY_TIME_INSIDE} inside Dhaka and ${DELIVERY_TIME_OUTSIDE} outside Dhaka.`,
+      "Natural disasters, strikes, or courier problems may cause delays.",
+    ],
+  },
+  {
+    title: "When Your Order Arrives",
+    points: [
+      "Check the package before you accept it. If the package is torn or the product looks broken, do not accept it.",
+      "Check the size, color, and model in front of the delivery person.",
+      "We suggest you record a short video while opening the package. It helps us if something is missing or damaged.",
+      "If you accept a damaged package, we may not be able to accept a claim later.",
+    ],
+  },
+  {
+    title: "Wrong or Damaged Product",
+    text: `If you receive the wrong product, the wrong size (our mistake), or a damaged product, tell us within ${REPORT_DAYS} of delivery.`,
+    points: [
+      "Send us clear photos or a video of the problem.",
+      "We will exchange the product for free.",
+      "We will pay the delivery charge both ways.",
+    ],
+  },
+  {
+    title: "Size Exchange",
+    points: [
+      `If the size does not fit, tell us within ${REPORT_DAYS} of delivery.`,
+      "We will exchange it for another size if we have it in stock.",
+      "You will need to pay the delivery charge both ways.",
+    ],
+  },
+  {
+    title: "Return Conditions",
+    text: "To return or exchange a product, it must be:",
+    points: [
+      "Unused and clean.",
+      "In its original packaging, with the box and tags.",
+      "Not washed, repaired, or changed in any way.",
+    ],
+  },
+  {
+    title: "If You Do Not Like the Product",
+    points: [
+      "Please call us first. We will try to help.",
+      "If the product is unused and in its original packaging, we may allow an exchange.",
+      "Used, damaged, or dirty products cannot be returned or exchanged.",
+    ],
+  },
+  {
+    title: "Refunds",
+    points: [
+      "We will refund your money if we cannot exchange your product because it is out of stock.",
+      "We will refund your money if we cannot send you the correct product.",
+      `Refunds usually take ${REFUND_TIME} after we receive and check the returned product.`,
+      "We will send your refund by mobile banking or bank transfer. We will confirm the details with you.",
+    ],
+  },
+  {
+    title: "Manufacturing Defects",
+    points: [
+      "For manufacturing problems like stitching coming apart or the sole coming off, please see our Warranty Policy.",
+    ],
+  },
+  {
+    title: "How to Send a Return or Exchange Request",
+    points: [
+      "Call or email us.",
+      "Tell us your order ID, or your name and phone number.",
+      "Send clear photos or a video of the product and the problem.",
+      "Wait for our team to confirm before you send the product back.",
+    ],
+  },
+];
 
-// import React from 'react';
-// import Link from 'next/link';
-// import { Truck, ArrowLeft, Mail, Phone, Calendar } from 'lucide-react';
-// import { motion } from 'framer-motion';
+export default function ReturnAndRefundPolicyPage() {
+  return (
+    <main className="min-h-screen bg-background px-4 py-6 text-foreground sm:px-6 md:py-16">
+      <div className="mx-auto max-w-3xl">
+        {/* Header */}
+        <header className="border-b border-border pb-6">
+          <h1 className="text-3xl font-bold tracking-tight text-title md:text-4xl">
+            Delivery, Return and Refund Policy
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Last updated: {LAST_UPDATED}
+          </p>
+        </header>
 
-// export default function ReturnAndRefundPolicyPage() {
-//   const policies = [
-//     {
-//       title: 'ডেলিভারি পর ম্যানুফেকচারিং ত্রুটি',
-//       desc: 'পণ্য ডেলিভারি পাওয়ার পর ২৪ ঘণ্টার মধ্যে আমাদের হটলাইনে ম্যানুফেকচারিং ত্রুটি জানাতে হবে। ত্রুটিযুক্ত পণ্য আমাদের স্টোর থেকে পরিবর্তন করা যাবে। এক্ষেত্রে আমাদের এক্সপার্টগণ পণ্যে ত্রুটি পর্যবেক্ষণ করে তা পরিবর্তন করার পদক্ষেপ গ্রহণ করবেন।',
-//     },
-//     {
-//       title: 'রিপ্লেসমেন্ট ও এক্সচেঞ্জ',
-//       desc: 'প্রোডাক্ট রিসিভ করার দিন থেকে ৩ দিনের মধ্যে যদি কোনো সমস্যা দেখা দেয়, তাহলে গ্রাহক সম্পূর্ণ ফ্রি রিপ্লেসমেন্ট পাবেন অথবা এক্সচেঞ্জ করে অন্য যেকোনো পণ্য নিতে পারবেন। অর্ডারকৃত পণ্য যদি স্টকে না থাকে এবং পরবর্তী ১০ দিনের মধ্যে পণ্য গ্রাহক না পেয়ে থাকেন, এই ক্ষেত্রে গ্রাহক সম্পূর্ণ টাকা ফেরত পাবেন।',
-//     },
-//     {
-//       title: 'ডেলিভারি চার্জ',
-//       desc: '৩ দিনের মধ্যে ইস্যু জানালে পণ্য গ্রাহক থেকে ফেরত এবং গ্রাহককে পাঠানোর ক্ষেত্রে ডেলিভারি চার্জ আমরা বহন করবো।',
-//     },
-//     {
-//       title: 'পণ্য ফেরত ও রিফান্ড',
-//       desc: 'পণ্য হাতে পাওয়ার পর যদি লাগবে না মনে হয়, ভুল ক্রমে অর্ডার করলে, বা একাধিক অর্ডার হয়ে গেলে গ্রাহক পণ্যটি ফেরত দিয়ে রিফান্ড অথবা অন্য যেকোনো কিছু নিতে পারবেন, তবে পণ্যটি অবশ্যই ইন্ট্যাক্ট থাকতে হবে। বক্স খুললে বা ছিঁড়ে ফেললে কোনো প্রকার ক্লেইম করা হবে না, রিফান্ড বা এক্সচেঞ্জ করা হবে না।',
-//     },
-//     {
-//       title: 'ওয়ারেন্টি',
-//       desc: 'পণ্য পাওয়ার ৩ দিন পরের সকল প্রোডাক্টের ওয়ারেন্টি রেগুলার ওয়ারেন্টি হিসেবে গণ্য হবে এবং এই ক্ষেত্রে পণ্য অফিসে পাঠাতে এবং গ্রাহকের কাছে পাঠাতে ডেলিভারি চার্জ গ্রাহককে বহন করতে হবে।',
-//     },
-//     {
-//       title: 'কুরিয়ার ইস্যু',
-//       desc: 'পণ্য ভাঙ্গা থাকলে বা প্যাকেট ছেঁড়া থাকলে কুরিয়ার থেকে পণ্য রিসিভ করবেন না। কুরিয়ারে ক্ষতিগ্রস্ত পণ্য রিসিভ করলে তা নিজ দায়িত্বে করতে হবে এবং পরে কোনো অভিযোগ গ্রহণযোগ্য হবে না। রিসিভ করার পর মিসিং বা ড্যামেজ পাওয়া গেলে গ্রাহককে পার্সেল খোলার সময় ভিডিও ধারণ করতে হবে, অন্যথায় কোনো অভিযোগ গ্রহণযোগ্য হবে না।',
-//     },
-//     {
-//       title: 'রিফান্ড সময়কাল',
-//       desc: 'নির্দিষ্ট কারণে পণ্য রিটার্ন দিলে তার মূল্য রিফান্ড করতে ৩ থেকে ১০ কার্যদিবস লাগতে পারে, অনলাইন পেমেন্টের ক্ষেত্রে আরও বেশি সময় লাগতে পারে। বিকাশ / অনলাইন / POS পেমেন্ট রিফান্ডের ক্ষেত্রে রিফান্ড চার্জ প্রযোজ্য।',
-//     },
-//   ];
+        {/* Intro */}
+        <p className="mt-8 text-base leading-relaxed text-body">
+          This page explains how delivery, returns, and refunds work at{" "}
+          {SITE_NAME}. We want your shopping to be easy and fair.
+        </p>
 
-//   return (
-//     <div className="min-h-screen bg-background text-foreground py-12 px-4 sm:px-6 lg:px-8">
-//       <motion.div
-//         initial={{ opacity: 0, y: 15 }}
-//         animate={{ opacity: 1, y: 0 }}
-//         transition={{ duration: 0.4, ease: 'easeOut' }}
-//         className="max-w-6xl mx-auto space-y-12"
-//       >
-//         {/* Header */}
-//         <header className="space-y-4">
-//           <div className="flex items-center gap-2 text-primary text-sm font-semibold uppercase tracking-wider">
-//             <Truck className="w-4 h-4" />
-//             <span>Customer Service</span>
-//           </div>
-//           <h1 className="text-4xl md:text-5xl font-black text-title tracking-tight">
-//             ডেলিভারি, রিটার্ন, এবং রিফান্ড নীতিমালা
-//           </h1>
-//           <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground pt-1">
-//             <Calendar className="w-4 h-4 text-primary" />
-//             <span>Last Updated: July 13, 2024</span>
-//           </div>
-//         </header>
+        {/* Sections */}
+        <div className="mt-10 space-y-8">
+          {sections.map((section, index) => (
+            <section key={section.title}>
+              <h2 className="flex items-baseline gap-2 text-lg font-semibold text-title md:text-xl">
+                <span className="text-muted-foreground">{index + 1}.</span>
+                {section.title}
+              </h2>
 
-//         <hr className="border-border" />
+              {section.text && (
+                <p className="mt-2 text-sm leading-relaxed text-body md:text-base">
+                  {section.text}
+                </p>
+              )}
 
-//         {/* Policy Items List */}
-//         <div className="space-y-8">
-//           {policies.map((item, idx) => (
-//             <div key={idx} className="space-y-2">
-//               <h2 className="text-xl md:text-2xl font-bold text-foreground">
-//                 {idx + 1}. {item.title}
-//               </h2>
-//               <p className="text-body leading-relaxed text-sm md:text-base">
-//                 {item.desc}
-//               </p>
-//             </div>
-//           ))}
-//         </div>
+              {section.points && (
+                <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-body marker:text-muted-foreground md:text-base">
+                  {section.points.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))}
+        </div>
 
-//         <hr className="border-border" />
+        <p className="mt-8 text-sm text-body md:text-base">
+          Please also read our{" "}
+          <Link
+            href={TERMS_HREF}
+            className="font-semibold text-link underline underline-offset-2 hover:text-link-hover"
+          >
+            Terms and Conditions
+          </Link>{" "}
+          and{" "}
+          <Link
+            href={WARRANTY_HREF}
+            className="font-semibold text-link underline underline-offset-2 hover:text-link-hover"
+          >
+            Warranty Policy
+          </Link>
+          .
+        </p>
 
-//         {/* Contact Footer */}
-//         <footer className="pt-2 space-y-4">
-//           <h2 className="text-2xl font-bold text-subtitle">যোগাযোগ</h2>
-//           <p className="text-body text-sm md:text-base">
-//             এই ডেলিভারি, রিটার্ন, এবং রিফান্ড নীতিমালা বা আমাদের পরিষেবা
-//             সম্পর্কে কোনো প্রশ্ন বা উদ্বেগ থাকলে আমাদের সাথে যোগাযোগ করুন:
-//           </p>
+        {/* Contact */}
+        <section className="mt-12 border-t border-border pt-8">
+          <h2 className="text-lg font-semibold text-title md:text-xl">
+            Contact Us
+          </h2>
+          <p className="mt-2 text-sm text-body md:text-base">
+            For any delivery, return, or refund question, contact {SITE_NAME}:
+          </p>
 
-//           <div className="space-y-2 pt-1">
-//             <p className="font-semibold text-foreground text-sm">
-//               Sera Place.com কাস্টমার সাপোর্ট
-//             </p>
-//             <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 pt-1 text-sm">
-//               <a
-//                 href="mailto:seraplace@gmail.com"
-//                 className="inline-flex items-center gap-2 text-foreground hover:text-primary transition-colors font-medium"
-//               >
-//                 <Mail className="w-4 h-4 text-primary" />
-//                 seraplace@gmail.com
-//               </a>
-//               <a
-//                 href="tel:01310520842"
-//                 className="inline-flex items-center gap-2 text-foreground hover:text-primary transition-colors font-medium"
-//               >
-//                 <Phone className="w-4 h-4 text-primary" />
-//                 01310520842
-//               </a>
-//             </div>
-//           </div>
+          <div className="mt-4 space-y-3 text-sm md:text-base">
+            <a
+              href={`mailto:${CONTACT.email}`}
+              className="flex items-center gap-3 text-foreground transition-colors hover:text-hover-text"
+            >
+              <Mail className="h-4 w-4 text-muted-foreground" />
+              {CONTACT.email}
+            </a>
 
-//           <p className="text-xs text-muted-foreground pt-6">
-//             Sera Place.com-এ আপনার আস্থার জন্য ধন্যবাদ। আমরা আপনার সন্তুষ্টি এবং
-//             বিশ্বাসের মূল্য দিই।
-//           </p>
-//         </footer>
-//       </motion.div>
-//     </div>
-//   );
-// }
+            <a
+              href={`tel:${CONTACT.phone}`}
+              className="flex items-center gap-3 text-foreground transition-colors hover:text-hover-text"
+            >
+              <Phone className="h-4 w-4 text-muted-foreground" />
+              {CONTACT.phone}
+            </a>
+
+            {CONTACT.address && (
+              <p className="flex items-start gap-3 text-foreground">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                {CONTACT.address}
+              </p>
+            )}
+          </div>
+
+          <p className="mt-8 text-xs text-muted-foreground">
+            Thank you for shopping with {SITE_NAME}.
+          </p>
+        </section>
+      </div>
+    </main>
+  );
+}

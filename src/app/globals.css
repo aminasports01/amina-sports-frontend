@@ -1,14 +1,71 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+/* @import "@heroui/styles"; */ /* ← শুধু তখনই চালু করবেন যদি HeroUI component ব্যবহার করেন */
+
 @custom-variant dark (&:is(.dark *));
+
+/* =========================================================
+   REFERENCE SITE থেকে নেওয়া: animations & helpers
+========================================================= */
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* loading animation */
+@keyframes loading {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* fade animation for alert */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-in-out;
+}
+
+/* =========================================================
+   FONTS (layout.tsx এ next/font দিয়ে এই variable গুলো সেট করতে হবে)
+========================================================= */
+
+@theme {
+  --font-logo: var(--font-logo);
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+  --font-price: var(--font-price);
+}
 
 /* =========================================================
    THEME CONFIGURATION (Tailwind v4)
 ========================================================= */
 
 @theme inline {
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-heading);
+  --font-sans:
+    var(--font-body), var(--font-bangla), ui-sans-serif, system-ui, sans-serif;
 
   /* Colors mapped to CSS Variables */
   --color-background: var(--background);
@@ -46,6 +103,8 @@
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
@@ -56,7 +115,7 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
 
-  /* Typography Dynamic Utility Colors */
+  /* Typography Dynamic Utility Colors (আপনার আগের token, চালু রাখা হয়েছে) */
   --color-title: var(--title);
   --color-subtitle: var(--subtitle);
   --color-body: var(--body);
@@ -74,6 +133,12 @@
   --color-link: var(--link);
   --color-link-hover: var(--link-hover);
 
+  /* Status */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --color-hover: var(--hover);
+
   /* Radius */
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
@@ -82,198 +147,169 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-
-  --color-success: var(--success);
-  --color-warning: var(--warning);
-  --color-info: var(--info);
-  --color-hover: var(--hover);
 }
 
 /* =========================================================
-   LIGHT THEME — BLACK & WHITE ONLY
+   LIGHT THEME  (reference site এর রঙ)
 ========================================================= */
 
 :root {
   color-scheme: light;
 
-  /* Brand */
-  --primary: #000000;
-  --primary-hover: #262626;
-  --primary-active: #404040;
-  --primary-light: #f5f5f5;
-  --primary-foreground: #ffffff;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
 
-  /* Background */
-  --background: #ffffff;
-  --foreground: #000000;
+  /* ---- আপনার আগের custom token (reference এর রঙের সাথে মিলিয়ে) ---- */
+  --primary-hover: oklch(0.269 0 0);
+  --primary-active: oklch(0.371 0 0);
+  --primary-light: oklch(0.97 0 0);
 
-  --card: #ffffff;
-  --card-foreground: #000000;
+  --title: var(--foreground);
+  --subtitle: oklch(0.269 0 0);
+  --hover-text: oklch(0.371 0 0);
+  --body: oklch(0.371 0 0);
 
-  --popover: #ffffff;
-  --popover-foreground: #000000;
+  --button: var(--primary);
+  --button-hover: oklch(0.269 0 0);
+  --button-text: var(--primary-foreground);
 
-  /* Secondary */
-  --secondary: #f5f5f5;
-  --secondary-foreground: #000000;
+  --button-hover-1: var(--accent);
+  --button-hover-1-foreground: var(--accent-foreground);
+  --hover: var(--accent);
 
-  --muted: #f5f5f5;
-  --muted-foreground: #525252;
+  --link: var(--foreground);
+  --link-hover: oklch(0.439 0 0);
 
-  /* Accent */
-  --accent: #eeeeee;
-  --accent-foreground: #000000;
+  --success: oklch(0.371 0 0);
+  --warning: oklch(0.556 0 0);
+  --info: oklch(0.439 0 0);
 
-  /* Borders & Inputs */
-  --border: #e5e5e5;
-  --input: #d4d4d4;
-
-  /* Focus Ring */
-  --ring: #000000;
-
-  /* Status */
-  --success: #404040;
-  --warning: #737373;
-  --destructive: #000000;
-  --info: #525252;
-
-  /* Radius */
-  --radius: 0.75rem;
-
-  /* Charts — Monochrome */
-  --chart-1: #000000;
-  --chart-2: #262626;
-  --chart-3: #525252;
-  --chart-4: #737373;
-  --chart-5: #a3a3a3;
-
-  /* Sidebar */
-  --sidebar: #ffffff;
-  --sidebar-foreground: #000000;
-
-  --sidebar-primary: #000000;
-  --sidebar-primary-foreground: #ffffff;
-
-  --sidebar-border: #e5e5e5;
-  --sidebar-ring: #000000;
-
-  /* Button Hover Variant */
-  --button-hover-1: #f0f0f0;
-  --button-hover-1-foreground: #000000;
-
-  --hover: #f0f0f0;
-
-  /* Typography */
-  --title: #000000;
-  --subtitle: #262626;
-  --hover-text: #404040;
-  --body: #404040;
-
-  /* Buttons */
-  --button: #000000;
-  --button-hover: #262626;
-  --button-text: #ffffff;
-
-  /* Links */
-  --link: #000000;
-  --link-hover: #525252;
-
-  /* Gradients — Monochrome */
-  --gradient-primary: linear-gradient(135deg, #000000 0%, #262626 100%);
-  --gradient-secondary: linear-gradient(135deg, #262626 0%, #525252 100%);
-  --gradient-dark: linear-gradient(135deg, #000000 0%, #171717 100%);
+  --gradient-primary: linear-gradient(
+    135deg,
+    oklch(0.205 0 0) 0%,
+    oklch(0.269 0 0) 100%
+  );
+  --gradient-secondary: linear-gradient(
+    135deg,
+    oklch(0.269 0 0) 0%,
+    oklch(0.439 0 0) 100%
+  );
+  --gradient-dark: linear-gradient(
+    135deg,
+    oklch(0.205 0 0) 0%,
+    oklch(0.145 0 0) 100%
+  );
 }
 
 /* =========================================================
-   DARK THEME — BLACK & WHITE ONLY
+   DARK THEME  (reference site এর রঙ)
 ========================================================= */
 
 .dark {
   color-scheme: dark;
 
-  /* Brand */
-  --primary: #ffffff;
-  --primary-hover: #e5e5e5;
-  --primary-active: #d4d4d4;
-  --primary-light: #1f1f1f;
-  --primary-foreground: #000000;
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
 
-  /* Background */
-  --background: #0a0a0a;
-  --foreground: #fafafa;
+  /* ---- আপনার আগের custom token (dark) ---- */
+  --primary-hover: oklch(0.87 0 0);
+  --primary-active: oklch(0.708 0 0);
+  --primary-light: oklch(0.269 0 0);
 
-  --card: #121212;
-  --card-foreground: #fafafa;
+  --title: var(--foreground);
+  --subtitle: oklch(0.922 0 0);
+  --hover-text: oklch(0.87 0 0);
+  --body: oklch(0.87 0 0);
 
-  --popover: #171717;
-  --popover-foreground: #fafafa;
+  --button: var(--primary);
+  --button-hover: oklch(0.87 0 0);
+  --button-text: var(--primary-foreground);
 
-  /* Secondary */
-  --secondary: #1f1f1f;
-  --secondary-foreground: #fafafa;
+  --button-hover-1: var(--accent);
+  --button-hover-1-foreground: var(--accent-foreground);
+  --hover: var(--accent);
 
-  --muted: #1a1a1a;
-  --muted-foreground: #a3a3a3;
+  --link: var(--foreground);
+  --link-hover: oklch(0.708 0 0);
 
-  /* Accent */
-  --accent: #262626;
-  --accent-foreground: #fafafa;
+  --success: oklch(0.87 0 0);
+  --warning: oklch(0.708 0 0);
+  --info: oklch(0.708 0 0);
 
-  /* Borders & Inputs */
-  --border: #2a2a2a;
-  --input: #3a3a3a;
-
-  /* Focus Ring */
-  --ring: #d4d4d4;
-
-  /* Status */
-  --success: #d4d4d4;
-  --warning: #a3a3a3;
-  --destructive: #f5f5f5;
-  --info: #a3a3a3;
-
-  /* Charts — Monochrome */
-  --chart-1: #ffffff;
-  --chart-2: #d4d4d4;
-  --chart-3: #a3a3a3;
-  --chart-4: #737373;
-  --chart-5: #525252;
-
-  /* Sidebar */
-  --sidebar: #0f0f0f;
-  --sidebar-foreground: #fafafa;
-
-  --sidebar-primary: #ffffff;
-  --sidebar-primary-foreground: #000000;
-
-  --sidebar-border: #2a2a2a;
-  --sidebar-ring: #d4d4d4;
-
-  /* Button Hover Variant */
-  --button-hover-1: #262626;
-  --button-hover-1-foreground: #fafafa;
-
-  --hover: #262626;
-
-  /* Typography */
-  --title: #ffffff;
-  --subtitle: #e5e5e5;
-  --hover-text: #d4d4d4;
-  --body: #d4d4d4;
-
-  /* Buttons */
-  --button: #ffffff;
-  --button-hover: #e5e5e5;
-  --button-text: #000000;
-
-  /* Links */
-  --link: #ffffff;
-  --link-hover: #a3a3a3;
-
-  /* Gradients — Monochrome */
-  --gradient-primary: linear-gradient(135deg, #ffffff 0%, #d4d4d4 100%);
-  --gradient-secondary: linear-gradient(135deg, #d4d4d4 0%, #a3a3a3 100%);
-  --gradient-dark: linear-gradient(135deg, #171717 0%, #0a0a0a 100%);
+  --gradient-primary: linear-gradient(
+    135deg,
+    oklch(0.922 0 0) 0%,
+    oklch(0.708 0 0) 100%
+  );
+  --gradient-secondary: linear-gradient(
+    135deg,
+    oklch(0.708 0 0) 0%,
+    oklch(0.556 0 0) 100%
+  );
+  --gradient-dark: linear-gradient(
+    135deg,
+    oklch(0.205 0 0) 0%,
+    oklch(0.145 0 0) 100%
+  );
 }
 
 .dark ::selection {
@@ -305,7 +341,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border outline-ring/50;
   }
 
   html {
@@ -313,6 +349,8 @@
   }
 
   body {
+    font-family:
+      var(--font-body), var(--font-bangla), ui-sans-serif, system-ui, sans-serif;
     @apply bg-background text-foreground;
     min-height: 100vh;
   }
@@ -329,7 +367,7 @@
 }
 
 /* =========================================================
-   SWIPER PAGINATION — MONOCHROME
+   SWIPER PAGINATION
 ========================================================= */
 
 .swiper-pagination-bullet {
@@ -347,7 +385,7 @@
 }
 
 /* =========================================================
-   SCROLLBAR — MONOCHROME
+   SCROLLBAR
 ========================================================= */
 
 ::-webkit-scrollbar {

@@ -1,28 +1,42 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import {
-  User,
-  LogOut,
-  LayoutDashboard,
-  ChevronDown,
-  Circle,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
-import { logout } from "@/utils/auth";
+import React, { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { LayoutDashboard, LogOut, User } from "lucide-react";
+import { logout } from "@/utils/auth";
 import { IUser } from "@/types/auth";
 
 interface UserDropdownProps {
   user: IUser;
 }
 
+const getInitials = (name?: string) => {
+  if (!name) return "";
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+};
+
+const itemClass =
+  "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-foreground transition-colors hover:bg-accent hover:text-accent-foreground";
+
 const UserDropdown = ({ user }: UserDropdownProps) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // Close on outside click
+  const isAdmin = user?.role === "ADMIN";
+  const profileHref = isAdmin ? "/admin/profile" : "/dashboard/profile";
+  const dashboardHref = isAdmin ? "/admin" : "/dashboard";
+  const initials = getInitials(user?.name);
+
+  // বাইরে ক্লিক করলে বা Escape চাপলে বন্ধ হবে
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -33,188 +47,94 @@ const UserDropdown = ({ user }: UserDropdownProps) => {
       }
     };
 
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKey);
+    };
   }, []);
 
-  // ROLE BASED PROFILE REDIRECT
-  const handleProfile = () => {
-    setOpen(false);
-    if (user?.role === "ADMIN") {
-      router.push("/admin/profile");
-    } else {
-      router.push("/dashboard/profile");
-    }
-  };
-
-  // ROLE BASED DASHBOARD REDIRECT
-  const handleDashboard = () => {
-    setOpen(false);
-    if (user?.role === "ADMIN") {
-      router.push("/admin");
-    } else {
-      router.push("/dashboard");
-    }
-  };
-
-  // LOGOUT
   const handleLogout = () => {
     setOpen(false);
     logout();
     router.push("/login");
   };
 
-  // Global Theme matching role badge colors
-  const getRoleBadgeStyle = () => {
-    return user?.role === "ADMIN"
-      ? "text-primary bg-[var(--color-primary-light)] border border-primary/20"
-      : "text-[var(--color-subtitle)] bg-secondary border border-border";
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((word) => word[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* USER BUTTON WITH AVATAR + CHEVRON */}
+      {/* Avatar button  */}
       <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 sm:gap-2 p-1 sm:px-2 sm:py-1.5 rounded-full hover:bg-[var(--color-primary-light)] transition-all duration-200"
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className="flex items-center justify-center rounded-md p-1.5 transition-colors duration-200 hover:bg-accent"
         aria-label="User menu"
+        aria-expanded={open}
       >
-        {/* Avatar */}
-        <div className="flex items-center justify-center shrink-0">
-          {user?.avatar ? (
-            <Image
-              src={user.avatar}
-              alt="user avatar"
-              width={40}
-              height={40}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border border-border ring-2 ring-[var(--color-primary-light)]"
-            />
-          ) : (
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-primary flex items-center justify-center shadow-sm">
-              {user?.name ? (
-                <span className="text-xs sm:text-sm font-semibold text-primary-foreground">
-                  {getInitials(user.name)}
-                </span>
-              ) : (
-                <User className="w-4 h-4 text-primary-foreground" />
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Chevron indicator */}
-        <ChevronDown
-          className={`hidden md:block w-4 h-4 text-[var(--color-body)] transition-transform duration-200 ${
-            open ? "rotate-180 text-primary" : ""
-          }`}
-        />
+        {user?.avatar ? (
+          <Image
+            src={user.avatar}
+            alt="User avatar"
+            width={28}
+            height={28}
+            className="h-7 w-7 rounded-full border border-border object-cover"
+          />
+        ) : (
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-foreground text-xs font-semibold text-background">
+            {initials || <User size={14} />}
+          </span>
+        )}
       </button>
 
-      {/* DROPDOWN MENU */}
+      {/* Dropdown */}
       {open && (
-        <div className="absolute right-0 mt-2 w-72 bg-card rounded-xl shadow-xl border border-border overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-          {/* USER INFO HEADER */}
-          <div className="p-4 bg-secondary/50 border-b border-border">
-            <div className="flex items-center gap-3">
-              {/* Avatar */}
-              {user?.avatar ? (
-                <Image
-                  src={user.avatar}
-                  alt="user avatar"
-                  width={44}
-                  height={44}
-                  className="w-11 h-11 rounded-full object-cover border border-border ring-2 ring-[var(--color-primary-light)]"
-                />
-              ) : (
-                <div className="w-11 h-11 rounded-full bg-gradient-primary flex items-center justify-center shadow-sm">
-                  {user?.name ? (
-                    <span className="text-sm font-bold text-primary-foreground">
-                      {getInitials(user.name)}
-                    </span>
-                  ) : (
-                    <User className="w-5 h-5 text-primary-foreground" />
-                  )}
-                </div>
-              )}
-
-              <div className="flex-1 min-w-0">
-                <p className="font-bold text-[var(--color-title)] truncate text-sm">
-                  {user?.name || "User"}
-                </p>
-                <div className="flex items-center gap-1 mt-1">
-                  <span
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium ${getRoleBadgeStyle()}`}
-                  >
-                    <Circle className="w-1.5 h-1.5 fill-current" />
-                    {user?.role}
-                  </span>
-                </div>
-              </div>
-            </div>
+        <div className="absolute right-0 z-50 mt-2 w-60 overflow-hidden rounded-lg border border-border bg-popover text-popover-foreground shadow-lg animate-in fade-in slide-in-from-top-2 duration-150">
+          {/* User info */}
+          <div className="border-b border-border px-4 py-3">
+            <p className="truncate text-sm font-semibold text-title">
+              {user?.name || "User"}
+            </p>
+            {user?.email && (
+              <p className="truncate text-xs text-muted-foreground">
+                {user.email}
+              </p>
+            )}
           </div>
 
-          {/* MENU ITEMS */}
-          <div className="p-1.5 space-y-0.5">
-            {/* Profile */}
-            <button
-              onClick={handleProfile}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-foreground hover:bg-[var(--color-primary-light)] hover:text-primary transition-colors group"
+          {/* Links */}
+          <div className="p-1.5">
+            <Link
+              href={profileHref}
+              onClick={() => setOpen(false)}
+              className={itemClass}
             >
-              <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                <User className="w-4 h-4 text-[var(--color-body)] group-hover:text-primary transition-colors" />
-              </div>
-              <div className="flex-1 text-left">
-                <p className="font-medium text-xs sm:text-sm">Profile</p>
-                <p className="text-[11px] text-[var(--color-body)]">
-                  View and edit your profile
-                </p>
-              </div>
-            </button>
+              <User size={16} className="text-muted-foreground" />
+              Profile
+            </Link>
 
-            {/* Dashboard */}
-            <button
-              onClick={handleDashboard}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-foreground hover:bg-[var(--color-primary-light)] hover:text-primary transition-colors group"
+            <Link
+              href={dashboardHref}
+              onClick={() => setOpen(false)}
+              className={itemClass}
             >
-              <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                <LayoutDashboard className="w-4 h-4 text-[var(--color-body)] group-hover:text-primary transition-colors" />
-              </div>
-              <div className="flex-1 text-left">
-                <p className="font-medium text-xs sm:text-sm">Dashboard</p>
-                <p className="text-[11px] text-[var(--color-body)]">
-                  {user?.role === "ADMIN"
-                    ? "Admin control panel"
-                    : "Your activity overview"}
-                </p>
-              </div>
-            </button>
+              <LayoutDashboard size={16} className="text-muted-foreground" />
+              {isAdmin ? "Admin Panel" : "Dashboard"}
+            </Link>
+          </div>
 
-            {/* Divider */}
-            <div className="my-1 border-t border-border" />
-
-            {/* Logout */}
+          {/* Logout */}
+          <div className="border-t border-border p-1.5">
             <button
+              type="button"
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-destructive hover:bg-destructive/10 transition-colors group"
+              className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-destructive transition-colors hover:bg-destructive/10"
             >
-              <div className="w-8 h-8 rounded-lg bg-destructive/10 flex items-center justify-center group-hover:bg-destructive/20 transition-colors">
-                <LogOut className="w-4 h-4 text-destructive" />
-              </div>
-              <div className="flex-1 text-left">
-                <p className="font-medium text-xs sm:text-sm">Logout</p>
-                <p className="text-[11px] text-destructive/80">
-                  Sign out of your account
-                </p>
-              </div>
+              <LogOut size={16} />
+              Logout
             </button>
           </div>
         </div>

@@ -1,18 +1,30 @@
 "use client";
 
-import { ShoppingCart } from "lucide-react";
-import { useEffect, useState, useSyncExternalStore } from "react";
-import { cn } from "@/lib/utils";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import Link from "next/link";
-import SearchBar from "./SearchBar";
+import { Menu, Search, ShoppingBag, User } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cart.store";
 import { getUser } from "@/utils/auth";
-import UserDropdown from "./UserDropdown";
-import DesktopNav from "./DesktopNav";
-import MobileSidebar from "./MobileSidebar";
 import { IUser } from "@/types/auth";
+import UserDropdown from "./UserDropdown";
+import MobileSidebar from "./MobileSidebar";
+import SearchModal from "./SearchModal";
 
+const navLinks = [
+  { label: "Men's Shoes", href: "/products?category=Men" },
+  { label: "Women's Shoes", href: "/products?category=Women" },
+];
+
+/* ---------- client-only helpers  ---------- */
 const emptySubscribe = () => () => {};
+
 function useIsHydrated() {
   return useSyncExternalStore(
     emptySubscribe,
@@ -21,114 +33,158 @@ function useIsHydrated() {
   );
 }
 
+function useCurrentUser(): IUser | null {
+  // string snapshot,
+  const raw = useSyncExternalStore(
+    emptySubscribe,
+    () => JSON.stringify(getUser() ?? null),
+    () => "null",
+  );
+  return useMemo(() => JSON.parse(raw) as IUser | null, [raw]);
+}
+
 const PublicNavbar = ({ className }: { className?: string }) => {
   const isHydrated = useIsHydrated();
-  const [user, setUser] = useState<IUser | null>(null);
+  const user = useCurrentUser();
+
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const lastY = useRef(0);
 
   const cartItems = useCartStore((state) => state.items);
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
+  // নিচে স্ক্রল করলে navbar লুকায়, উপরে স্ক্রল করলে দেখায়
   useEffect(() => {
-    const currentUser = getUser();
-    if (currentUser) {
-      queueMicrotask(() => {
-        setUser(currentUser);
-      });
-    }
+    const handleScroll = () => {
+      const y = window.scrollY;
+      if (y < 10) setVisible(true);
+      else if (y > lastY.current) setVisible(false);
+      else setVisible(true);
+      lastY.current = y;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <section
-      className={cn(
-        "border-b border-border bg-background sticky top-0 z-50 w-full transition-colors",
-        className,
-      )}
-    >
-      <div className="container mx-auto px-3 sm:px-4 py-2.5 sm:py-3">
-        {/* Top Navbar Row */}
-        <div className="flex items-center justify-between gap-2 sm:gap-4 md:gap-8">
-          {/* LEFT: Mobile Sidebar & Logo */}
-          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-            <MobileSidebar user={user} />
-
-            {/* Minimalist Text Logo matching Theme Title Color */}
-            <Link href="/" className="flex items-center">
-              <span className="text-base sm:text-lg md:text-2xl font-light tracking-[0.15em] sm:tracking-[0.2em] uppercase text-[var(--color-title)] select-none whitespace-nowrap">
-                AMINA
-                <span className="font-bold tracking-[0.18em] sm:tracking-[0.25em] ml-1.5 sm:ml-2 text-primary">
-                  SPORTS
-                </span>
-              </span>
-            </Link>
-          </div>
-
-          {/* CENTER: Search Bar */}
-          <div className="flex-1 max-w-2xl hidden md:block">
-            <SearchBar />
-          </div>
-
-          {/* RIGHT: User & Cart */}
-          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            {/* User Dropdown / Login */}
-            {user ? (
-              <UserDropdown user={user} />
-            ) : (
-              <Link
-                href="/login"
-                className="text-[var(--color-body)] hover:text-[var(--color-title)] transition-colors"
-                aria-label="Account"
+    <>
+      <nav
+        className={cn(
+          "sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-sm",
+          "transition-transform duration-300 ease-in-out",
+          visible ? "translate-y-0" : "-translate-y-full",
+          className,
+        )}
+      >
+        <div className="mx-auto w-full max-w-[1900px] px-4">
+          <div className="relative flex h-14 items-center">
+            {/* ── LEFT — Hamburger + Logo */}
+            <div className="flex flex-1 items-center gap-2">
+              <button
+                type="button"
+                className="rounded-md p-1 transition-colors hover:bg-accent md:hidden"
+                aria-label="Open menu"
+                onClick={() => setMenuOpen(true)}
               >
-                <div className="p-1.5 hover:bg-[var(--color-primary-light)] rounded-full transition-colors">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5 sm:h-6 sm:w-6"
-                  >
-                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
-                </div>
-              </Link>
-            )}
+                <Menu size={22} strokeWidth={2} />
+              </button>
 
-            {/* Cart Icon */}
-            <div className="relative">
+              <Link
+                href="/"
+                className="whitespace-nowrap text-2xl text-foreground sm:text-3xl"
+                style={{ fontFamily: "var(--font-signature)" }}
+              >
+                Amina Sports
+              </Link>
+            </div>
+
+            {/* ── CENTRE — Nav links (desktop) */}
+            <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 md:flex">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className="group relative py-1 font-body text-base font-semibold text-foreground transition-opacity duration-200 hover:opacity-60"
+                >
+                  {link.label}
+                  <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-foreground transition-all duration-300 ease-in-out group-hover:w-full" />
+                </Link>
+              ))}
+            </div>
+
+            {/* ── RIGHT — Icons */}
+            <div className="flex flex-1 items-center justify-end gap-0.5">
+              {/* Search — desktop */}
+              <button
+                type="button"
+                onClick={() => setSearchOpen(true)}
+                className="mr-2 hidden h-8 w-36 items-center gap-2 rounded-lg border bg-accent px-3 text-muted-foreground transition-colors duration-200 hover:bg-accent/80 lg:flex"
+                aria-label="Open search"
+              >
+                <Search
+                  size={18}
+                  strokeWidth={1.75}
+                  className="text-foreground"
+                />
+                <span className="font-body text-sm font-semibold text-foreground">
+                  Search...
+                </span>
+              </button>
+
+              {/* Search — mobile / tablet */}
+              <button
+                type="button"
+                onClick={() => setSearchOpen(true)}
+                className="rounded-md p-1.5 transition-colors duration-200 hover:bg-accent lg:hidden"
+                aria-label="Search"
+              >
+                <Search size={22} strokeWidth={2} />
+              </button>
+
+              {/* Account */}
+              {user ? (
+                <UserDropdown user={user} />
+              ) : (
+                <Link
+                  href="/login"
+                  className="rounded-md p-1.5 transition-colors duration-200 hover:bg-accent"
+                  aria-label="Account"
+                >
+                  <User size={22} strokeWidth={2} />
+                </Link>
+              )}
+
+              {/* Cart */}
               <Link
                 href="/cart"
-                className="text-[var(--color-body)] hover:text-[var(--color-title)] transition-colors block p-1.5 hover:bg-[var(--color-primary-light)] rounded-full"
+                className="relative rounded-md p-1.5 transition-colors duration-200 hover:bg-accent"
                 aria-label="Shopping Cart"
               >
-                <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" />
+                <ShoppingBag size={22} strokeWidth={2} />
                 {isHydrated && cartCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 sm:-right-1 sm:-top-1 flex h-4 min-w-4 sm:h-5 sm:min-w-5 items-center justify-center rounded-full bg-primary text-primary-foreground px-1 text-[10px] sm:text-[11px] font-bold shadow-sm">
-                    {cartCount}
+                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-[10px] font-bold leading-none text-background">
+                    {cartCount > 99 ? "99+" : cartCount}
                   </span>
                 )}
               </Link>
             </div>
           </div>
         </div>
+      </nav>
 
-        {/* Mobile Search Bar Row */}
-        <div className="mt-2.5 block md:hidden">
-          <SearchBar />
-        </div>
-      </div>
+      {/* Mobile menu (full screen) */}
+      <MobileSidebar
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        user={user}
+        links={navLinks}
+      />
 
-      {/* DESKTOP LOWER NAV */}
-      <div className="border-t border-border hidden lg:block bg-background">
-        <div className="container mx-auto px-4">
-          <DesktopNav />
-        </div>
-      </div>
-    </section>
+      {searchOpen && <SearchModal onClose={() => setSearchOpen(false)} />}
+    </>
   );
 };
 

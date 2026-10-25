@@ -1,191 +1,334 @@
-import React from "react";
+"use client";
 
-const WarrantyPolicyPage = () => {
-  return <div>WarrantyPolicyPage</div>;
+import { useState } from "react";
+import Link from "next/link";
+import { Mail, MapPin, Phone } from "lucide-react";
+
+const SITE_NAME = "Amina Sports";
+const DEFAULT_LANG: Lang = "en";
+
+// ওয়ারেন্টি / ক্লেইমের সময়
+const WARRANTY_PERIOD = { bn: "3 দিন", en: "3 days" };
+const REVIEW_TIME = { bn: "২-৩ কর্মদিবস", en: "2-3 working days" };
+
+const TERMS_HREF = "/terms-and-conditions";
+
+const CONTACT = {
+  email: "aminasports01@gmail.com",
+  phone: "+8801791815131",
+  address: "",
 };
 
-export default WarrantyPolicyPage;
+/* ========================================================= */
 
-// 'use client';
+type Lang = "en" | "bn";
 
-// import React from 'react';
-// import { ShieldAlert, ArrowLeft, Mail, Phone, Calendar } from 'lucide-react';
-// import { motion } from 'framer-motion';
+type Section = {
+  title: string;
+  text?: string;
+  points?: string[];
+};
 
-// export default function WarrantyPolicyPage() {
-//   const policies = [
-//     {
-//       num: '১',
-//       title: 'ওয়ারেন্টি পলিসি',
-//       desc: 'আমরা আন্তর্জাতিক, দেশীয় বা বাংলাদেশ ECAB এবং প্রতিটি প্রোডাক্টের জন্য নির্দিষ্ট ব্র্যান্ডের জারি করা ওয়ারেন্টি পলিসি অনুসরণ করি।',
-//     },
-//     {
-//       num: '২',
-//       title: 'প্রোডাক্ট চেক করা',
-//       desc: 'কাস্টমারকে প্রোডাক্ট আনবক্স করার আগে রঙ, মডেল, স্পেসিফিকেশন এবং আকার ভালোভাবে পরীক্ষা করতে হবে।',
-//     },
-//     {
-//       num: '৩',
-//       title: 'প্রোডাক্ট পরিবর্তন',
-//       desc: 'কাস্টমার যদি আসল প্রোডাক্টটি পরিবর্তন করতে চান তবে আপগ্রেড করার সময় যে কোনো ক্ষতি হলে তা সম্পূর্ণ তার দায়িত্ব।',
-//     },
-//     {
-//       num: '৪',
-//       title: 'পেমেন্ট পরিশোধ',
-//       desc: 'যেকোনো প্রোডাক্ট আনবক্স করার আগে, কাস্টমারকে চুক্তিকৃত মূল্য পরিশোধ করতে হবে। মনে রাখবেন, আনবক্স করার পর ডিল বাতিল করার কোনো বিকল্প নেই। কাস্টমার যদি অর্ডার বাতিল করতে চান তবে তাকে প্রোডাক্টের মূল্যের ২০% পরিশোধ করতে হবে।',
-//     },
-//     {
-//       num: '৫',
-//       title: 'ওয়ারেন্টি মেরামত',
-//       desc: 'ওয়ারেন্টি দ্বারা আচ্ছাদিত প্রোডাক্ট বিক্রির পরে কোনো ত্রুটি পাওয়া গেলে, ত্রুটি মেরামতের মাধ্যমে সরানো হয় এবং প্রোডাক্টের ধরন অনুযায়ী তা অবিলম্বে পরিবর্তন করা হয়।এছাড়াও, একটি নির্দিষ্ট মডেলের প্রোডাক্ট যদি মেরামতযোগ্য না হয় এবং আমাদের স্টকে একই বা সমতুল্য প্রোডাক্ট না থাকে তবে অবচয় এবং মূল্য সামঞ্জস্যের মাধ্যমে একটি ভাল প্রোডাক্ট প্রতিস্থাপন করা যেতে পারে।',
-//     },
-//     {
-//       num: '৬',
-//       title: 'ওয়ারেন্টি নয় এমন প্রোডাক্ট',
-//       desc: 'সমস্ত প্রোডাক্ট ওয়ারেন্টি সহ আসে না। ওয়ারেন্টি শুধুমাত্র সেই প্রোডাক্টগুলির জন্য বৈধ যা একটি নির্দিষ্ট সময়ের জন্য ওয়ারেন্টি সহ ক্রয় করা হয়েছে, বিল বা ইনভয়েসে উল্লিখিত অনুযায়ী।',
-//     },
-//     {
-//       num: '৭',
-//       title: 'সফটওয়্যার বা ডেটা ক্ষতি',
-//       desc: 'যদি প্রোডাক্টের ব্যবহার বা Sera Place.com এর পরিষেবা চলাকালীন কোনো সফটওয়্যার বা ডেটা ক্ষতিগ্রস্ত বা হারিয়ে যায় তবে Sera Place.com এর কোনো দায় থাকবে না। মনে রাখবেন, এই ক্ষেত্রে, Sera Place.com ডেটা পুনরুদ্ধার বা সফটওয়্যার পুনরুদ্ধারের জন্যও দায়ী নয়।',
-//     },
-//     {
-//       num: '৮',
-//       title: 'সার্ভিস টাইম',
-//       desc: 'সার্ভিস কাজ সম্পন্ন করার পরে প্রোডাক্ট ফেরত দেওয়ার জন্য কোনো নির্দিষ্ট সময় নেই। ওয়ারেন্টির আওতায় নির্দিষ্ট মডেলের প্রোডাক্টের জন্য, এই সময়টি ৫-৬ দিন থেকে সর্বাধিক ৩৫-৪০ দিন বা তার বেশি হতে পারে।',
-//     },
-//     {
-//       num: '৯',
-//       title: 'ফ্লাইট / রাজনৈতিক অস্থিরতা',
-//       desc: 'যেমন: গ্লোবাল মহামারী বা যেকোনো রাজনৈতিক অস্থিরতা ইত্যাদি পরিস্থিতির জন্য যেখানে সমস্ত ফ্লাইট অনুমোদিত বা বন্ধ নেই এবং ওয়ারেন্টি শেষ হয়ে গেছে, Sera Place.com কোনোভাবেই নিজ খরচে মেরামত করার দায়িত্ব নেবে, তবে প্রয়োজন হলে ২-৩ মাস সময় লাগবে।',
-//     },
-//     {
-//       num: '১০',
-//       title: 'মেরামত সংক্রান্ত তথ্য',
-//       desc: 'গ্রাহকদের জানানো হয় যে বেশিরভাগ ওয়ারেন্টি প্রোডাক্ট মেরামত করা হয় না; ক্ষতিগ্রস্ত অংশগুলি প্রতিস্থাপিত হয়, তবে বেশিরভাগ ক্ষেত্রে বিদেশ থেকে আমদানি করা হয়।',
-//     },
-//     {
-//       num: '১১',
-//       title: 'কাস্টমাইজড ডিভাইস ও অপারেটিং সিস্টেম',
-//       desc: 'বিক্রয়ের সময় কাস্টমাইজ করা ডিভাইস এবং অপারেটিং সিস্টেম ওয়ারেন্টির আওতায় পড়ে না।',
-//     },
-//     {
-//       num: '১২',
-//       title: 'পাসওয়ার্ড নিরাপত্তা',
-//       desc: 'Sera Place.com ডিভাইস বা অন্যান্য প্রোডাক্ট ডেলিভারির সময় কোনো ধরনের পাসওয়ার্ড বা সিকিউরিটি কোড প্রয়োগ করে না। কাস্টমারকে সমস্ত ধরনের পাসওয়ার্ডের সম্পূর্ণ দায়িত্ব নিতে হবে। এটি ওয়ারেন্টির আওতায় থাকবে না।',
-//     },
-//     {
-//       num: '১৩',
-//       title: 'ওয়ারেন্টি মেয়াদ',
-//       desc: 'Sera Place.com ওয়ারেন্টি মেয়াদ শেষ হওয়ার সময় বা পরে Sera Place.com দ্বারা প্রদত্ত যেকোনো ফ্রি সফটওয়্যার বা হার্ডওয়্যার টিউনিংয়ের জন্য দায়ী থাকবে না।',
-//     },
-//     {
-//       num: '১৪',
-//       title: 'পরিষেবা চার্জ',
-//       desc: 'Sera Place.com ওয়ারেন্টির আওতায় না থাকা যেকোনো পরিষেবার জন্য কাস্টমারের সম্মতিতে চার্জ নির্ধারণ করবে।',
-//     },
-//     {
-//       num: '১৫',
-//       title: 'সিরিয়াল বা স্টিকার ক্ষতি',
-//       desc: 'যদি প্রোডাক্টের সিরিয়াল/স্টিকার আংশিক বা সম্পূর্ণভাবে সরানো বা ক্ষতিগ্রস্ত হয় তবে আর ওয়ারেন্টি ক্লেইম করা যাবে না।',
-//     },
-//     {
-//       num: '১৬',
-//       title: 'স্থায়ী কালি বা ক্ষতি',
-//       desc: 'যদি ব্যবহারকারী প্রোডাক্টের উপর স্থায়ী কালি দিয়ে কিছু লেখেন, তবে ওয়ারেন্টি বাতিল হয়ে যাবে।',
-//     },
-//     {
-//       num: '১৭',
-//       title: 'ক্যাবল ক্ষতি',
-//       desc: 'প্রোডাক্টের সাথে প্রদত্ত ক্যাবলের কোনো ক্ষতি ওয়ারেন্টি দ্বারা আচ্ছাদিত নয়, এমনকি প্রোডাক্টের বৈধ ওয়ারেন্টি থাকলেও।',
-//     },
-//     {
-//       num: '১৮',
-//       title: 'রসিদ হারানো',
-//       desc: 'যদি কোনো নির্দিষ্ট প্রোডাক্টের ওয়ারেন্টি রসিদ হারিয়ে যায়, তবে ক্রয়ের রসিদ এবং সঠিক প্রমাণ প্রদানের শর্তে প্রোডাক্ট গ্রহণ করতে হবে।',
-//     },
-//   ];
+type Content = {
+  title: string;
+  updatedLabel: string;
+  updatedDate: string;
+  intro: string;
+  sections: Section[];
+  termsBefore: string;
+  termsLink: string;
+  termsAfter: string;
+  contactTitle: string;
+  contactText: string;
+  thanks: string;
+  numberFormat: (n: number) => string;
+};
 
-//   return (
-//     <div className="min-h-screen bg-background text-foreground py-12 px-4 sm:px-6 lg:px-8">
-//       <motion.div
-//         initial={{ opacity: 0, y: 15 }}
-//         animate={{ opacity: 1, y: 0 }}
-//         transition={{ duration: 0.4, ease: 'easeOut' }}
-//         className="max-w-6xl mx-auto space-y-12"
-//       >
-//         {/* Header */}
-//         <header className="space-y-4">
-//           <div className="flex items-center gap-2 text-primary text-sm font-semibold uppercase tracking-wider">
-//             <ShieldAlert className="w-4 h-4" />
-//             <span>Customer Protection</span>
-//           </div>
-//           <h1 className="text-4xl md:text-5xl font-black text-title tracking-tight">
-//             ওয়ারেন্টি পলিসি
-//           </h1>
-//           <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground pt-1">
-//             <Calendar className="w-4 h-4 text-primary" />
-//             <span>Last Updated: July 13, 2024</span>
-//           </div>
-//         </header>
+const bn = (n: number) => n.toLocaleString("bn-BD");
 
-//         <hr className="border-border" />
+const content: Record<Lang, Content> = {
+  /* ------------------------- বাংলা ------------------------- */
+  bn: {
+    title: "ওয়ারেন্টি পলিসি",
+    updatedLabel: "সর্বশেষ আপডেট",
+    updatedDate: "২৫ অক্টোবর, ২০২৬",
+    intro: `${SITE_NAME} থেকে কেনা প্রোডাক্টে কোনো তৈরির ত্রুটি থাকলে আমরা কীভাবে সাহায্য করি, তা এখানে সহজ ভাষায় লেখা আছে।`,
+    sections: [
+      {
+        title: "কোন সমস্যায় ওয়ারেন্টি পাবেন",
+        text: `ডেলিভারির ${WARRANTY_PERIOD.bn}র মধ্যে প্রোডাক্টে তৈরির ত্রুটি থাকলে আপনি ক্লেইম করতে পারবেন। যেমন:`,
+        points: [
+          "সেলাই খুলে যাওয়া বা ছিঁড়ে যাওয়া।",
+          "সোল (তলা) আলাদা হয়ে যাওয়া বা আঠা ছেড়ে দেওয়া।",
+          "তৈরির সময়ের অন্য কোনো ত্রুটি।",
+          "ভুল প্রোডাক্ট বা ভুল সাইজ পাঠানো (আমাদের ভুলে)।",
+        ],
+      },
+      {
+        title: "কোন সমস্যায় ওয়ারেন্টি পাবেন না",
+        points: [
+          "সাধারণ ব্যবহারে ক্ষয় হওয়া বা পুরোনো হয়ে যাওয়া।",
+          "ভুলভাবে ব্যবহার, টানাটানি, কেটে যাওয়া বা পুড়ে যাওয়া।",
+          "পানিতে ভেজানো, ভুলভাবে ধোয়া বা রোদে রেখে রঙ নষ্ট হওয়া।",
+          "অন্য কেউ মেরামত বা পরিবর্তন করেছে এমন প্রোডাক্ট।",
+          "নিজের পছন্দের সাইজ ভুল হওয়া। এর জন্য আমাদের শর্তাবলীর এক্সচেঞ্জ নিয়ম দেখুন।",
+        ],
+      },
+      {
+        title: "কীভাবে ক্লেইম করবেন",
+        points: [
+          `${WARRANTY_PERIOD.bn}র মধ্যে আমাদের ফোন করুন বা ইমেইল করুন।`,
+          "আপনার অর্ডার আইডি বা নাম ও ফোন নম্বর জানান।",
+          "সমস্যাটির পরিষ্কার ছবি বা ভিডিও পাঠান।",
+          "প্রোডাক্ট এবং তার প্যাকেট যত্ন করে রেখে দিন।",
+        ],
+      },
+      {
+        title: "আমরা কী করব",
+        points: [
+          `আপনার ক্লেইম পাওয়ার পর ${REVIEW_TIME.bn}র মধ্যে আমরা প্রোডাক্টটি যাচাই করব।`,
+          "ত্রুটি সত্যি হলে সম্ভব হলে মেরামত করে দেব।",
+          "মেরামত সম্ভব না হলে একই প্রোডাক্ট এক্সচেঞ্জ করে দেব।",
+          "এক্সচেঞ্জের স্টক না থাকলে আপনার টাকা ফেরত দেওয়া হবে।",
+        ],
+      },
+      {
+        title: "ডেলিভারি চার্জ কে দেবে",
+        points: [
+          "ত্রুটি আমাদের কারণে হলে আসা-যাওয়ার ডেলিভারি চার্জ আমরা বহন করব।",
+          "ক্লেইম গ্রহণযোগ্য না হলে ডেলিভারি চার্জ আপনাকে দিতে হবে।",
+        ],
+      },
+      {
+        title: "ব্র্যান্ডের ওয়ারেন্টি",
+        points: [
+          "প্রোডাক্টের পেজে আলাদা করে লেখা না থাকলে কোনো ব্র্যান্ড বা কোম্পানির ওয়ারেন্টি দেওয়া হয় না।",
+          "এই পেজের ওয়ারেন্টি শুধু আমাদের নিজস্ব তৈরির ত্রুটির ওয়ারেন্টি।",
+        ],
+      },
+      {
+        title: "নিয়ম পরিবর্তন",
+        points: [
+          "আমরা প্রয়োজনে এই নিয়ম বদলাতে পারি। নতুন নিয়ম এই পেজে প্রকাশ করা হবে।",
+        ],
+      },
+    ],
+    termsBefore: "রিটার্ন ও এক্সচেঞ্জ সম্পর্কে আরও জানতে আমাদের ",
+    termsLink: "শর্তাবলী",
+    termsAfter: " দেখুন।",
+    contactTitle: "যোগাযোগ",
+    contactText: `ওয়ারেন্টি ক্লেইম করতে বা কোনো প্রশ্ন থাকলে ${SITE_NAME}-এর সাথে যোগাযোগ করুন:`,
+    thanks: `${SITE_NAME}-এ আপনার আস্থার জন্য ধন্যবাদ।`,
+    numberFormat: bn,
+  },
 
-//         {/* Policy Items List */}
-//         <div className="space-y-8">
-//           {policies.map((item, idx) => (
-//             <div key={idx} className="space-y-2">
-//               <h2 className="text-xl md:text-2xl font-bold text-foreground flex items-baseline gap-3">
-//                 <span className="text-primary text-base font-extrabold">
-//                   {item.num}.
-//                 </span>
-//                 <span>{item.title}</span>
-//               </h2>
-//               <p className="text-body leading-relaxed text-sm md:text-base pl-7">
-//                 {item.desc}
-//               </p>
-//             </div>
-//           ))}
-//         </div>
+  /* ------------------------- English ------------------------- */
+  en: {
+    title: "Warranty Policy",
+    updatedLabel: "Last updated",
+    updatedDate: "October 25, 2026",
+    intro: `This page explains how we help you if a product from ${SITE_NAME} has a manufacturing problem.`,
+    sections: [
+      {
+        title: "What Is Covered",
+        text: `You can make a claim within ${WARRANTY_PERIOD.en} of delivery if the product has a manufacturing defect. For example:`,
+        points: [
+          "Stitching that comes apart or tears.",
+          "The sole coming off or the glue coming loose.",
+          "Any other defect from when the product was made.",
+          "The wrong product or wrong size was sent (our mistake).",
+        ],
+      },
+      {
+        title: "What Is Not Covered",
+        points: [
+          "Normal wear and tear from regular use.",
+          "Damage from rough use, pulling, cuts, or burns.",
+          "Damage from water, wrong washing, or color fading from sunlight.",
+          "Products that someone else has repaired or changed.",
+          "Choosing the wrong size. Please see the exchange rules in our Terms and Conditions.",
+        ],
+      },
+      {
+        title: "How to Make a Claim",
+        points: [
+          `Call or email us within ${WARRANTY_PERIOD.en}.`,
+          "Tell us your order ID, or your name and phone number.",
+          "Send clear photos or a video of the problem.",
+          "Keep the product and its packaging safe.",
+        ],
+      },
+      {
+        title: "What We Will Do",
+        points: [
+          `We will check your product within ${REVIEW_TIME.en} after we receive your claim.`,
+          "If the defect is real, we will repair it when possible.",
+          "If it cannot be repaired, we will exchange it for the same product.",
+          "If we do not have stock for an exchange, we will refund your money.",
+        ],
+      },
+      {
+        title: "Who Pays the Delivery Charge",
+        points: [
+          "If the problem is our fault, we will pay the delivery charge both ways.",
+          "If the claim is not accepted, you will need to pay the delivery charge.",
+        ],
+      },
+      {
+        title: "Brand Warranty",
+        points: [
+          "We do not give any brand or company warranty unless it is clearly written on the product page.",
+          "The warranty on this page only covers manufacturing defects.",
+        ],
+      },
+      {
+        title: "Changes to This Policy",
+        points: [
+          "We may change this policy when needed. The latest version will always be on this page.",
+        ],
+      },
+    ],
+    termsBefore: "To learn more about returns and exchanges, please read our ",
+    termsLink: "Terms and Conditions",
+    termsAfter: ".",
+    contactTitle: "Contact Us",
+    contactText: `To make a warranty claim or ask a question, contact ${SITE_NAME}:`,
+    thanks: `Thank you for shopping with ${SITE_NAME}.`,
+    numberFormat: (n: number) => String(n),
+  },
+};
 
-//         <hr className="border-border" />
+const languages: { code: Lang; label: string }[] = [
+  { code: "en", label: "En" },
+  { code: "bn", label: "বাং" },
+];
 
-//         {/* Contact Footer */}
-//         <footer className="pt-2 space-y-4">
-//           <h2 className="text-2xl font-bold text-subtitle">যোগাযোগ</h2>
-//           <p className="text-body text-sm md:text-base">
-//             এই ওয়ারেন্টি পলিসি বা আমাদের পরিষেবা সম্পর্কে কোনো প্রশ্ন বা উদ্বেগ
-//             থাকলে আমাদের সাথে যোগাযোগ করুন:
-//           </p>
+export default function WarrantyPolicyPage() {
+  const [lang, setLang] = useState<Lang>(DEFAULT_LANG);
+  const t = content[lang];
 
-//           <div className="space-y-2 pt-1">
-//             <p className="font-semibold text-foreground text-sm">
-//               Sera Place.com কাস্টমার সাপোর্ট
-//             </p>
-//             <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 pt-1 text-sm">
-//               <a
-//                 href="mailto:seraplace@gmail.com"
-//                 className="inline-flex items-center gap-2 text-foreground hover:text-primary transition-colors font-medium"
-//               >
-//                 <Mail className="w-4 h-4 text-primary" />
-//                 seraplace@gmail.com
-//               </a>
-//               <a
-//                 href="tel:01310520842"
-//                 className="inline-flex items-center gap-2 text-foreground hover:text-primary transition-colors font-medium"
-//               >
-//                 <Phone className="w-4 h-4 text-primary" />
-//                 01310520842
-//               </a>
-//             </div>
-//           </div>
+  return (
+    <main
+      lang={lang}
+      className="min-h-screen bg-background px-4 py-2  text-foreground sm:px-6 md:py-16"
+    >
+      <div className="mx-auto max-w-3xl">
+        {/* Language switch */}
+        <div className="md:mb-6 flex justify-end">
+          <div
+            role="group"
+            aria-label="Language"
+            className="inline-flex overflow-hidden rounded-md border border-border bg-card text-sm"
+          >
+            {languages.map((item) => {
+              const active = lang === item.code;
 
-//           <p className="text-xs text-muted-foreground pt-6">
-//             Sera Place.com-এ আপনার আস্থার জন্য ধন্যবাদ। আমরা আপনার সন্তুষ্টি এবং
-//             বিশ্বাসের মূল্য দিই।
-//           </p>
-//         </footer>
-//       </motion.div>
-//     </div>
-//   );
-// }
+              return (
+                <button
+                  key={item.code}
+                  type="button"
+                  onClick={() => setLang(item.code)}
+                  aria-pressed={active}
+                  className={`px-4 py-1.5 font-medium transition-colors ${
+                    active
+                      ? "bg-primary text-primary-foreground"
+                      : "text-body hover:bg-accent hover:text-accent-foreground"
+                  }`}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Header */}
+        <header className="border-b border-border pb-6">
+          <h1 className="text-3xl font-bold tracking-tight text-title md:text-4xl">
+            {t.title}
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {t.updatedLabel}: {t.updatedDate}
+          </p>
+        </header>
+
+        {/* Intro */}
+        <p className="mt-8 text-base leading-relaxed text-body">{t.intro}</p>
+
+        {/* Sections */}
+        <div className="mt-10 space-y-8">
+          {t.sections.map((section, index) => (
+            <section key={section.title}>
+              <h2 className="flex items-baseline gap-2 text-lg font-semibold text-title md:text-xl">
+                <span className="text-muted-foreground">
+                  {t.numberFormat(index + 1)}.
+                </span>
+                {section.title}
+              </h2>
+
+              {section.text && (
+                <p className="mt-2 text-sm leading-relaxed text-body md:text-base">
+                  {section.text}
+                </p>
+              )}
+
+              {section.points && (
+                <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-body marker:text-muted-foreground md:text-base">
+                  {section.points.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))}
+        </div>
+
+        <p className="mt-8 text-sm text-body md:text-base">
+          {t.termsBefore}
+          <Link
+            href={TERMS_HREF}
+            className="font-semibold text-link underline underline-offset-2 hover:text-link-hover"
+          >
+            {t.termsLink}
+          </Link>
+          {t.termsAfter}
+        </p>
+
+        {/* Contact */}
+        <section className="mt-12 border-t border-border pt-8">
+          <h2 className="text-lg font-semibold text-title md:text-xl">
+            {t.contactTitle}
+          </h2>
+          <p className="mt-2 text-sm text-body md:text-base">{t.contactText}</p>
+
+          <div className="mt-4 space-y-3 text-sm md:text-base">
+            <a
+              href={`mailto:${CONTACT.email}`}
+              className="flex items-center gap-3 text-foreground transition-colors hover:text-hover-text"
+            >
+              <Mail className="h-4 w-4 text-muted-foreground" />
+              {CONTACT.email}
+            </a>
+
+            <a
+              href={`tel:${CONTACT.phone}`}
+              className="flex items-center gap-3 text-foreground transition-colors hover:text-hover-text"
+            >
+              <Phone className="h-4 w-4 text-muted-foreground" />
+              {CONTACT.phone}
+            </a>
+
+            {CONTACT.address && (
+              <p className="flex items-start gap-3 text-foreground">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                {CONTACT.address}
+              </p>
+            )}
+          </div>
+
+          <p className="mt-8 text-xs text-muted-foreground">{t.thanks}</p>
+        </section>
+      </div>
+    </main>
+  );
+}

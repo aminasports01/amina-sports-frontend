@@ -7,7 +7,6 @@ const Footer = () => {
   const shopLinks = [
     { name: "Men's Shoes", link: "/products?category=Men" },
     { name: "Women's Shoes", link: "/products?category=Women" },
-    { name: "Kids' Footwear", link: "/products?category=Kids" },
     { name: "All Shoes", link: "/products" },
     { name: "Featured Deals", link: "/products?sort=deals" },
   ];

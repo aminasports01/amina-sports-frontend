@@ -1,169 +1,157 @@
-import React from "react";
+import { Mail, MapPin, Phone } from "lucide-react";
 
-const PrivacyPolicyPage = () => {
-  return <div>PrivacyPolicyPage</div>;
+const SITE_NAME = "Amina Sports";
+const LAST_UPDATED = "October 25, 2026";
+
+const CONTACT = {
+  email: "aminasports01@gmail.com",
+  phone: "+8801791815131",
+  address: "",
 };
 
-export default PrivacyPolicyPage;
+type Section = {
+  title: string;
+  text?: string;
+  bullets?: string[];
+};
 
-// 'use client';
+const sections: Section[] = [
+  {
+    title: "Information We Collect",
+    text: "When you place an order, we collect the information you provide:",
+    bullets: [
+      "Your name and phone number.",
+      "Your delivery address (district, thana, and full address).",
+      "Order details such as product, size, color, quantity, and price.",
+      "Any note you add to your order.",
+    ],
+  },
+  {
+    title: "Payment Information",
+    text: "We currently accept Cash on Delivery only. We do not collect or store your card, bank, or mobile banking details.",
+  },
+  {
+    title: "How We Use Your Information",
+    bullets: [
+      "To confirm, pack, and deliver your order.",
+      "To call you about your order when needed.",
+      "To provide customer support and handle returns or exchanges.",
+      "To prevent fake or fraudulent orders.",
+      "To understand how our website is used and improve it.",
+    ],
+  },
+  {
+    title: "Sharing Your Information",
+    text: "We do not sell your personal information. We share it only when needed:",
+    bullets: [
+      "With delivery and courier partners, so they can deliver your order.",
+      "With analytics and advertising tools, to measure website and ad performance.",
+      "When required by law or to protect our rights and safety.",
+    ],
+  },
+  {
+    title: "Data Security",
+    text: "We take reasonable steps to protect your information from unauthorized access or misuse. However, no method of internet transmission or electronic storage is completely secure.",
+  },
+  {
+    title: "Data Retention",
+    text: "We keep your order information only as long as needed for delivery, support, accounting, and legal purposes.",
+  },
+  {
+    title: "Your Rights",
+    text: `You can ask us to access, correct, or delete your personal information at any time by contacting us using the details below.`,
+  },
+  {
+    title: "Cookies",
+    text: "We use cookies to remember your preferences and understand how visitors use our website. You can control or disable cookies from your browser settings.",
+  },
+  {
+    title: "Changes to This Policy",
+    text: "We may update this policy from time to time. The latest version will always be available on this page with the updated date.",
+  },
+];
 
-// import React from 'react';
-// import { ShieldCheck, Mail, Phone, Calendar } from 'lucide-react';
-// import { motion } from 'framer-motion';
+export default function PrivacyPolicyPage() {
+  return (
+    <main className="min-h-screen bg-background text-foreground px-4 py-6 sm:px-6 md:py-16">
+      <div className="mx-auto max-w-3xl">
+        {/* Header */}
+        <header className="border-b border-border pb-6">
+          <h1 className="text-3xl font-bold tracking-tight text-title md:text-4xl">
+            Privacy Policy
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Last updated: {LAST_UPDATED}
+          </p>
+        </header>
 
-// export default function PrivacyPolicyPage() {
-//   const sections = [
-//     {
-//       title: 'Information We Collect',
-//       content:
-//         'We collect information to enhance your experience and provide better services, including:',
-//       bullets: [
-//         'Personal Information: Name, email, and address during account creation; first name, last name, phone number, email, division, city, area, address 1, and address 2 when updating your address.',
-//         'Transaction Information: Product name, quantity, price, and delivery address for purchases.',
-//         'Payment Information: Credit/debit card details, billing address, and payment method for order processing.',
-//         'Technical Information: Device, browser, IP address, and browsing behavior to improve functionality.',
-//       ],
-//     },
-//     {
-//       title: 'How We Use Your Information',
-//       content:
-//         'We use your information to provide and improve our services, including:',
-//       bullets: [
-//         'Providing Services: Process and deliver orders, manage accounts, and offer customer support.',
-//         'Improving Our Services: Analyze user interactions to enhance website functionality.',
-//         'Communicating with You: Send order updates, promotional offers, and relevant communications.',
-//         'Security and Fraud Prevention: Protect users and the platform from fraud and security threats.',
-//       ],
-//     },
-//     {
-//       title: 'Sharing Your Information',
-//       content: 'We only share your information in specific cases:',
-//       bullets: [
-//         'With Service Providers: Trusted third-party providers for payment processing, order fulfillment, and delivery.',
-//         'For Legal Reasons: Disclosure if required by law or to protect Sera Place.com’s rights, property, or safety.',
-//       ],
-//     },
-//     {
-//       title: 'Data Security',
-//       content:
-//         'We implement robust security measures to protect your personal information from unauthorized access, disclosure, alteration, or destruction. However, no method of transmission over the Internet or electronic storage is completely secure. We strive to use commercially acceptable means to safeguard your data.',
-//     },
-//     {
-//       title: 'Your Rights',
-//       content:
-//         'You have the right to access, update, or delete your personal information. Manage your data by logging into your account or contact our customer support team for assistance.',
-//     },
-//     {
-//       title: 'Cookies',
-//       content:
-//         'We use cookies to enhance your browsing experience. Cookies are small files stored on your device to remember preferences and improve functionality. Manage cookie preferences through your browser settings.',
-//     },
-//     {
-//       title: 'Changes to This Privacy Policy',
-//       content:
-//         'We may update this Privacy Policy periodically to reflect changes in practices or legal requirements. Updates will be posted here with a revised effective date. Review this policy regularly to stay informed.',
-//     },
-//   ];
+        {/* Intro */}
+        <p className="mt-8 text-base leading-relaxed text-body">
+          {SITE_NAME} respects your privacy. This policy explains what
+          information we collect when you shop with us, how we use it, and how
+          we keep it safe.
+        </p>
 
-//   return (
-//     <div className="min-h-screen bg-background text-foreground py-12 px-4 sm:px-6 lg:px-8">
-//       <motion.div
-//         initial={{ opacity: 0, y: 15 }}
-//         animate={{ opacity: 1, y: 0 }}
-//         transition={{ duration: 0.4, ease: 'easeOut' }}
-//         className="max-w-6xl mx-auto space-y-12"
-//       >
-//         {/* Header */}
-//         <header className="space-y-4">
-//           <div className="flex items-center gap-2 text-primary text-sm font-semibold uppercase tracking-wider">
-//             <ShieldCheck className="w-4 h-4" />
-//             <span>Legal Notice</span>
-//           </div>
-//           <h1 className="text-4xl md:text-5xl font-black text-title tracking-tight">
-//             Privacy Policy
-//           </h1>
-//           <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground pt-1">
-//             <Calendar className="w-4 h-4 text-primary" />
-//             <span>Last Updated: July 13, 2024</span>
-//           </div>
-//         </header>
+        {/* Sections */}
+        <div className="mt-10 space-y-8">
+          {sections.map((section) => (
+            <section key={section.title}>
+              <h2 className="text-lg font-semibold text-title md:text-xl">
+                {section.title}
+              </h2>
 
-//         <hr className="border-border" />
+              {section.text && (
+                <p className="mt-2 text-sm leading-relaxed text-body md:text-base">
+                  {section.text}
+                </p>
+              )}
 
-//         {/* Introduction */}
-//         <section className="space-y-3">
-//           <h2 className="text-xl font-bold text-subtitle">Introduction</h2>
-//           <p className="text-body leading-relaxed text-base md:text-lg">
-//             Welcome to Sera Place.com, an e-commerce platform based in
-//             Bangladesh. We are committed to safeguarding your privacy and
-//             protecting the personal information you share with us. This Privacy
-//             Policy explains how we collect, use, share, and protect your data
-//             when you visit our website or use our services.
-//           </p>
-//         </section>
+              {section.bullets && (
+                <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-body marker:text-muted-foreground md:text-base">
+                  {section.bullets.map((bullet) => (
+                    <li key={bullet}>{bullet}</li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))}
+        </div>
 
-//         {/* Main Content Sections */}
-//         <div className="space-y-10">
-//           {sections.map((section, idx) => (
-//             <section key={idx} className="space-y-3">
-//               <h2 className="text-xl md:text-2xl font-bold text-foreground">
-//                 {section.title}
-//               </h2>
-//               <p className="text-body leading-relaxed text-sm md:text-base">
-//                 {section.content}
-//               </p>
-//               {section.bullets && (
-//                 <ul className="list-disc list-inside space-y-2 pt-1 text-body text-sm md:text-base pl-2">
-//                   {section.bullets.map((bullet, bulletIdx) => (
-//                     <li key={bulletIdx} className="leading-relaxed">
-//                       {bullet}
-//                     </li>
-//                   ))}
-//                 </ul>
-//               )}
-//             </section>
-//           ))}
-//         </div>
+        {/* Contact */}
+        <section className="mt-12 border-t border-border pt-8">
+          <h2 className="text-lg font-semibold text-title md:text-xl">
+            Contact Us
+          </h2>
+          <p className="mt-2 text-sm text-body md:text-base">
+            If you have any questions about this policy, contact {SITE_NAME}:
+          </p>
 
-//         <hr className="border-border" />
+          <div className="mt-4 space-y-3 text-sm md:text-base">
+            <a
+              href={`mailto:${CONTACT.email}`}
+              className="flex items-center gap-3 text-foreground transition-colors hover:text-hover-text"
+            >
+              <Mail className="h-4 w-4 text-muted-foreground" />
+              {CONTACT.email}
+            </a>
 
-//         {/* Contact Section */}
-//         <footer className="pt-2 space-y-4">
-//           <h2 className="text-2xl font-bold text-subtitle">Contact Us</h2>
-//           <p className="text-body text-sm md:text-base">
-//             For questions or concerns about this Privacy Policy or our data
-//             practices, please reach out:
-//           </p>
+            <a
+              href={`tel:${CONTACT.phone}`}
+              className="flex items-center gap-3 text-foreground transition-colors hover:text-hover-text"
+            >
+              <Phone className="h-4 w-4 text-muted-foreground" />
+              {CONTACT.phone}
+            </a>
 
-//           <div className="space-y-2 pt-1">
-//             <p className="font-semibold text-foreground text-sm">
-//               Sera Place.com Customer Support
-//             </p>
-//             <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 pt-1 text-sm">
-//               <a
-//                 href="mailto:seraplace@gmail.com"
-//                 className="inline-flex items-center gap-2 text-foreground hover:text-primary transition-colors font-medium"
-//               >
-//                 <Mail className="w-4 h-4 text-primary" />
-//                 seraplace@gmail.com
-//               </a>
-//               <a
-//                 href="tel:01310520842"
-//                 className="inline-flex items-center gap-2 text-foreground hover:text-primary transition-colors font-medium"
-//               >
-//                 <Phone className="w-4 h-4 text-primary" />
-//                 01310520842
-//               </a>
-//             </div>
-//           </div>
-
-//           <p className="text-xs text-muted-foreground pt-6">
-//             Thank you for choosing Sera Place.com. We value your trust and are
-//             dedicated to protecting your privacy.
-//           </p>
-//         </footer>
-//       </motion.div>
-//     </div>
-//   );
-// }
+            {CONTACT.address && (
+              <p className="flex items-start gap-3 text-foreground">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                {CONTACT.address}
+              </p>
+            )}
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+}

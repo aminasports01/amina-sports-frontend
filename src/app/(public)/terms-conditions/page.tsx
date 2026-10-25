@@ -1,191 +1,200 @@
-import React from "react";
+import { Mail, MapPin, Phone } from "lucide-react";
+import Link from "next/link";
 
-const TermsAndConditionsPage = () => {
-  return <div>TermsAndConditionsPage</div>;
+const SITE_NAME = "Amina Sports";
+const LAST_UPDATED = "October 25, 2026";
+
+const INSIDE_DHAKA_FEE = 90;
+const OUTSIDE_DHAKA_FEE = 130;
+
+const DELIVERY_TIME_INSIDE = "1-2 working days";
+const DELIVERY_TIME_OUTSIDE = "3-5 working days";
+const RETURN_DAYS = "3 days";
+
+const PRIVACY_POLICY_HREF = "/privacy-policy";
+
+const CONTACT = {
+  email: "aminasports01@gmail.com",
+  phone: "+8801791815131",
+  address: "",
 };
 
-export default TermsAndConditionsPage;
+type Section = {
+  title: string;
+  points: string[];
+};
 
-// 'use client';
+const sections: Section[] = [
+  {
+    title: "General",
+    points: [
+      `By placing an order with ${SITE_NAME}, you agree to the terms below.`,
+      "Please read these terms before you order.",
+    ],
+  },
+  {
+    title: "Orders and Confirmation",
+    points: [
+      "Please give your correct name, mobile number, and full address when you order.",
+      "After you order, our team will call you to confirm it.",
+      "If we cannot reach you, or your details are wrong, your order may be delayed.",
+    ],
+  },
+  {
+    title: "Price and Stock",
+    points: [
+      "The price shown on the website is the final price. Prices may change, but you will pay the price shown when you placed your order.",
+      "If an item is out of stock, we will tell you. You can then cancel your order or choose another size or color.",
+    ],
+  },
+  {
+    title: "Payment (Cash on Delivery)",
+    points: [
+      "We only accept Cash on Delivery. You pay when you receive your order.",
+      "You do not need to pay anything in advance.",
+      "Total bill = product price + delivery charge.",
+    ],
+  },
+  {
+    title: "Delivery",
+    points: [
+      `We deliver all over Bangladesh. The delivery charge is ৳${INSIDE_DHAKA_FEE} inside Dhaka and ৳${OUTSIDE_DHAKA_FEE} outside Dhaka.`,
+      `Delivery usually takes ${DELIVERY_TIME_INSIDE} inside Dhaka and ${DELIVERY_TIME_OUTSIDE} outside Dhaka.`,
+      "Natural disasters, strikes, or courier problems may cause delays.",
+      "Please keep your phone on when your order is on the way.",
+    ],
+  },
+  {
+    title: "When You Receive Your Order",
+    points: [
+      "Check the size, color, and model in front of the delivery person.",
+      "If the product is wrong or has a problem, tell the delivery person right away and call us.",
+    ],
+  },
+  {
+    title: "Return and Exchange",
+    points: [
+      `If you receive the wrong product, the wrong size (our mistake), or a damaged product, tell us within ${RETURN_DAYS} of delivery. We will exchange it for you.`,
+      "If the size does not fit, you can exchange it for another size if we have it in stock. You will need to pay the delivery charge for both ways.",
+      "The product must be unused, clean, and in its original packaging.",
+      "Used or damaged products cannot be returned or exchanged.",
+      "If we do not have stock for an exchange, we will refund your money.",
+    ],
+  },
+  {
+    title: "Order Cancellation",
+    points: [
+      "You can cancel your order by phone before we hand it to the courier.",
+      "If you place fake orders, or often refuse to accept your delivery for no reason, we may refuse your orders in the future.",
+    ],
+  },
+  {
+    title: "Product Photos and Colors",
+    points: [
+      "We try to show real photos and correct details of our products.",
+      "Colors may look a little different from the photos because of your phone or computer screen.",
+    ],
+  },
+  {
+    title: "Your Information",
+    points: ["We use your information only to process and deliver your order."],
+  },
+  {
+    title: "Changes to These Terms",
+    points: [
+      "We may change these terms when needed. The latest terms will always be on this page.",
+    ],
+  },
+];
 
-// import React from 'react';
-// import { FileText, Mail, Phone, Calendar } from 'lucide-react';
-// import { motion } from 'framer-motion';
+export default function TermsAndConditionsPage() {
+  return (
+    <main className="min-h-screen bg-background px-4 py-6 md:py-12 text-foreground sm:px-6 md:py-16">
+      <div className="mx-auto max-w-3xl">
+        {/* Header */}
+        <header className="border-b border-border pb-6">
+          <h1 className="text-3xl font-bold tracking-tight text-title md:text-4xl">
+            Terms and Conditions
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Last updated: {LAST_UPDATED}
+          </p>
+        </header>
 
-// export default function TermsAndConditionsPage() {
-//   const terms = [
-//     {
-//       num: '১',
-//       title: 'ওয়ারেন্টি পলিসি',
-//       desc: 'আমরা আন্তর্জাতিক, দেশীয় বা বাংলাদেশ ECAB এবং প্রতিটি প্রোডাক্টের জন্য নির্দিষ্ট ব্র্যান্ডের জারি করা ওয়ারেন্টি পলিসি অনুসরণ করি।',
-//     },
-//     {
-//       num: '২',
-//       title: 'প্রোডাক্ট চেক করা',
-//       desc: 'কাস্টমারকে প্রোডাক্ট আনবক্স করার আগে রঙ, মডেল, স্পেসিফিকেশন এবং আকার ভালোভাবে পরীক্ষা করতে হবে।',
-//     },
-//     {
-//       num: '৩',
-//       title: 'প্রোডাক্ট পরিবর্তন',
-//       desc: 'কাস্টমার যদি আসল প্রোডাক্টটি পরিবর্তন করতে চান তবে আপগ্রেড করার সময় যে কোনো ক্ষতি হলে তা সম্পূর্ণ তার দায়িত্ব।',
-//     },
-//     {
-//       num: '৪',
-//       title: 'পেমেন্ট পরিশোধ',
-//       desc: 'যেকোনো প্রোডাক্ট আনবক্স করার আগে, কাস্টমারকে চুক্তিকৃত মূল্য পরিশোধ করতে হবে। মনে রাখবেন, আনবক্স করার পর ডিল বাতিল করার কোনো বিকল্প নেই। কাস্টমার যদি অর্ডার বাতিল করতে চান তবে তাকে প্রোডাক্টের মূল্যের ২০% পরিশোধ করতে হবে।',
-//     },
-//     {
-//       num: '৫',
-//       title: 'ওয়ারেন্টি মেরামত',
-//       desc: 'ওয়ারেন্টি দ্বারা আচ্ছাদিত প্রোডাক্ট বিক্রির পরে কোনো ত্রুটি পাওয়া গেলে, ত্রুটি মেরামতের মাধ্যমে সরানো হয় এবং প্রোডাক্টের ধরন অনুযায়ী তা অবিলম্বে পরিবর্তন করা হয়। এছাড়াও, একটি নির্দিষ্ট মডেলের প্রোডাক্ট যদি মেরামতযোগ্য না হয় এবং আমাদের স্টকে একই বা সমতুল্য প্রোডাক্ট না থাকে তবে অবচয় এবং মূল্য সামঞ্জস্যের মাধ্যমে একটি ভাল প্রোডাক্ট প্রতিস্থাপন করা যেতে পারে।',
-//     },
-//     {
-//       num: '৬',
-//       title: 'ওয়ারেন্টি নয় এমন প্রোডাক্ট',
-//       desc: 'সমস্ত প্রোডাক্ট ওয়ারেন্টি সহ আসে না। ওয়ারেন্টি শুধুমাত্র সেই প্রোডাক্টগুলির জন্য বৈধ যা একটি নির্দিষ্ট সময়ের জন্য ওয়ারেন্টি সহ ক্রয় করা হয়েছে, বিল বা ইনভয়েসে উল্লিখিত অনুযায়ী।',
-//     },
-//     {
-//       num: '৭',
-//       title: 'সফটওয়্যার বা ডেটা ক্ষতি',
-//       desc: 'যদি প্রোডাক্টের ব্যবহার বা Sera Place.com এর পরিষেবা চলাকালীন কোনো সফটওয়্যার বা ডেটা ক্ষতিগ্রস্ত বা হারিয়ে যায় তবে Sera Place.com এর কোনো দায় থাকবে না। মনে রাখবেন, এই ক্ষেত্রে, Sera Place.com ডেটা পুনরুদ্ধার বা সফটওয়্যার পুনরুদ্ধারের জন্যও দায়ী নয়।',
-//     },
-//     {
-//       num: '৮',
-//       title: 'সার্ভিস টাইম',
-//       desc: 'সার্ভিস কাজ সম্পন্ন করার পরে প্রোডাক্ট ফেরত দেওয়ার জন্য কোনো নির্দিষ্ট সময় নেই। ওয়ারেন্টির আওতায় নির্দিষ্ট মডেলের প্রোডাক্টের জন্য, এই সময়টি ৫-৬ দিন থেকে সর্বাধিক ৩৫-৪০ দিন বা তার বেশি হতে পারে।',
-//     },
-//     {
-//       num: '৯',
-//       title: 'ফ্লাইট / রাজনৈতিক অস্থিরতা',
-//       desc: 'যেমন: গ্লোবাল মহামারী বা যেকোনো রাজনৈতিক অস্থিরতা ইত্যাদি পরিস্থিতির জন্য যেখানে সমস্ত ফ্লাইট অনুমোদিত বা বন্ধ নেই এবং ওয়ারেন্টি শেষ হয়ে গেছে, Sera Place.com কোনোভাবেই নিজ খরচে মেরামত করার দায়িত্ব নেবে, তবে প্রয়োজন হলে ২-৩ মাস সময় লাগবে।',
-//     },
-//     {
-//       num: '১০',
-//       title: 'মেরামত সংক্রান্ত তথ্য',
-//       desc: 'গ্রাহকদের জানানো হয় যে বেশিরভাগ ওয়ারেন্টি প্রোডাক্ট মেরামত করা হয় না; ক্ষতিগ্রস্ত অংশগুলি প্রতিস্থাপিত হয়, তবে বেশিরভাগ ক্ষেত্রে বিদেশ থেকে আমদানি করা হয়।',
-//     },
-//     {
-//       num: '১১',
-//       title: 'কাস্টমাইজড ডিভাইস ও অপারেটিং সিস্টেম',
-//       desc: 'বিক্রয়ের সময় কাস্টমাইজ করা ডিভাইস এবং অপারেটিং সিস্টেম ওয়ারেন্টির আওতায় পড়ে না।',
-//     },
-//     {
-//       num: '১২',
-//       title: 'পাসওয়ার্ড নিরাপত্তা',
-//       desc: 'Sera Place.com ডিভাইস বা অন্যান্য প্রোডাক্ট ডেলিভারির সময় কোনো ধরনের পাসওয়ার্ড বা সিকিউরিটি কোড প্রয়োগ করে না। কাস্টমারকে সমস্ত ধরনের পাসওয়ার্ডের সম্পূর্ণ দায়িত্ব নিতে হবে। এটি ওয়ারেন্টির আওতায় থাকবে না।',
-//     },
-//     {
-//       num: '১৩',
-//       title: 'ওয়ারেন্টি মেয়াদ',
-//       desc: 'Sera Place.com ওয়ারেন্টি মেয়াদ শেষ হওয়ার সময় বা পরে Sera Place.com দ্বারা প্রদত্ত যেকোনো ফ্রি সফটওয়্যার বা হার্ডওয়্যার টিউনিংয়ের জন্য দায়ী থাকবে না।',
-//     },
-//     {
-//       num: '১৪',
-//       title: 'পরিষেবা চার্জ',
-//       desc: 'Sera Place.com ওয়ারেন্টির আওতায় না থাকা যেকোনো পরিষেবার জন্য কাস্টমারের সম্মতিতে চার্জ নির্ধারণ করবে।',
-//     },
-//     {
-//       num: '১৫',
-//       title: 'সিরিয়াল বা স্টিকার ক্ষতি',
-//       desc: 'যদি প্রোডাক্টের সিরিয়াল/স্টিকার আংশিক বা সম্পূর্ণভাবে সরানো বা ক্ষতিগ্রস্ত হয় তবে আর ওয়ারেন্টি ক্লেইম করা যাবে না।',
-//     },
-//     {
-//       num: '১৬',
-//       title: 'স্থায়ী কালি বা ক্ষতি',
-//       desc: 'যদি ব্যবহারকারী প্রোডাক্টের উপর স্থায়ী কালি দিয়ে কিছু লেখেন, তবে ওয়ারেন্টি বাতিল হয়ে যাবে।',
-//     },
-//     {
-//       num: '১৭',
-//       title: 'ক্যাবল ক্ষতি',
-//       desc: 'প্রোডাক্টের সাথে প্রদত্ত ক্যাবলের কোনো ক্ষতি ওয়ারেন্টি দ্বারা আচ্ছাদিত নয়, এমনকি প্রোডাক্টের বৈধ ওয়ারেন্টি থাকলেও।',
-//     },
-//     {
-//       num: '১৮',
-//       title: 'রসিদ হারানো',
-//       desc: 'যদি কোনো নির্দিষ্ট প্রোডাক্টের ওয়ারেন্টি রসিদ হারিয়ে যায়, তবে ক্রয়ের রসিদ এবং সঠিক প্রমাণ প্রদানের শর্তে প্রোডাক্ট গ্রহণ করতে হবে।',
-//     },
-//   ];
+        {/* Intro */}
+        <p className="mt-8 text-base leading-relaxed text-body">
+          Welcome to {SITE_NAME}. These simple rules help us make your shopping
+          easy and fair for everyone.
+        </p>
 
-//   return (
-//     <div className="min-h-screen bg-background text-foreground py-12 px-4 sm:px-6 lg:px-8">
-//       <motion.div
-//         initial={{ opacity: 0, y: 15 }}
-//         animate={{ opacity: 1, y: 0 }}
-//         transition={{ duration: 0.4, ease: 'easeOut' }}
-//         className="max-w-6xl mx-auto space-y-12"
-//       >
-//         {/* Header */}
-//         <header className="space-y-4">
-//           <div className="flex items-center gap-2 text-primary text-sm font-semibold uppercase tracking-wider">
-//             <FileText className="w-4 h-4" />
-//             <span>Legal Terms</span>
-//           </div>
-//           <h1 className="text-4xl md:text-5xl font-black text-title tracking-tight">
-//             Terms and Conditions
-//           </h1>
-//           <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground pt-1">
-//             <Calendar className="w-4 h-4 text-primary" />
-//             <span>Last Updated: July 13, 2024</span>
-//           </div>
-//         </header>
+        {/* Sections */}
+        <div className="mt-10 space-y-8">
+          {sections.map((section, index) => (
+            <section key={section.title}>
+              <h2 className="flex items-baseline gap-2 text-lg font-semibold text-title md:text-xl">
+                <span className="text-muted-foreground">{index + 1}.</span>
+                {section.title}
+              </h2>
 
-//         <hr className="border-border" />
+              <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-body marker:text-muted-foreground md:text-base">
+                {section.points.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
 
-//         {/* Terms Items List */}
-//         <div className="space-y-8">
-//           {terms.map((item, idx) => (
-//             <div key={idx} className="space-y-2">
-//               <h2 className="text-xl md:text-2xl font-bold text-foreground flex items-baseline gap-3">
-//                 <span className="text-primary text-base font-extrabold">
-//                   {item.num}.
-//                 </span>
-//                 <span>{item.title}</span>
-//               </h2>
-//               <p className="text-body leading-relaxed text-sm md:text-base pl-7">
-//                 {item.desc}
-//               </p>
-//             </div>
-//           ))}
-//         </div>
+        <p className="mt-8 text-sm text-body md:text-base">
+          To learn how we use your information, please read our{" "}
+          <Link
+            href={PRIVACY_POLICY_HREF}
+            className="font-semibold text-link underline underline-offset-2 hover:text-link-hover"
+          >
+            Privacy Policy
+          </Link>
+          .
+        </p>
 
-//         <hr className="border-border" />
+        {/* Contact */}
+        <section className="mt-12 border-t border-border pt-8">
+          <h2 className="text-lg font-semibold text-title md:text-xl">
+            Contact Us
+          </h2>
+          <p className="mt-2 text-sm text-body md:text-base">
+            If you have any questions or problems, contact {SITE_NAME}:
+          </p>
 
-//         {/* Contact Footer */}
-//         <footer className="pt-2 space-y-4">
-//           <h2 className="text-2xl font-bold text-subtitle">যোগাযোগ</h2>
-//           <p className="text-body text-sm md:text-base">
-//             এই শর্তাবলী বা আমাদের পরিষেবা সম্পর্কে কোনো প্রশ্ন বা উদ্বেগ থাকলে
-//             আমাদের সাথে যোগাযোগ করুন:
-//           </p>
+          <div className="mt-4 space-y-3 text-sm md:text-base">
+            <a
+              href={`mailto:${CONTACT.email}`}
+              className="flex items-center gap-3 text-foreground transition-colors hover:text-hover-text"
+            >
+              <Mail className="h-4 w-4 text-muted-foreground" />
+              {CONTACT.email}
+            </a>
 
-//           <div className="space-y-2 pt-1">
-//             <p className="font-semibold text-foreground text-sm">
-//               Sera Place.com কাস্টমার সাপোর্ট
-//             </p>
-//             <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 pt-1 text-sm">
-//               <a
-//                 href="mailto:seraplace@gmail.com"
-//                 className="inline-flex items-center gap-2 text-foreground hover:text-primary transition-colors font-medium"
-//               >
-//                 <Mail className="w-4 h-4 text-primary" />
-//                 seraplace@gmail.com
-//               </a>
-//               <a
-//                 href="tel:01310520842"
-//                 className="inline-flex items-center gap-2 text-foreground hover:text-primary transition-colors font-medium"
-//               >
-//                 <Phone className="w-4 h-4 text-primary" />
-//                 01310520842
-//               </a>
-//             </div>
-//           </div>
+            <a
+              href={`tel:${CONTACT.phone}`}
+              className="flex items-center gap-3 text-foreground transition-colors hover:text-hover-text"
+            >
+              <Phone className="h-4 w-4 text-muted-foreground" />
+              {CONTACT.phone}
+            </a>
 
-//           <p className="text-xs text-muted-foreground pt-6">
-//             Sera Place.com-এ আপনার আস্থার জন্য ধন্যবাদ। আমরা আপনার সন্তুষ্টি এবং
-//             বিশ্বাসের মূল্য দিই।
-//           </p>
-//         </footer>
-//       </motion.div>
-//     </div>
-//   );
-// }
+            {CONTACT.address && (
+              <p className="flex items-start gap-3 text-foreground">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                {CONTACT.address}
+              </p>
+            )}
+          </div>
+
+          <p className="mt-8 text-xs text-muted-foreground">
+            Thank you for shopping with {SITE_NAME}.
+          </p>
+        </section>
+      </div>
+    </main>
+  );
+}
