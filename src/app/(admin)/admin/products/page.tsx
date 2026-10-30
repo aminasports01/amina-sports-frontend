@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React, { useCallback, useEffect, useState } from 'react';
-import { deleteProduct, getProducts } from '@/services/product.service';
+import React, { useCallback, useEffect, useState } from "react";
+import { deleteProduct, getProducts } from "@/services/product.service";
 import {
   Plus,
   Search,
@@ -10,13 +10,13 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-} from 'lucide-react';
-import { IProduct } from '@/types/products.type';
-import ProductModal from '@/components/layouts/admin/products/ProductModal';
-import ProductView from '@/components/layouts/admin/products/ProductView';
-import ProductsTable from '@/components/layouts/admin/products/ProductsTable';
-import Link from 'next/link';
-import { toast } from 'sonner';
+} from "lucide-react";
+import { IProduct } from "@/types/products.type";
+import ProductModal from "@/components/layouts/admin/products/ProductModal";
+import ProductView from "@/components/layouts/admin/products/ProductView";
+import ProductsTable from "@/components/layouts/admin/products/ProductsTable";
+import Link from "next/link";
+import { toast } from "sonner";
 
 interface ProductMeta {
   total: number;
@@ -41,10 +41,10 @@ const ProductsPage = () => {
   // FILTER STATES
   // =========================
 
-  const [search, setSearch] = useState('');
-  const [categoryId, setCategoryId] = useState('');
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
+  const [search, setSearch] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
 
   // =========================
   // PAGINATION
@@ -77,8 +77,8 @@ const ProductsPage = () => {
         categoryId: categoryId.trim() || undefined,
         minPrice: minPrice ? Number(minPrice) : undefined,
         maxPrice: maxPrice ? Number(maxPrice) : undefined,
-        sortBy: 'createdAt',
-        sortOrder: 'desc',
+        sortBy: "createdAt",
+        sortOrder: "desc",
       });
 
       const productData = response?.data?.data || [];
@@ -94,7 +94,7 @@ const ProductsPage = () => {
         },
       );
     } catch (error) {
-      console.error('Failed to fetch products:', error);
+      console.error("Failed to fetch products:", error);
       setProducts([]);
     } finally {
       setLoading(false);
@@ -115,7 +115,7 @@ const ProductsPage = () => {
 
   const handleDelete = async (id: string) => {
     const confirmDelete = confirm(
-      'Are you sure you want to delete this product?',
+      "Are you sure you want to delete this product?",
     );
 
     if (!confirmDelete) return;
@@ -129,9 +129,9 @@ const ProductsPage = () => {
         await fetchProducts();
       }
 
-      toast.success('Product Successfully Deleted');
+      toast.success("Product Successfully Deleted");
     } catch (error) {
-      console.error('Delete product error:', error);
+      console.error("Delete product error:", error);
     } finally {
       setLoading(false);
     }
@@ -142,10 +142,10 @@ const ProductsPage = () => {
   // =========================
 
   const clearFilters = () => {
-    setSearch('');
-    setCategoryId('');
-    setMinPrice('');
-    setMaxPrice('');
+    setSearch("");
+    setCategoryId("");
+    setMinPrice("");
+    setMaxPrice("");
     setPage(1);
   };
 
@@ -179,13 +179,13 @@ const ProductsPage = () => {
 
   const handlePreviousPage = () => {
     if (page > 1) {
-      setPage(prev => prev - 1);
+      setPage((prev) => prev - 1);
     }
   };
 
   const handleNextPage = () => {
     if (page < meta.totalPages) {
-      setPage(prev => prev + 1);
+      setPage((prev) => prev + 1);
     }
   };
 
@@ -208,7 +208,7 @@ const ProductsPage = () => {
   const endItem = Math.min(meta.page * meta.limit, meta.total);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen ">
       <div className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* =========================
             HEADER
@@ -255,7 +255,7 @@ const ProductsPage = () => {
                   placeholder="Search products..."
                   className="w-full pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-500 focus:border-gray-400 dark:focus:border-gray-500 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                   value={search}
-                  onChange={e => handleSearchChange(e.target.value)}
+                  onChange={(e) => handleSearchChange(e.target.value)}
                 />
               </div>
 
@@ -270,7 +270,7 @@ const ProductsPage = () => {
                 Filters
                 <ChevronDown
                   className={`w-4 h-4 transition-transform ${
-                    showFilters ? 'rotate-180' : ''
+                    showFilters ? "rotate-180" : ""
                   }`}
                 />
               </button>
@@ -308,7 +308,7 @@ const ProductsPage = () => {
                       placeholder="Filter by category ID"
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-500 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
                       value={categoryId}
-                      onChange={e => handleCategoryChange(e.target.value)}
+                      onChange={(e) => handleCategoryChange(e.target.value)}
                     />
                   </div>
 
@@ -324,7 +324,7 @@ const ProductsPage = () => {
                       placeholder="$0"
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-500 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
                       value={minPrice}
-                      onChange={e => handleMinPriceChange(e.target.value)}
+                      onChange={(e) => handleMinPriceChange(e.target.value)}
                     />
                   </div>
 
@@ -340,7 +340,7 @@ const ProductsPage = () => {
                       placeholder="$9999"
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-500 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
                       value={maxPrice}
-                      onChange={e => handleMaxPriceChange(e.target.value)}
+                      onChange={(e) => handleMaxPriceChange(e.target.value)}
                     />
                   </div>
                 </div>
@@ -356,19 +356,19 @@ const ProductsPage = () => {
         <div className="mb-4 flex items-center justify-between">
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {loading ? (
-              'Loading products...'
+              "Loading products..."
             ) : (
               <>
-                Showing{' '}
+                Showing{" "}
                 <span className="font-medium text-gray-700 dark:text-gray-300">
                   {startItem}-{endItem}
-                </span>{' '}
-                of{' '}
+                </span>{" "}
+                of{" "}
                 <span className="font-medium text-gray-700 dark:text-gray-300">
                   {meta.total}
-                </span>{' '}
-                product{meta.total !== 1 ? 's' : ''}
-                {hasActiveFilters && ' (filtered)'}
+                </span>{" "}
+                product{meta.total !== 1 ? "s" : ""}
+                {hasActiveFilters && " (filtered)"}
               </>
             )}
           </p>
@@ -383,11 +383,11 @@ const ProductsPage = () => {
             products={products}
             loading={loading}
             handleDelete={handleDelete}
-            handleView={product => {
+            handleView={(product) => {
               setSelectedProduct(product);
               setOpenView(true);
             }}
-            handleUpdate={product => {
+            handleUpdate={(product) => {
               setSelectedProduct(product);
             }}
           />
@@ -402,11 +402,11 @@ const ProductsPage = () => {
             {/* Pagination Info */}
 
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Page{' '}
+              Page{" "}
               <span className="font-medium text-gray-700 dark:text-gray-300">
                 {meta.page}
-              </span>{' '}
-              of{' '}
+              </span>{" "}
+              of{" "}
               <span className="font-medium text-gray-700 dark:text-gray-300">
                 {meta.totalPages}
               </span>
@@ -430,7 +430,7 @@ const ProductsPage = () => {
                   { length: meta.totalPages },
                   (_, index) => index + 1,
                 )
-                  .filter(pageNumber => {
+                  .filter((pageNumber) => {
                     if (meta.totalPages <= 5) return true;
 
                     return (
@@ -439,15 +439,15 @@ const ProductsPage = () => {
                       Math.abs(pageNumber - page) <= 1
                     );
                   })
-                  .map(pageNumber => (
+                  .map((pageNumber) => (
                     <button
                       key={pageNumber}
                       type="button"
                       onClick={() => setPage(pageNumber)}
                       className={`min-w-9 h-9 px-2 rounded-lg text-sm font-medium transition-colors ${
                         pageNumber === page
-                          ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'
-                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                          ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
+                          : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
                       }`}
                     >
                       {pageNumber}

@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import DashboardHeader from './DashboardHeader';
-import DashboardStats from './DashboardStats';
-import OrdersByStatus from './OrdersByStatus';
-import RecentOrders from './RecentOrders';
-import RevenueTrendChart from './RevenueTrendChart';
-import TopProducts from './TopProducts';
+import DashboardHeader from "./DashboardHeader";
+import DashboardStats from "./DashboardStats";
+import OrdersByStatus from "./OrdersByStatus";
+import RecentOrders from "./RecentOrders";
+import RevenueTrendChart from "./RevenueTrendChart";
+import TopProducts from "./TopProducts";
 
-import { DashboardStats as DashboardStatsType } from '@/types/dashboard.type';
+import { DashboardStats as DashboardStatsType } from "@/types/dashboard.type";
 
 interface DashboardClientProps {
   data: DashboardStatsType;
@@ -15,7 +15,7 @@ interface DashboardClientProps {
 
 const DashboardClient = ({ data }: DashboardClientProps) => {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen ">
       <div className="">
         <DashboardHeader summary={data.summary} />
 

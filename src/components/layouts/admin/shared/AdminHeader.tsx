@@ -88,7 +88,7 @@ const AdminHeader = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
   };
 
   return (
-    <header className="bg-card text-card-foreground border-b border-border sticky top-0 z-20">
+    <header className=" text-card-foreground border-b border-border sticky top-0 z-20">
       <div className="pl-3 pr-5 py-3">
         <div className="flex items-center justify-between">
           {/* Left Side - Menu Button & Logo */}
