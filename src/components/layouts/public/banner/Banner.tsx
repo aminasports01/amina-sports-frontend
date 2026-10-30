@@ -76,7 +76,7 @@ const Banner = () => {
         fadeEffect={{ crossFade: true }}
         speed={1200}
         loop
-        className="w-full h-[calc(100svh-50px)] min-h-[560px] md:h-[calc(100vh-120px)] md:min-h-[580px] md:max-h-[860px]"
+        className="w-full h-[calc(100svh-50px)] min-h-[560px] md:h-[calc(100vh-50px)] md:min-h-[580px] md:max-h-[860px]"
       >
         {slides.map((slide, index) => (
           <SwiperSlide key={slide.id}>

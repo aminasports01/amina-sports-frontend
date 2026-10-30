@@ -79,7 +79,7 @@ const PublicNavbar = ({ className }: { className?: string }) => {
           className,
         )}
       >
-        <div className="mx-auto w-full max-w-[1900px] px-4">
+        <div className="container mx-auto w-full  px-4">
           <div className="relative flex h-14 items-center">
             {/* ── LEFT — Hamburger + Logo */}
             <div className="flex flex-1 items-center gap-2">

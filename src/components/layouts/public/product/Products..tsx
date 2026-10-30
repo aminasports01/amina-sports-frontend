@@ -1,7 +1,6 @@
 import { ProductCard1 } from "@/components/product-card1";
 import { getProducts } from "@/services/product.service";
 import { IProduct } from "@/types/products.type";
-import React from "react";
 
 const Products = async () => {
   const response = await getProducts({ limit: 50 });
@@ -10,7 +9,7 @@ const Products = async () => {
 
   return (
     <div className="w-full  bg-white">
-      <div className="container mx-auto md:px-0">
+      <div className="container mx-auto pb-12 md:px-0">
         <div className="flex px-3 flex-col sm:flex-row sm:items-end sm:justify-between mb-8">
           <div>
             <h2 className="text-lg font-bold text-gray-800 sm:text-xl md:text-2xl lg:text-3xl">
