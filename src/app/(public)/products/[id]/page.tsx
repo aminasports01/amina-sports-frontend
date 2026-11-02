@@ -2,7 +2,9 @@ import ProductGallery from "@/components/layouts/public/product-details/ProductG
 import ProductPurchaseOptions from "@/components/layouts/public/product-details/ProductPurchaseOptions";
 import ProductReviews from "@/components/layouts/public/product-details/ProductReviews";
 import RelatedProduct from "@/components/layouts/public/product-details/RelatedProduct";
+import StarRating from "@/components/layouts/public/product-details/Starrating";
 import ProductViewTracker from "@/components/layouts/shared/analytics/ProductViewTracker";
+import { demoReviews, getRatingSummary } from "@/data/rating";
 import { getSingleProduct } from "@/services/product.service";
 import { Star, Truck, MapPin, CheckCircle, ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -21,6 +23,11 @@ export default async function ProductDetailsPage({
   const res = await getSingleProduct(id);
 
   const product = res?.data;
+
+  const reviews = product.reviews?.length ? product.reviews : demoReviews;
+  const { average, count } = getRatingSummary(reviews);
+  const rating = product.rating > 0 ? product.rating : average;
+  const reviewCount = product.reviewCount > 0 ? product.reviewCount : count;
 
   if (!product) {
     return (
@@ -131,35 +138,29 @@ export default async function ProductDetailsPage({
 
             {/* Rating */}
 
-            {/* <div className="flex items-center gap-3 mt-4">
-              <div className="flex items-center gap-1">
-                <Star
-                  className={`h-4 w-4 ${
-                    product.rating > 0
-                      ? "fill-yellow-400 text-yellow-400"
-                      : "text-gray-300"
-                  }`}
-                />
-
-                <span className="text-sm text-gray-600">
-                  {product.rating > 0
-                    ? product.rating.toFixed(1)
-                    : "No Ratings"}
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2">
+                <StarRating rating={rating} />
+                <span className="text-sm font-medium text-body">
+                  {rating.toFixed(1)}
                 </span>
               </div>
 
-              <span className="text-gray-300">|</span>
+              <span className="text-border">|</span>
 
-              <span className="text-sm text-gray-500">
-                {product.reviewCount || 0} Reviews
-              </span>
+              <a
+                href="#reviews"
+                className="text-sm text-muted-foreground hover:text-foreground"
+              >
+                {reviewCount} Reviews
+              </a>
 
-              <span className="text-gray-300">|</span>
+              <span className="text-border">|</span>
 
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-muted-foreground">
                 {product.viewCount || 0} Views
               </span>
-            </div> */}
+            </div>
 
             {/* =================================================
                 PRICE
@@ -376,11 +377,11 @@ export default async function ProductDetailsPage({
       ====================================================== */}
 
       {/* Reviews */}
-      {/* <ProductReviews
-        reviews={product.reviews || []}
-        rating={product.rating}
-        reviewCount={product.reviewCount}
-      /> */}
+      <ProductReviews
+        reviews={reviews}
+        rating={rating}
+        reviewCount={reviewCount}
+      />
 
       {/* related product */}
       <RelatedProduct categoryId={product.categoryId}></RelatedProduct>

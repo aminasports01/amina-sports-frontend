@@ -1,20 +1,27 @@
-'use client';
+"use client";
 
-import { IProductReview } from '@/types/products.type';
-import { Star, ChevronDown, ChevronUp } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
+import { Star, ChevronDown, ChevronUp } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
+
+// IProductReview এবং demo data দুটোই এই shape এর সাথে মিলবে
+interface ReviewItem {
+  id: string | number;
+  userName?: string | null;
+  rating: number;
+  comment?: string | null;
+}
 
 interface ProductReviewsProps {
-  reviews: IProductReview[];
-  rating: number;
-  reviewCount: number;
+  reviews?: ReviewItem[];
+  rating?: number;
+  reviewCount?: number;
 }
 
 const ProductReviews = ({
-  reviews,
-  rating,
-  reviewCount,
+  reviews = [],
+  rating = 0,
+  reviewCount = reviews.length,
 }: ProductReviewsProps) => {
   const [showAll, setShowAll] = useState(false);
 
@@ -23,7 +30,10 @@ const ProductReviews = ({
   const hasMoreReviews = reviews.length > 4;
 
   return (
-    <section className="mt-8 rounded-sm border border-gray-100 bg-white p-4 shadow-sm sm:p-5 md:p-6">
+    <section
+      id="reviews"
+      className="mt-8 scroll-mt-24 rounded-sm border border-gray-100 bg-white p-4 shadow-sm sm:p-5 md:p-6"
+    >
       {/* Header */}
       <div className="mb-6 flex items-center justify-between gap-4">
         <div className="min-w-0">
@@ -32,7 +42,7 @@ const ProductReviews = ({
           </h2>
 
           <p className="mt-1 text-xs text-gray-500 sm:text-sm">
-            {reviewCount} review{reviewCount !== 1 ? 's' : ''}
+            {reviewCount} review{reviewCount !== 1 ? "s" : ""}
           </p>
         </div>
 
@@ -41,13 +51,13 @@ const ProductReviews = ({
           <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 sm:h-5 sm:w-5" />
 
           <span className="text-sm font-semibold text-gray-800 sm:text-base">
-            {rating > 0 ? rating.toFixed(1) : 'No rating'}
+            {rating > 0 ? rating.toFixed(1) : "No rating"}
           </span>
         </div>
       </div>
 
       {/* Reviews */}
-      {reviews?.length > 0 ? (
+      {reviews.length > 0 ? (
         <>
           <motion.div
             layout
@@ -59,7 +69,7 @@ const ProductReviews = ({
             }}
           >
             <AnimatePresence initial={false}>
-              {visibleReviews.map(review => (
+              {visibleReviews.map((review) => (
                 <motion.div
                   key={review.id}
                   layout="position"
@@ -71,7 +81,7 @@ const ProductReviews = ({
                   }}
                   animate={{
                     opacity: 1,
-                    height: 'auto',
+                    height: "auto",
                     y: 0,
                     marginBottom: 20,
                   }}
@@ -99,7 +109,7 @@ const ProductReviews = ({
                     },
                   }}
                   style={{
-                    overflow: 'hidden',
+                    overflow: "hidden",
                   }}
                   className="border-b border-gray-100 pb-4 last:border-0 last:pb-0 sm:pb-5"
                 >
@@ -121,17 +131,17 @@ const ProductReviews = ({
                       }}
                       transition={{
                         duration: 0.3,
-                        ease: 'easeOut',
+                        ease: "easeOut",
                       }}
                     >
                       <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-sm font-semibold text-gray-500 sm:h-10 sm:w-10">
-                        {review.userName?.charAt(0)?.toUpperCase() || 'U'}
+                        {review.userName?.charAt(0)?.toUpperCase() || "U"}
                       </div>
                     </motion.div>
 
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium text-gray-800">
-                        {review.userName || 'Anonymous'}
+                        {review.userName || "Anonymous"}
                       </p>
 
                       {/* Rating */}
@@ -159,8 +169,8 @@ const ProductReviews = ({
                             <Star
                               className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${
                                 starIndex < review.rating
-                                  ? 'fill-yellow-400 text-yellow-400'
-                                  : 'text-gray-300'
+                                  ? "fill-yellow-400 text-yellow-400"
+                                  : "text-gray-300"
                               }`}
                             />
                           </motion.div>
@@ -179,21 +189,6 @@ const ProductReviews = ({
                   >
                     {review.comment}
                   </motion.p>
-
-                  {/* Date */}
-                  {/* <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.25 }}
-                    className="mt-2 text-xs text-gray-400"
-                  >
-                    {new Date(review.createdAt).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                    })}
-                  </motion.p> */}
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -207,7 +202,7 @@ const ProductReviews = ({
             >
               <motion.button
                 type="button"
-                onClick={() => setShowAll(prev => !prev)}
+                onClick={() => setShowAll((prev) => !prev)}
                 whileHover={{
                   scale: 1.04,
                 }}
@@ -215,7 +210,7 @@ const ProductReviews = ({
                   scale: 0.96,
                 }}
                 transition={{
-                  type: 'spring',
+                  type: "spring",
                   stiffness: 400,
                   damping: 20,
                 }}
@@ -301,7 +296,7 @@ const ProductReviews = ({
             }}
             transition={{
               duration: 0.35,
-              type: 'spring',
+              type: "spring",
               stiffness: 250,
             }}
           >
