@@ -92,7 +92,7 @@ export default async function ProductDetailsPage({
           MAIN PRODUCT
       ====================================================== */}
 
-      <div className="bg-white rounded-sm overflow-hidden">
+      <div className="bg-white overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8  ">
           {/* =================================================
               LEFT SIDE - IMAGE GALLERY

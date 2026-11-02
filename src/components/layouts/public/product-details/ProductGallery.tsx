@@ -30,6 +30,8 @@ const ProductGallery = ({
 
   const [activeIndex, setActiveIndex] = useState(0);
   const swiperRef = useRef<SwiperType | null>(null);
+  const thumbsRef = useRef<HTMLDivElement | null>(null);
+  const thumbItemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const selectedIndex = selectedImage
     ? galleryImages.indexOf(selectedImage)
@@ -38,13 +40,26 @@ const ProductGallery = ({
   const currentIndex = selectedIndex >= 0 ? selectedIndex : activeIndex;
   const totalImages = galleryImages.length;
 
+  // Color/variant বাছলে সেই ছবিতে slide করে (loop mode এ slideToLoop লাগে)
   useEffect(() => {
     if (selectedIndex >= 0 && swiperRef.current) {
-      if (swiperRef.current.activeIndex !== selectedIndex) {
-        swiperRef.current.slideTo(selectedIndex);
+      if (swiperRef.current.realIndex !== selectedIndex) {
+        swiperRef.current.slideToLoop(selectedIndex);
       }
     }
   }, [selectedIndex]);
+
+  // সক্রিয় thumbnail যেন সবসময় দেখা যায় (শুধু thumbnail বারের ভেতরে স্ক্রল করে)
+  useEffect(() => {
+    const container = thumbsRef.current;
+    const item = thumbItemRefs.current[currentIndex];
+    if (!container || !item) return;
+
+    container.scrollTo({
+      left: item.offsetLeft - container.clientWidth / 2 + item.clientWidth / 2,
+      behavior: "smooth",
+    });
+  }, [currentIndex]);
 
   const handleSlideChange = (swiper: SwiperType) => {
     const index = swiper.realIndex;
@@ -57,6 +72,10 @@ const ProductGallery = ({
     }
   };
 
+  const handleThumbClick = (index: number) => {
+    swiperRef.current?.slideToLoop(index);
+  };
+
   if (totalImages === 0) {
     return (
       <div className="flex aspect-[3/4] w-full items-center justify-center bg-white text-gray-400">
@@ -67,6 +86,7 @@ const ProductGallery = ({
 
   return (
     <div className="w-full">
+      {/* ---------- Main image ---------- */}
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-white">
         <Swiper
           onSwiper={(swiper) => {
@@ -128,6 +148,44 @@ const ProductGallery = ({
           </>
         )}
       </div>
+
+      {/* ---------- Small gallery (thumbnails) ---------- */}
+      {totalImages > 1 && (
+        <div
+          ref={thumbsRef}
+          className="hide-scrollbar mt-3 flex gap-2 overflow-x-auto pb-1"
+        >
+          {galleryImages.map((image, index) => {
+            const active = index === currentIndex;
+
+            return (
+              <button
+                key={image}
+                ref={(el) => {
+                  thumbItemRefs.current[index] = el;
+                }}
+                type="button"
+                onClick={() => handleThumbClick(index)}
+                aria-label={`Show image ${index + 1}`}
+                aria-current={active}
+                className={`relative aspect-square w-16 shrink-0 overflow-hidden rounded-sm border-2 bg-muted transition-all sm:w-20 ${
+                  active
+                    ? "border-foreground"
+                    : "border-transparent opacity-70 hover:opacity-100"
+                }`}
+              >
+                <Image
+                  src={image}
+                  alt={`${productName} - Thumbnail ${index + 1}`}
+                  fill
+                  sizes="80px"
+                  className="object-cover object-top"
+                />
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
