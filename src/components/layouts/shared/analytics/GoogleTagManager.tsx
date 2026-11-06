@@ -3,7 +3,7 @@
 import Script from "next/script";
 
 const GoogleTagManager = () => {
-  const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || "GTM-NPT5M4W6";
+  const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || "GTM-MHD5VZ5F";
 
   return (
     <>
@@ -21,7 +21,8 @@ const GoogleTagManager = () => {
           `,
         }}
       />
-      {/* GTM Noscript (Fallback) */}
+
+      {/* GTM Noscript */}
       <noscript>
         <iframe
           src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
