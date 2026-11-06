@@ -88,40 +88,40 @@ const AdminHeader = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
   };
 
   return (
-    <header className=" text-card-foreground border-b border-border sticky top-0 z-20">
-      <div className="pl-3 pr-5 py-3">
-        <div className="flex items-center justify-between">
+    // মোবাইলে bg-background (স্ক্রলের সময় নিচের লেখা না দেখা যাওয়ার জন্য), ডেস্কটপ আগের মতো
+    <header className="sticky top-0 z-20 border-b border-border bg-background text-card-foreground md:bg-transparent">
+      <div className="py-2 pl-2 pr-3 md:py-3 md:pl-3 md:pr-5">
+        <div className="flex items-center justify-between gap-2">
           {/* Left Side - Menu Button & Logo */}
-          <div className="flex items-center ">
+          <div className="flex min-w-0 items-center gap-1">
             {/* Menu Toggle Button */}
             <button
               onClick={toggleSidebar}
-              className="p-2 hover:bg-accent rounded-lg transition-colors"
+              className="shrink-0 rounded-lg p-2 transition-colors hover:bg-accent"
               aria-label="Toggle sidebar"
             >
               <Menu size={24} className="text-muted-foreground" />
             </button>
 
-            {/* Mobile Logo */}
-            <div className="md:hidden">
-              <Link href="/admin" className="flex items-center ">
-                <Image
-                  src="/images/sera-place-logo.png"
-                  alt="Logo"
-                  width={120}
-                  height={120}
-                  className="dark:invert"
-                />
+            {/* Mobile Logo (text) */}
+            <div className="min-w-0 md:hidden">
+              <Link href="/admin" className="flex items-center">
+                <span
+                  className="truncate whitespace-nowrap text-2xl leading-none text-foreground"
+                  style={{ fontFamily: "var(--font-signature)" }}
+                >
+                  Amina Sports
+                </span>
               </Link>
             </div>
           </div>
 
           {/* Right Side - Actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-1 md:gap-2">
             {/* Dark Mode Toggle */}
             <button
               onClick={toggleDarkMode}
-              className="p-2 hover:bg-accent rounded-lg transition-colors"
+              className="rounded-lg p-2 transition-colors hover:bg-accent"
               aria-label="Toggle dark mode"
             >
               {isDarkMode ? (
@@ -135,16 +135,17 @@ const AdminHeader = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             <div className="relative">
               <button
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center gap-2 pl-2 pr-1 py-1 hover:bg-accent rounded-lg"
+                className="flex items-center gap-1 rounded-lg py-1 pl-1 pr-1 hover:bg-accent sm:gap-2 sm:pl-2"
+                aria-label="User menu"
               >
-                <div className="w-8 h-8 rounded-full overflow-hidden bg-secondary flex items-center justify-center">
+                <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-secondary">
                   {user?.avatar ? (
                     <Image
                       src={user.avatar}
                       alt="user"
                       width={32}
                       height={32}
-                      className="w-full h-full object-cover rounded-full"
+                      className="h-full w-full rounded-full object-cover"
                     />
                   ) : (
                     <span className="text-sm font-medium text-secondary-foreground">
@@ -153,7 +154,10 @@ const AdminHeader = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                   )}
                 </div>
 
-                <ChevronDown size={14} className="text-muted-foreground" />
+                <ChevronDown
+                  size={14}
+                  className="hidden text-muted-foreground sm:block"
+                />
               </button>
 
               {isProfileOpen && (
@@ -163,12 +167,12 @@ const AdminHeader = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                     onClick={() => setIsProfileOpen(false)}
                   />
 
-                  <div className="absolute right-0 mt-2 w-56 bg-popover text-popover-foreground border border-border rounded-lg shadow-lg z-20 overflow-hidden">
-                    <div className="p-3 border-b border-border">
-                      <p className="text-sm font-medium text-title">
+                  <div className="absolute right-0 z-20 mt-2 w-56 max-w-[calc(100vw-1.5rem)] overflow-hidden rounded-lg border border-border bg-popover text-popover-foreground shadow-lg">
+                    <div className="border-b border-border p-3">
+                      <p className="truncate text-sm font-medium text-title">
                         {user?.name || "User"}
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="truncate text-xs text-muted-foreground">
                         {user?.email || ""}
                       </p>
                     </div>
@@ -176,6 +180,7 @@ const AdminHeader = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                     <div className="py-1">
                       <Link
                         href="/admin/profile"
+                        onClick={() => setIsProfileOpen(false)}
                         className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
                       >
                         <User size={15} />
@@ -186,7 +191,7 @@ const AdminHeader = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                     <div className="border-t border-border py-1">
                       <button
                         onClick={handelLogout}
-                        className="flex items-center gap-3 px-3 py-2 text-sm text-destructive w-full hover:bg-accent"
+                        className="flex w-full items-center gap-3 px-3 py-2 text-sm text-destructive hover:bg-accent"
                       >
                         <LogOut size={15} />
                         Logout

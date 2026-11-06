@@ -29,7 +29,7 @@ const PromoBanner = () => {
           <div className="absolute right-0 top-0 shrink-0 md:static md:order-last">
             <div className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-white shadow-lg backdrop-blur-md md:size-36 md:flex-col md:justify-center md:gap-0 md:border-2 md:p-0 md:text-center md:shadow-2xl lg:size-44">
               <span className="text-xs font-extrabold tracking-tight md:text-3xl lg:text-4xl">
-                30%
+                65%
               </span>
               <span className="text-[10px] font-semibold uppercase tracking-wider text-chart-5 md:text-[11px] md:tracking-widest lg:text-xs">
                 Off Sale

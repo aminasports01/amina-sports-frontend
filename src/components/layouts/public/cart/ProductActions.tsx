@@ -38,7 +38,6 @@ const ProductActions = ({ productId, product }: Props) => {
   const addToCart = useCartStore((state) => state.addToCart);
   const selectedColor = useProductStore((state) => state.selectedColor);
   const selectedSize = useOrderStore((state) => state.selectedSize);
-  console.log(selectedColor, selectedSize);
 
   // Zustand Order Store
   const setSelectedProduct = useOrderStore((state) => state.setSelectedProduct);

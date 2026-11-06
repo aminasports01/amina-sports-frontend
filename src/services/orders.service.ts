@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axios from "axios";
 
-import { getToken } from '@/utils/auth';
+import { getToken } from "@/utils/auth";
 
 import {
   CheckoutPayload,
@@ -8,19 +8,19 @@ import {
   ISingleOrder,
   OrderStatus,
   UpdateOrderPayload,
-} from '@/types/orders';
+} from "@/types/orders";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_API;
 
 const getAuthHeaders = () => ({
   Authorization: `Bearer ${getToken()}`,
-  'Content-Type': 'application/json',
+  "Content-Type": "application/json",
 });
 
 export const createOrder = async (payload: CheckoutPayload) => {
   const res = await axios.post(`${BASE_URL}/orders/checkout`, payload, {
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   });
 
@@ -32,7 +32,7 @@ export const createOrder = async (payload: CheckoutPayload) => {
 export const singleOrder = async (payload: ISingleOrder) => {
   const res = await axios.post(`${BASE_URL}/orders/buy-now`, payload, {
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   });
 
@@ -46,8 +46,6 @@ export const getAllOrders = async (params?: GetAllOrdersParams) => {
     params,
     headers: getAuthHeaders(),
   });
-
-  console.log(res);
   return res.data;
 };
 
@@ -76,7 +74,7 @@ export const updateOrderStatus = async (
   status: OrderStatus,
 ) => {
   if (!orderId) {
-    throw new Error('Order ID is required');
+    throw new Error("Order ID is required");
   }
 
   const res = await axios.patch(
@@ -99,7 +97,7 @@ export const updateOrder = async (
   payload: UpdateOrderPayload,
 ) => {
   if (!orderId) {
-    throw new Error('Order ID is required');
+    throw new Error("Order ID is required");
   }
 
   const res = await axios.patch(`${BASE_URL}/orders/${orderId}`, payload, {
@@ -113,7 +111,7 @@ export const updateOrder = async (
 
 export const deleteOrder = async (orderId: string) => {
   if (!orderId) {
-    throw new Error('Order ID is required');
+    throw new Error("Order ID is required");
   }
 
   const res = await axios.delete(`${BASE_URL}/orders/${orderId}`, {
