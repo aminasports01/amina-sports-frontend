@@ -17,6 +17,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useOrderStore } from "@/store/order.store";
 import { useProductStore } from "@/store/product.store";
+import { trackAddToCart } from "../../shared/analytics/events";
 
 type Props = {
   productId: string;
@@ -70,17 +71,25 @@ const ProductActions = ({ productId, product }: Props) => {
   // ADD TO CART
   const handleAddToCart = async () => {
     try {
-      // if (product.colorVariants?.length > 0 && !selectedColor) {
-      //   toast.error('দয়া করে একটি কালার নির্বাচন করুন।');
-      //   return;
-      // }
       if (product.colorVariants?.length > 0 && !selectedSize) {
         toast.error("Please select a size!");
         return;
       }
+
       setLoading(true);
 
+      // Add product to cart
       addToCart(product, quantity, selectedSize || null, selectedColor || null);
+
+      // Track AddToCart event
+      trackAddToCart({
+        productId: product.id,
+        productName: product.name,
+        price: Number(product.price),
+        quantity,
+        size: selectedSize || "",
+        color: selectedColor || "",
+      });
 
       toast.success("Added to cart!");
     } catch (error) {

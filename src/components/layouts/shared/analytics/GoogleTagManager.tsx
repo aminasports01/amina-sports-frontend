@@ -1,6 +1,9 @@
 "use client";
 
+import { Suspense, useEffect } from "react";
 import Script from "next/script";
+import { usePathname, useSearchParams } from "next/navigation";
+import { trackPageView } from "./events";
 
 const GoogleTagManager = () => {
   const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || "GTM-MHD5VZ5F";
@@ -31,8 +34,28 @@ const GoogleTagManager = () => {
           style={{ display: "none", visibility: "hidden" }}
         />
       </noscript>
+
+      {/* Page View Tracking */}
+      <Suspense fallback={null}>
+        <PageViewTracker />
+      </Suspense>
     </>
   );
+};
+
+const PageViewTracker = () => {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const search = searchParams.toString();
+
+  useEffect(() => {
+    const pagePath = search ? `${pathname}?${search}` : pathname;
+
+    trackPageView({ pagePath });
+  }, [pathname, search]);
+
+  return null;
 };
 
 export default GoogleTagManager;

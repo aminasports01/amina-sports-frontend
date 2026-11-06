@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
-import { createOrder } from '@/services/orders.service';
-import { CartItem, useCartStore } from '@/store/cart.store';
+import { createOrder } from "@/services/orders.service";
+import { CartItem, useCartStore } from "@/store/cart.store";
 
-import React, { useState } from 'react';
-import { Loader2, MapPin, ShoppingBag, Truck } from 'lucide-react';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useRef, useState } from "react";
+import { Loader2, MapPin, ShoppingBag, Truck } from "lucide-react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { trackBeginCheckout } from "../../shared/analytics/events";
 
 type CheckoutFormProps = {
   subtotal: number;
@@ -17,19 +18,45 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
   const [insideDhaka, setInsideDhaka] = useState(true);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const hasTrackedCheckout = useRef(false);
 
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [district, setDistrict] = useState('');
-  const [thana, setThana] = useState('');
-  const [address, setAddress] = useState('');
-  const [note, setNote] = useState('');
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [district, setDistrict] = useState("");
+  const [thana, setThana] = useState("");
+  const [address, setAddress] = useState("");
+  const [note, setNote] = useState("");
 
   const { clearCart } = useCartStore.getState();
 
   // Shipping fee match in Backend
   const shippingFee = insideDhaka ? 90 : 130;
   const total = subtotal + shippingFee;
+
+  // Track Begin Checkout
+  useEffect(() => {
+    if (!items?.length || hasTrackedCheckout.current) return;
+
+    hasTrackedCheckout.current = true;
+
+    trackBeginCheckout({
+      value: subtotal,
+      items: items.map((item) => ({
+        item_id: item.product.id,
+        item_name: item.product.name,
+        price: Number(item.product.specialPrice ?? item.product.price),
+        quantity: Number(item.quantity),
+
+        ...(item.product.brand ? { item_brand: item.product.brand } : {}),
+
+        ...(item.product.category?.name
+          ? { item_category: item.product.category.name }
+          : {}),
+
+        item_variant: [item.size, item.color].filter(Boolean).join(" "),
+      })),
+    });
+  }, [items, subtotal]);
 
   // validation for  fields
   const validateForm = () => {
@@ -40,32 +67,32 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
     const trimmedAddress = address.trim();
 
     if (!trimmedName) {
-      toast.warning('আপনার নাম লিখুন।');
+      toast.warning("আপনার নাম লিখুন।");
       return false;
     }
 
     if (!trimmedPhone) {
-      toast.warning('আপনার ফোন নম্বর লিখুন।');
+      toast.warning("আপনার ফোন নম্বর লিখুন।");
       return false;
     }
 
     if (!/^01\d{9}$/.test(trimmedPhone)) {
-      toast.warning('ফোন নম্বর অবশ্যই ১১ সংখ্যার হতে হবে।');
+      toast.warning("ফোন নম্বর অবশ্যই ১১ সংখ্যার হতে হবে।");
       return false;
     }
 
     if (!trimmedDistrict) {
-      toast.warning('জেলা লিখুন।');
+      toast.warning("জেলা লিখুন।");
       return false;
     }
 
     if (!trimmedThana) {
-      toast.warning('থানা লিখুন।');
+      toast.warning("থানা লিখুন।");
       return false;
     }
 
     if (!trimmedAddress) {
-      toast.warning('সম্পূর্ণ ঠিকানা লিখুন।');
+      toast.warning("সম্পূর্ণ ঠিকানা লিখুন।");
       return false;
     }
 
@@ -84,14 +111,14 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
     }
 
     if (!items || items.length === 0) {
-      toast.error('Your cart is empty!');
+      toast.error("Your cart is empty!");
       return;
     }
 
     try {
       setLoading(true);
 
-      const orderItems = items.map(item => ({
+      const orderItems = items.map((item) => ({
         productId: item.product.id,
         name: item.product.name,
         price: Number(item.product.specialPrice ?? item.product.price),
@@ -112,7 +139,7 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
       });
 
       if (res?.data?.success) {
-        toast.success('অর্ডার সফলভাবে সম্পন্ন হয়েছে!');
+        toast.success("অর্ডার সফলভাবে সম্পন্ন হয়েছে!");
       }
 
       // order form backend response
@@ -121,21 +148,21 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
       if (orderId) {
         router.push(`/thank-you?orderId=${orderId}`);
       } else {
-        toast.error('Order ID পাওয়া যায়নি।');
+        toast.error("Order ID পাওয়া যায়নি।");
       }
 
       clearCart();
 
-      setName('');
-      setPhone('');
-      setDistrict('');
-      setThana('');
-      setAddress('');
-      setNote('');
+      setName("");
+      setPhone("");
+      setDistrict("");
+      setThana("");
+      setAddress("");
+      setNote("");
       setInsideDhaka(true);
     } catch (error) {
-      console.error('Order failed:', error);
-      toast.error('Failed to place order. Please try again.');
+      console.error("Order failed:", error);
+      toast.error("Failed to place order. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -187,7 +214,7 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
                 id="name"
                 type="text"
                 value={name}
-                onChange={e => setName(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
                 placeholder="Enter your full name"
                 disabled={loading}
                 className="h-11 w-full rounded-sm border border-gray-300 bg-white px-3.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 hover:border-gray-400 focus:border-pink-800 focus:ring-2 focus:ring-pink-800/10 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:opacity-70"
@@ -207,7 +234,7 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
                 id="phone"
                 type="tel"
                 value={phone}
-                onChange={e => setPhone(e.target.value)}
+                onChange={(e) => setPhone(e.target.value)}
                 placeholder="01XXXXXXXXX"
                 disabled={loading}
                 className="h-11 w-full rounded-sm border border-gray-300 bg-white px-3.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 hover:border-gray-400 focus:border-pink-800 focus:ring-2 focus:ring-pink-800/10 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:opacity-70"
@@ -249,7 +276,7 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
                   id="district"
                   type="text"
                   value={district}
-                  onChange={e => setDistrict(e.target.value)}
+                  onChange={(e) => setDistrict(e.target.value)}
                   placeholder="Enter your district"
                   disabled={loading}
                   className="h-11 w-full rounded-sm border border-gray-300 bg-white px-3.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 hover:border-gray-400 focus:border-pink-800 focus:ring-2 focus:ring-pink-800/10 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:opacity-70"
@@ -269,7 +296,7 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
                   id="thana"
                   type="text"
                   value={thana}
-                  onChange={e => setThana(e.target.value)}
+                  onChange={(e) => setThana(e.target.value)}
                   placeholder="Enter your thana"
                   disabled={loading}
                   className="h-11 w-full rounded-sm border border-gray-300 bg-white px-3.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 hover:border-gray-400 focus:border-pink-800 focus:ring-2 focus:ring-pink-800/10 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:opacity-70"
@@ -290,7 +317,7 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
                 id="address"
                 rows={4}
                 value={address}
-                onChange={e => setAddress(e.target.value)}
+                onChange={(e) => setAddress(e.target.value)}
                 placeholder="House/Road, area, landmark..."
                 disabled={loading}
                 className="w-full resize-none rounded-sm border border-gray-300 bg-white px-3.5 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 hover:border-gray-400 focus:border-pink-800 focus:ring-2 focus:ring-pink-800/10 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:opacity-70"
@@ -321,8 +348,8 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
             <label
               className={`cursor-pointer rounded-sm border p-4 transition-all duration-200 ${
                 insideDhaka
-                  ? 'border-[#ad1a60] bg-[#fff0f5] shadow-sm'
-                  : 'border-gray-200 bg-white hover:border-[#d8255d]/40 hover:bg-[#fff7f9]'
+                  ? "border-[#ad1a60] bg-[#fff0f5] shadow-sm"
+                  : "border-gray-200 bg-white hover:border-[#d8255d]/40 hover:bg-[#fff7f9]"
               }`}
             >
               <div className="flex items-center justify-between gap-3">
@@ -339,7 +366,7 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
                   <div>
                     <p
                       className={`text-sm font-semibold ${
-                        insideDhaka ? 'text-[#ad1a60]' : 'text-gray-900'
+                        insideDhaka ? "text-[#ad1a60]" : "text-gray-900"
                       }`}
                     >
                       Inside Dhaka
@@ -353,7 +380,7 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
 
                 <span
                   className={`text-sm font-semibold ${
-                    insideDhaka ? 'text-[#ad1a60]' : 'text-gray-900'
+                    insideDhaka ? "text-[#ad1a60]" : "text-gray-900"
                   }`}
                 >
                   ৳90
@@ -365,8 +392,8 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
             <label
               className={`cursor-pointer rounded-sm border p-4 transition-all duration-200 ${
                 !insideDhaka
-                  ? 'border-[#ad1a60] bg-[#fff0f5] shadow-sm'
-                  : 'border-gray-200 bg-white hover:border-[#d8255d]/40 hover:bg-[#fff7f9]'
+                  ? "border-[#ad1a60] bg-[#fff0f5] shadow-sm"
+                  : "border-gray-200 bg-white hover:border-[#d8255d]/40 hover:bg-[#fff7f9]"
               }`}
             >
               <div className="flex items-center justify-between gap-3">
@@ -383,7 +410,7 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
                   <div>
                     <p
                       className={`text-sm font-semibold ${
-                        !insideDhaka ? 'text-[#ad1a60]' : 'text-gray-900'
+                        !insideDhaka ? "text-[#ad1a60]" : "text-gray-900"
                       }`}
                     >
                       Outside Dhaka
@@ -397,7 +424,7 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
 
                 <span
                   className={`text-sm font-semibold ${
-                    !insideDhaka ? 'text-[#ad1a60]' : 'text-gray-900'
+                    !insideDhaka ? "text-[#ad1a60]" : "text-gray-900"
                   }`}
                 >
                   ৳130
@@ -413,7 +440,7 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
             htmlFor="note"
             className="mb-2 block text-sm font-medium text-gray-800"
           >
-            Order Note{' '}
+            Order Note{" "}
             <span className="font-normal text-gray-400">(Optional)</span>
           </label>
 
@@ -421,7 +448,7 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
             id="note"
             rows={3}
             value={note}
-            onChange={e => setNote(e.target.value)}
+            onChange={(e) => setNote(e.target.value)}
             placeholder="Any special instruction for your order?"
             disabled={loading}
             className="w-full resize-none rounded-sm border border-gray-300 bg-white px-3.5 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 hover:border-gray-400 focus:border-pink-800 focus:ring-2 focus:ring-pink-800/10 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:opacity-70"
@@ -477,7 +504,7 @@ const CheckoutForm = ({ subtotal, items }: CheckoutFormProps) => {
               PLACING ORDER...
             </>
           ) : (
-            'PLACE ORDER'
+            "PLACE ORDER"
           )}
         </button>
 

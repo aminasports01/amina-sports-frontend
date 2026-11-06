@@ -86,7 +86,7 @@ const BuyNow = ({ product }: BuyNowProps) => {
     hasTrackedCheckout.current = true;
 
     trackBeginCheckout({
-      value: totalPrice,
+      value: subtotal,
       items: [
         {
           item_id: product.id,
@@ -104,7 +104,7 @@ const BuyNow = ({ product }: BuyNowProps) => {
         },
       ],
     });
-  }, [product, totalPrice, unitPrice, quantity, selectedColor, selectedSize]);
+  }, [product, subtotal, unitPrice, quantity, selectedColor, selectedSize]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,

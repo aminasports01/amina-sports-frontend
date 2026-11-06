@@ -170,9 +170,12 @@ const ThankYouPage = async ({ searchParams }: PageProps) => {
           color: item.color || "",
         }))}
         customer={{
-          first_name: order.name,
-          phone: order.phone,
-          address: order.address,
+          phone_number: order.phone,
+          address: {
+            first_name: order.name,
+            street: order.address,
+            country: "BD",
+          },
         }}
       />
 

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { trackPurchase } from './events';
+import { useEffect, useRef } from "react";
+import { trackPurchase } from "./events";
 
 interface PurchaseEventProps {
   transactionId: string;
@@ -23,10 +23,16 @@ interface PurchaseEventProps {
 
   customer?: {
     external_id?: string;
-    first_name?: string;
-    phone?: string;
     email?: string;
-    address?: string;
+    phone_number?: string;
+
+    address?: {
+      first_name?: string;
+      last_name?: string;
+      city?: string;
+      street?: string;
+      country?: string;
+    };
   };
 }
 
@@ -52,7 +58,7 @@ const PurchaseEvent = ({
       value,
       shipping,
 
-      items: items.map(item => ({
+      items: items.map((item) => ({
         item_id: item.productId,
         item_name: item.name,
 

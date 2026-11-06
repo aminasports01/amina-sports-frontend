@@ -1,21 +1,22 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { HeartIcon, Loader2, Minus, Plus, Trash2 } from 'lucide-react';
+import React, { useEffect, useRef, useState } from "react";
+import { HeartIcon, Loader2, Minus, Plus, Trash2 } from "lucide-react";
 
-import { useCartStore } from '@/store/cart.store';
-import CheckoutForm from '@/components/layouts/public/cart/CheckoutForm';
-import Image from 'next/image';
+import { useCartStore } from "@/store/cart.store";
+import CheckoutForm from "@/components/layouts/public/cart/CheckoutForm";
+import Image from "next/image";
+import { trackViewCart } from "@/components/layouts/shared/analytics/events";
 
 const CartPage = () => {
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [showCheckout, setShowCheckout] = useState(false);
 
   // Zustand cart store
-  const items = useCartStore(state => state.items);
-  const increase = useCartStore(state => state.increase);
-  const decrease = useCartStore(state => state.decrease);
-  const removeFromCart = useCartStore(state => state.removeFromCart);
+  const items = useCartStore((state) => state.items);
+  const increase = useCartStore((state) => state.increase);
+  const decrease = useCartStore((state) => state.decrease);
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
 
   // Increase quantity
   const handleIncrease = async (productId: string) => {
@@ -65,6 +66,26 @@ const CartPage = () => {
     0,
   );
 
+  // Track View Cart
+  const hasTrackedViewCart = useRef(false);
+
+  useEffect(() => {
+    if (!items.length || hasTrackedViewCart.current) return;
+
+    hasTrackedViewCart.current = true;
+
+    trackViewCart({
+      value: subtotal,
+      items: items.map((item) => ({
+        item_id: item.product.id,
+        item_name: item.product.name,
+        price: Number(item.product.specialPrice ?? item.product.price),
+        quantity: Number(item.quantity),
+        ...(item.product.brand ? { item_brand: item.product.brand } : {}),
+      })),
+    });
+  }, [items, subtotal]);
+
   return (
     <div className="container mx-auto px-2 py-5 md:py-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -98,9 +119,9 @@ const CartPage = () => {
 
                     return (
                       <div
-                        key={item.product.id}
+                        key={`${item.product.id}-${item.size || "no-size"}-${item.color || "no-color"}`}
                         className={`p-4 ${
-                          index !== items.length - 1 ? 'border-b' : ''
+                          index !== items.length - 1 ? "border-b" : ""
                         }`}
                       >
                         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">

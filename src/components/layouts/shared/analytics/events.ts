@@ -22,12 +22,25 @@ export interface AnalyticsEventData {
   [key: string]: unknown;
 }
 
+// export interface AnalyticsCustomer {
+//   external_id?: string;
+//   first_name?: string;
+//   phone?: string;
+//   email?: string;
+//   address?: string;
+// }
 export interface AnalyticsCustomer {
   external_id?: string;
-  first_name?: string;
-  phone?: string;
   email?: string;
-  address?: string;
+  phone_number?: string;
+
+  address?: {
+    first_name?: string;
+    last_name?: string;
+    city?: string;
+    street?: string;
+    country?: string;
+  };
 }
 
 declare global {
@@ -112,12 +125,22 @@ const getAnalyticsCustomer = (): AnalyticsCustomer | undefined => {
     return undefined;
   }
 
+  const nameParts = (user.name || "").trim().split(/\s+/);
+
+  const firstName = nameParts[0] || "";
+  const lastName = nameParts.slice(1).join(" ");
+
   return {
     external_id: user.id || "",
-    first_name: user.name || "",
-    phone: user.phone || "",
     email: user.email || "",
-    address: user.address || "",
+    phone_number: user.phone || "",
+
+    address: {
+      first_name: firstName,
+      last_name: lastName,
+      street: user.address || "",
+      country: "BD",
+    },
   };
 };
 
@@ -371,14 +394,13 @@ export const trackAddToCart = ({
 
       ...(customer
         ? {
-            customer,
+            meta_user_data: customer,
           }
         : {}),
 
       meta_pixel: {
         event_name: "AddToCart",
         event_id: eventId,
-        external_id: externalId,
 
         content_ids: [productId],
         content_name: productName,
@@ -426,7 +448,7 @@ export const trackViewCart = ({
 
       ...(customer
         ? {
-            customer,
+            meta_user_data: customer,
           }
         : {}),
     },
@@ -464,7 +486,7 @@ export const trackBeginCheckout = ({
 
       ...(customer
         ? {
-            customer,
+            meta_user_data: customer,
           }
         : {}),
     },
@@ -501,7 +523,7 @@ export const trackPurchase = ({
    */
   const eventId = `purchase_${transactionId}`;
 
-  const externalId = getAnalyticsExternalId();
+  const externalId = customer?.external_id || getAnalyticsExternalId();
 
   pushEvent(
     "purchase",
@@ -518,26 +540,19 @@ export const trackPurchase = ({
       /**
        * Customer information
        */
-      ...(customer
-        ? {
-            customer: {
-              external_id: customer.external_id || externalId,
+      meta_user_data: {
+        external_id: externalId,
+        email: customer?.email || "",
+        phone_number: customer?.phone_number || "",
 
-              first_name: customer.first_name || "",
-
-              phone: customer.phone || "",
-
-              email: customer.email || "",
-
-              address: customer.address || "",
-            },
-          }
-        : {
-            customer: {
-              external_id: externalId,
-            },
-          }),
-
+        address: {
+          first_name: customer?.address?.first_name || "",
+          last_name: customer?.address?.last_name || "",
+          city: customer?.address?.city || "",
+          street: customer?.address?.street || "",
+          country: customer?.address?.country || "BD",
+        },
+      },
       /**
        * Meta Pixel
        */
